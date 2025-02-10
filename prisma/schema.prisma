@@ -1,0 +1,112 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userID            Int             @id @default(autoincrement())
+  name              String          @db.VarChar(255)
+  handle            String          @db.VarChar(255)
+  password          String          @db.VarChar(50)
+  bio               String?         @db.VarChar(500)
+  profilePicURL     String?         @db.VarChar(255)
+  bannerPicURL      String?         @db.VarChar(255)
+  dateJoined        DateTime        @db.Date
+
+
+  followers         Follow[]        @relation(name: "followedUser")
+  following         Follow[]        @relation(name: "follower")
+  sentNotifications Notification[]  @relation(name: "sender")
+  receivedNotifications Notification[] @relation(name: "receiver")
+  posts Post[]
+  likes Like[]
+  reposts Repost[]
+  quoteReposts QuoteRepost[]
+}
+
+model Notification {
+  notificationID        Int               @id @default(autoincrement())
+  receiver              User              @relation(fields: [receiverID], references: [userID], name: "receiver")
+  receiverID            Int
+  sender                User              @relation(fields: [senderID], references: [userID], name: "sender")
+  senderID              Int
+  sourceURL             String            @db.VarChar(255)
+  type                  NotificationType  @relation(fields: [typeID], references: [notificationTypeID])
+  typeID                Int         
+}
+
+model NotificationType {
+  notificationTypeID    Int     @id @default(autoincrement())
+  type                  String
+  notifications         Notification[]
+}
+
+model Follow {
+  followID              Int               @id @default(autoincrement())
+  followedUser          User              @relation(fields: [followedUserID], references: [userID], name: "followedUser")
+  followedUserID        Int
+  follower              User              @relation(fields: [followerID], references: [userID], name: "follower")
+  followerID            Int
+  @@unique([followedUserID, followerID])
+}
+
+model Post {
+  postID                Int               @id @default(autoincrement())
+  author                User              @relation(fields: [authorID], references: [userID])
+  authorID              Int
+  dateCreated           DateTime          @db.Timestamp
+  content               String?           @db.VarChar(500)
+
+
+  replies               Reply[]           @relation(name: "replyPost")
+  replyParent           Reply[]           @relation(name: "parentOfReply")
+  quotes                QuoteRepost[]     @relation(name: "quotePost")
+  quoteParent           QuoteRepost[]     @relation(name: "parentOfQuote")
+  likes                 Like[]
+  reposts               Repost[]
+}
+
+model Like {
+  likeID                Int               @id @default(autoincrement())
+  post                  Post              @relation(fields: [postID], references: [postID])
+  postID                Int
+  user                  User              @relation(fields: [userID], references: [userID])
+  userID                Int
+  @@unique([postID, userID])
+}
+
+model Reply {
+  replyID               Int               @id @default(autoincrement())
+  replyPost             Post              @relation(fields: [replyPostID], references: [postID], name: "replyPost")
+  replyPostID           Int
+  parentPost            Post              @relation(fields: [parentPostID], references: [postID], name: "parentOfReply")
+  parentPostID          Int
+  @@unique([replyPostID, parentPostID])
+}
+
+model Repost {
+  repostID              Int               @id @default(autoincrement())
+  user                  User              @relation(fields: [userID], references: [userID])
+  userID                Int
+  parentPost            Post              @relation(fields: [parentPostID], references: [postID])
+  parentPostID          Int
+  @@unique([userID, parentPostID])
+}
+
+model QuoteRepost {
+  quoteID               Int               @id @default(autoincrement())
+  user                  User              @relation(fields: [userID], references: [userID])
+  userID                Int
+  parentPost            Post              @relation(fields: [parentPostID], references: [postID], name: "parentOfQuote")
+  parentPostID          Int
+  quotePost             Post              @relation(fields: [quotePostID], references: [postID], name: "quotePost")
+  quotePostID           Int
+  @@unique([userID, parentPostID, quotePostID])
+}
+
