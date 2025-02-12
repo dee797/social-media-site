@@ -28,6 +28,7 @@ model User {
   likes Like[]
   reposts Repost[]
   quote_reposts Quote_Repost[]
+  replies Reply[]
 }
 
 model Notification {
@@ -87,6 +88,8 @@ model Reply {
   reply_post_id         Int
   parent_post           Post              @relation(fields: [parent_post_id], references: [post_id], name: "parent_of_reply")
   parent_post_id        Int
+  user                  User              @relation(fields: [user_id], references: [user_id])
+  user_id               Int               
   @@unique([reply_post_id, parent_post_id])
 }
 

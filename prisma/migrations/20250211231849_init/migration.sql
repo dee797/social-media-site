@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "User" (
+CREATE TABLE IF NOT EXISTS "User" (
     "user_id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "handle" VARCHAR(255) NOT NULL,
@@ -13,18 +13,19 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "Notification" (
+CREATE TABLE IF NOT EXISTS "Notification" (
     "notification_id" SERIAL NOT NULL,
     "receiver_id" INTEGER NOT NULL,
     "sender_id" INTEGER NOT NULL,
     "source_url" VARCHAR(255) NOT NULL,
     "type_id" INTEGER NOT NULL,
 
-    CONSTRAINT "Notification_pkey" PRIMARY KEY ("notification_id")
+    CONSTRAINT "Notification_pkey" PRIMARY KEY ("notification_id"),
+    CONSTRAINT "Not_same_sender_receiver" CHECK ("receiver_id" <> "sender_id")
 );
 
 -- CreateTable
-CREATE TABLE "Notification_Type" (
+CREATE TABLE IF NOT EXISTS "Notification_Type" (
     "notification_type_id" SERIAL NOT NULL,
     "type" TEXT NOT NULL,
 
@@ -32,16 +33,17 @@ CREATE TABLE "Notification_Type" (
 );
 
 -- CreateTable
-CREATE TABLE "Follow" (
+CREATE TABLE IF NOT EXISTS "Follow" (
     "follow_id" SERIAL NOT NULL,
     "followed_user_id" INTEGER NOT NULL,
     "follower_id" INTEGER NOT NULL,
 
-    CONSTRAINT "Follow_pkey" PRIMARY KEY ("follow_id")
+    CONSTRAINT "Follow_pkey" PRIMARY KEY ("follow_id"),
+    CONSTRAINT "Not_same_follower_followed" CHECK ("followed_user_id" <> "follower_id")
 );
 
 -- CreateTable
-CREATE TABLE "Post" (
+CREATE TABLE IF NOT EXISTS "Post" (
     "post_id" SERIAL NOT NULL,
     "author_id" INTEGER NOT NULL,
     "date_created" TIMESTAMP NOT NULL,
@@ -51,7 +53,7 @@ CREATE TABLE "Post" (
 );
 
 -- CreateTable
-CREATE TABLE "Like" (
+CREATE TABLE IF NOT EXISTS "Like" (
     "like_id" SERIAL NOT NULL,
     "post_id" INTEGER NOT NULL,
     "user_id" INTEGER NOT NULL,
@@ -60,16 +62,18 @@ CREATE TABLE "Like" (
 );
 
 -- CreateTable
-CREATE TABLE "Reply" (
+CREATE TABLE IF NOT EXISTS "Reply" (
     "reply_id" SERIAL NOT NULL,
     "reply_post_id" INTEGER NOT NULL,
     "parent_post_id" INTEGER NOT NULL,
+    "user_id" INTEGER NOT NULL,
 
-    CONSTRAINT "Reply_pkey" PRIMARY KEY ("reply_id")
+    CONSTRAINT "Reply_pkey" PRIMARY KEY ("reply_id"),
+    CONSTRAINT "Not_same_replypost_parentpost" CHECK ("reply_post_id" <> "parent_post_id")
 );
 
 -- CreateTable
-CREATE TABLE "Repost" (
+CREATE TABLE IF NOT EXISTS "Repost" (
     "repost_id" SERIAL NOT NULL,
     "user_id" INTEGER NOT NULL,
     "parent_post_id" INTEGER NOT NULL,
@@ -78,13 +82,14 @@ CREATE TABLE "Repost" (
 );
 
 -- CreateTable
-CREATE TABLE "Quote_Repost" (
+CREATE TABLE IF NOT EXISTS "Quote_Repost" (
     "quote_id" SERIAL NOT NULL,
     "user_id" INTEGER NOT NULL,
     "parent_post_id" INTEGER NOT NULL,
     "quote_post_id" INTEGER NOT NULL,
 
-    CONSTRAINT "Quote_Repost_pkey" PRIMARY KEY ("quote_id")
+    CONSTRAINT "Quote_Repost_pkey" PRIMARY KEY ("quote_id"),
+    CONSTRAINT "Not_same_quotepost_parentpost" CHECK ("quote_post_id" <> "parent_post_id")
 );
 
 -- CreateIndex
@@ -134,6 +139,9 @@ ALTER TABLE "Reply" ADD CONSTRAINT "Reply_reply_post_id_fkey" FOREIGN KEY ("repl
 
 -- AddForeignKey
 ALTER TABLE "Reply" ADD CONSTRAINT "Reply_parent_post_id_fkey" FOREIGN KEY ("parent_post_id") REFERENCES "Post"("post_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reply" ADD CONSTRAINT "Reply_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Repost" ADD CONSTRAINT "Repost_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
