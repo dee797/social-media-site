@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS "Notification" (
     "sender_id" INTEGER NOT NULL,
     "source_url" VARCHAR(255) NOT NULL,
     "type_id" INTEGER NOT NULL,
+    "read_status" BOOLEAN DEFAULT FALSE
 
     CONSTRAINT "Notification_pkey" PRIMARY KEY ("notification_id"),
     CONSTRAINT "Not_same_sender_receiver" CHECK ("receiver_id" <> "sender_id")

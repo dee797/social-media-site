@@ -39,7 +39,8 @@ model Notification {
   sender_id             Int
   source_url            String            @db.VarChar(255)
   type                  Notification_Type  @relation(fields: [type_id], references: [notification_type_id])
-  type_id               Int         
+  type_id               Int
+  read_status           Boolean           @default(false) 
 }
 
 model Notification_Type {
