@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npx prisma migrate dev --name init",
+    "prisma:generate": "npx prisma generate && npx prisma db push",
     "test": "jest"
   },
   "keywords": [],
