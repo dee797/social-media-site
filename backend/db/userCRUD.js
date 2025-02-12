@@ -8,16 +8,16 @@ const createUser = async (user) => {
             handle: user.handle,
             password: user.password,
             bio: user.bio,
-            profilePicURL: user.profilePicURL,
-            bannerPicURL: user.bannerPicURL,
-            dateJoined: user.dateJoined,
+            profile_pic_url: user.profilePicURL,
+            banner_pic_url: user.bannerPicURL,
+            date_joined: user.dateJoined,
         }  
     });
 }
 
-const getUserByHandle = async (userHandle) => {
+const getUserByHandle = async (handle) => {
     const user = await prisma.user.findUnique({
-        where: { handle: userHandle }
+        where: { handle: handle }
     });
     return user;
 }
@@ -25,7 +25,7 @@ const getUserByHandle = async (userHandle) => {
 
 const updateUser = async (user) => {
     return await prisma.user.update({
-        where: { userID: user.userID },
+        where: { user_id: user.user_id },
         data: user
     })
 }
@@ -33,7 +33,7 @@ const updateUser = async (user) => {
 
 const deleteUser = async (user) => {
     return await prisma.user.delete({
-        where: { userID: user.userID }
+        where: { user_id: user.user_id }
     });
 }
 
