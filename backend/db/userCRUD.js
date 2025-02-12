@@ -1,5 +1,7 @@
-const { prisma } = require("../../client");
+const { PrismaClient } = require('@prisma/client')
 
+
+const prisma = new PrismaClient();
 
 const createUser = async (user) => {
     return await prisma.user.create({ 
@@ -8,16 +10,16 @@ const createUser = async (user) => {
             handle: user.handle,
             password: user.password,
             bio: user.bio,
-            profile_pic_url: user.profilePicURL,
-            banner_pic_url: user.bannerPicURL,
-            date_joined: user.dateJoined,
+            profile_pic_url: user.profile_pic_url,
+            banner_pic_url: user.banner_pic_url,
+            date_joined: user.date_joined,
         }  
     });
 }
 
-const getUserByHandle = async (handle) => {
+const getUserByHandle = async (user) => {
     const user = await prisma.user.findUnique({
-        where: { handle: handle }
+        where: { handle: user.handle }
     });
     return user;
 }
