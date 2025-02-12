@@ -51,6 +51,7 @@ async function main() {
     // create record in Like table to simulate user 1 liking user 2's first post
     await prisma.like.create({
         data: {
+            like_id: 1,
             post_id: 2,
             user_id: 1
         }
@@ -59,6 +60,7 @@ async function main() {
     // create record in Follow table to simulate user 1 following user 2
     await prisma.follow.create({
         data: {
+            follow_id: 1,
             followed_user_id: 2,
             follower_id: 1
         }  
@@ -67,6 +69,7 @@ async function main() {
     // create record in Repost table to simulate user 1 reposting user 2's first post
     await prisma.repost.create({
         data: {
+            repost_id: 1,
             user_id: 1,
             parent_post_id: 2
         }
@@ -86,6 +89,7 @@ async function main() {
 
     await prisma.reply.create({
         data: {
+            reply_id: 1,
             reply_post_id: 3,
             parent_post_id: 2,
             user_id: 1
@@ -105,6 +109,7 @@ async function main() {
 
     await prisma.quote_Repost.create({
         data: {
+            quote_id: 1,
             parent_post_id: 1,
             quote_post_id: 4,
             user_id: 2
@@ -127,6 +132,7 @@ async function main() {
         data: [
             // create notification for user 2 when user 1 liked their post
             {
+                notification_id: 1,
                 receiver_id: 2,
                 source_url: 'test',
                 sender_id: 1,
@@ -134,6 +140,7 @@ async function main() {
             },
             // create notification for user 2 when user 1 followed them
             {
+                notification_id: 2,
                 receiver_id: 2,
                 source_url: 'test',
                 sender_id: 1,
@@ -141,6 +148,7 @@ async function main() {
             },
             // create notification for user 2 when user 1 reposted their post
             {
+                notification_id: 3,
                 receiver_id: 2,
                 source_url: 'test',
                 sender_id: 1,
@@ -148,6 +156,7 @@ async function main() {
             },
             // create notification for user 1 when user 2 quote reposted their post
             {
+                notification_id: 4,
                 receiver_id: 1,
                 source_url: 'test',
                 sender_id: 2,
@@ -155,6 +164,7 @@ async function main() {
             },
             // create notification for user 2 when user 1 replied to their post
             {
+                notification_id: 5,
                 receiver_id: 2,
                 source_url: 'test',
                 sender_id: 1,
