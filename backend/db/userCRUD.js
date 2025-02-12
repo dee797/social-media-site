@@ -18,10 +18,10 @@ const createUser = async (user) => {
 }
 
 const getUserByHandle = async (user) => {
-    const user = await prisma.user.findUnique({
+    const findUser = await prisma.user.findUnique({
         where: { handle: user.handle }
     });
-    return user;
+    return findUser;
 }
 
 
