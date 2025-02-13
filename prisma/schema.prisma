@@ -41,6 +41,7 @@ model Notification {
   type                  Notification_Type  @relation(fields: [type_id], references: [notification_type_id])
   type_id               Int
   read_status           Boolean           @default(false) 
+  @@unique([receiver_id, sender_id, source_url, type_id])
 }
 
 model Notification_Type {
