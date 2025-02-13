@@ -1,32 +1,15 @@
 const { PrismaClient } = require('@prisma/client')
+const {exampleUser1, exampleUser2} = require('./exampleUsers')
 
 const prisma = new PrismaClient();
 
 async function main() {
     await prisma.user.createMany({
         data: [
-            // create user, user 1
-            {
-                user_id: 1,
-                name: 'Kelly',
-                handle: '@kelly',
-                password: 'test',
-                bio: '',
-                profile_pic_url: '',
-                banner_pic_url: '',
-                date_joined: new Date(),
-            },
-            // create another user, user 2
-            {
-                user_id: 2,
-                name: 'Kevin',
-                handle: '@kevin',
-                password: 'test',
-                bio: '',
-                profile_pic_url: '',
-                banner_pic_url: '',
-                date_joined: new Date(),
-            }
+            // create user in db, exampleUser1
+            exampleUser1,
+            // create another user in db, exampleUser2
+            exampleUser2
         ]
     });
 
@@ -37,13 +20,13 @@ async function main() {
                 post_id: 1,
                 author_id: 1,
                 content: 'Hello World',
-                date_created: new Date()
+                date_created: new Date('2025-01-01')
             },
             {
                 post_id: 2,
                 author_id: 2,
                 content: 'Hello World 2',
-                date_created: new Date()
+                date_created: new Date('2025-01-01')
             }
         ]
     });
@@ -82,7 +65,7 @@ async function main() {
             post_id: 3,
             author_id: 1,
             content: 'I like this post',
-            date_created: new Date()
+            date_created: new Date('2025-01-01')
 
         }
     });
@@ -103,7 +86,7 @@ async function main() {
             post_id: 4,
             author_id: 2,
             content: 'This is a cool post',
-            date_created: new Date()
+            date_created: new Date('2025-01-01')
         }
     });
 
