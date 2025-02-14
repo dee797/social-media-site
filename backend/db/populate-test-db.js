@@ -15,7 +15,7 @@ async function main() {
 
     await prisma.post.createMany({
         data: [
-            // create first post for user 1
+            // create first post for user1
             {
                 post_id: 1,
                 author_id: 1,
@@ -31,7 +31,7 @@ async function main() {
         ]
     });
 
-    // create record in Like table to simulate user 1 liking user 2's first post
+    // create record in Like table to simulate user1 liking user2's first post
     await prisma.like.create({
         data: {
             like_id: 1,
@@ -40,7 +40,7 @@ async function main() {
         }
     });
 
-    // create record in Follow table to simulate user 1 following user 2
+    // create record in Follow table to simulate user1 following user2
     await prisma.follow.create({
         data: {
             follow_id: 1,
@@ -49,7 +49,7 @@ async function main() {
         }  
     });
 
-    // create record in Repost table to simulate user 1 reposting user 2's first post
+    // create record in Repost table to simulate user1 reposting user2's first post
     await prisma.repost.create({
         data: {
             repost_id: 1,
@@ -58,8 +58,11 @@ async function main() {
         }
     });
 
-    // create records in Post and Reply tables to simulate user 1 replying to user 2's first post
+    // create the following records in Post and Reply tables to simulate user1 and user2 replying to each other,
+    // which will create a reply thread
     // (a record needs to be created in Post since replies are essentially just posts)
+
+    // first reply, by user1 on user2's first post ('Hello World 2')
     await prisma.post.create({
         data: {
             post_id: 3,
@@ -79,11 +82,74 @@ async function main() {
         }
     });
 
-    // create records in Post and Quote_Repost tables to simulate user 2 quote reposting user 1's first post
-    // (a record needs to be created in Post since quote reposts are essentially just posts)
+
+    // second reply, again by user1, in response to user2's post ('Hello World')
     await prisma.post.create({
         data: {
             post_id: 4,
+            author_id: 1,
+            content: 'I forgot to mention, this post rocks',
+            date_created: new Date('2025-01-01')
+
+        }
+    });
+
+    await prisma.reply.create({
+        data: {
+            reply_id: 2,
+            reply_post_id: 4,
+            parent_post_id: 2,
+            user_id: 1
+        }
+    });
+
+    // second reply by user2 in response to user1's reply ('I like this post')
+    await prisma.post.create({
+        data: {
+            post_id: 5,
+            author_id: 2,
+            content: 'Thanks for the like',
+            date_created: new Date('2025-01-01')
+
+        }
+    });
+
+    await prisma.reply.create({
+        data: {
+            reply_id: 3,
+            reply_post_id: 5,
+            parent_post_id: 3,
+            user_id: 2
+        }
+    });
+
+    // third reply by user1 in response to user2's reply ('Thanks for the like')
+    await prisma.post.create({
+        data: {
+            post_id: 6,
+            author_id: 1,
+            content: 'No problem',
+            date_created: new Date('2025-01-01')
+
+        }
+    });
+
+    await prisma.reply.create({
+        data: {
+            reply_id: 4,
+            reply_post_id: 6,
+            parent_post_id: 4,
+            user_id: 1
+        }
+    });
+
+
+
+    // create records in Post and Quote_Repost tables to simulate user2 quote reposting user1's first post
+    // (a record needs to be created in Post since quote reposts are essentially just posts)
+    await prisma.post.create({
+        data: {
+            post_id: 7,
             author_id: 2,
             content: 'This is a cool post',
             date_created: new Date('2025-01-01')
@@ -94,7 +160,7 @@ async function main() {
         data: {
             quote_id: 1,
             parent_post_id: 1,
-            quote_post_id: 4,
+            quote_post_id: 7,
             user_id: 2
         }
     });
@@ -113,7 +179,7 @@ async function main() {
 
     await prisma.notification.createMany({
         data: [
-            // create notification for user 2 when user 1 liked their post
+            // create notification for user2 when user1 liked their post
             {
                 notification_id: 1,
                 receiver_id: 2,
@@ -121,7 +187,7 @@ async function main() {
                 sender_id: 1,
                 type_id: 1
             },
-            // create notification for user 2 when user 1 followed them
+            // create notification for user2 when user1 followed them
             {
                 notification_id: 2,
                 receiver_id: 2,
@@ -129,7 +195,7 @@ async function main() {
                 sender_id: 1,
                 type_id: 2
             },
-            // create notification for user 2 when user 1 reposted their post
+            // create notification for user2 when user1 reposted their post
             {
                 notification_id: 3,
                 receiver_id: 2,
@@ -137,7 +203,7 @@ async function main() {
                 sender_id: 1,
                 type_id: 3
             },
-            // create notification for user 1 when user 2 quote reposted their post
+            // create notification for user1 when user2 quote reposted their post
             {
                 notification_id: 4,
                 receiver_id: 1,
@@ -145,7 +211,7 @@ async function main() {
                 sender_id: 2,
                 type_id: 3
             },
-            // create notification for user 2 when user 1 replied to their post
+            // create notification for user2 when user1 first replied to their post
             {
                 notification_id: 5,
                 receiver_id: 2,
