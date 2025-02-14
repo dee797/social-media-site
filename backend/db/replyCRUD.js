@@ -4,21 +4,21 @@ const prisma = new PrismaClient();
 
 const createReply = async (post) => {
     return await prisma.post.create({ 
-        data: {
+        data: {            
+            author_id: post.author_id, 
+            date_created: post.date_created,   
+            content: post.content,
             reply_parent: {
                 create: { 
                     parent_post_id: post.parent_post_id,
-                    user_id: post.author_id 
+                    user_id: post.author_id,
                 }
-            },
-            author_id: post.author_id, 
-            date_created: post.date_created,   
-            content: post.content
+            }
         }
     });
 }
 
-const getReplies = async (post) => {
+const getThread = async (post) => {
     const replies = await prisma.$queryRaw`
         with recursive replies as (
             select *
@@ -37,8 +37,23 @@ const getReplies = async (post) => {
     return replies;
 }
 
+const getParentOfReply = async (post) => {
+    const parent = await prisma.reply.findFirst({
+        where: { reply_post_id: post.post_id },
+        select: { parent_post: true }
+    });
+    return parent;
+}
+
+const getReplyCount = async (post) => {
+    const arr = await getThread(post);
+    return arr.length - 1;
+}
+
 
 module.exports = {
     createReply,
-    getReplies
+    getThread,
+    getParentOfReply,
+    getReplyCount
 }
