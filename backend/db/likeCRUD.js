@@ -19,6 +19,13 @@ const getLikedPosts = async (user) => {
     return likes;
 }
 
+const getLikeCountForPost = async (post) => {
+    const likeCount = await prisma.like.count({
+        where: { post_id: post.post_id }
+    });
+    return likeCount
+}
+
 // This is the same as unliking a post
 const deleteLike = async (like) => {
     return await prisma.like.delete({
@@ -33,5 +40,6 @@ const deleteLike = async (like) => {
 module.exports = {
     createLike,
     getLikedPosts,
+    getLikeCountForPost,
     deleteLike
 }
