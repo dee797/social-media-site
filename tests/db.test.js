@@ -1,7 +1,8 @@
-const userTable = require('../backend/db/userCRUD');
-const notifTable = require('../backend/db/notificationCRUD');
-const followTable = require('../backend/db/followCRUD');
-const likeTable = require('../backend/db/likeCRUD');
+const userCRUD = require('../backend/db/userCRUD');
+const notifCRUD = require('../backend/db/notificationCRUD');
+const followCRUD = require('../backend/db/followCRUD');
+const likeCRUD = require('../backend/db/likeCRUD');
+const replyCRUD = require('../backend/db/replyCRUD');
 
 const {exampleUser1, exampleUser2} = require('../backend/db/exampleUsers')
 
@@ -53,7 +54,7 @@ describe('User table tests', () => {
             date_joined: new Date()
         }
         
-        await expect(userTable.createUser(user2)).rejects.toThrow();
+        await expect(userCRUD.createUser(user2)).rejects.toThrow();
     });
 });
 
@@ -68,7 +69,7 @@ describe('Notification table tests', () => {
             type_id: 1
         }
     
-        await expect(notifTable.createNotification(notif)).rejects.toThrow();
+        await expect(notifCRUD.createNotification(notif)).rejects.toThrow();
     });
 
     test('update notification read status to true', async () => {
@@ -76,8 +77,8 @@ describe('Notification table tests', () => {
             notification_id: 1
         }
 
-        await notifTable.updateNotification(notif);
-        await expect(notifTable.getNotification(notif)).resolves.toEqual({
+        await notifCRUD.updateNotification(notif);
+        await expect(notifCRUD.getNotification(notif)).resolves.toEqual({
             notification_id: 1,
             receiver_id: 2,
             sender_id: 1,
@@ -97,7 +98,7 @@ describe('Notification table tests', () => {
             type_id: 3
         }
 
-        await expect(notifTable.createNotification(notif)).rejects.toThrow();
+        await expect(notifCRUD.createNotification(notif)).rejects.toThrow();
     });
 });
 
@@ -110,15 +111,15 @@ describe('Follow table tests', () => {
             follower_id: 1
         }
 
-        await expect(followTable.createFollow(follow)).rejects.toThrow();
+        await expect(followCRUD.createFollow(follow)).rejects.toThrow();
     });
 
     test("get a list of a user's followers", async () => {
-        await expect(followTable.getFollowers(exampleUser2)).resolves.toEqual([{follower: exampleUser1}]);
+        await expect(followCRUD.getFollowers(exampleUser2)).resolves.toEqual([{follower: exampleUser1}]);
     });
 
     test("get a list of people a user is following", async () => {
-        await expect(followTable.getFollowing(exampleUser1)).resolves.toEqual([{followed_user: exampleUser2}])
+        await expect(followCRUD.getFollowing(exampleUser1)).resolves.toEqual([{followed_user: exampleUser2}])
     });
 
     test('prevent repeat follow if it already exists in db', async () => {
@@ -127,7 +128,7 @@ describe('Follow table tests', () => {
             follower_id: 1
         }
 
-        await expect(followTable.createFollow(follow)).rejects.toThrow();
+        await expect(followCRUD.createFollow(follow)).rejects.toThrow();
     });
 });
 
@@ -140,11 +141,11 @@ describe('Like table tests', () => {
             user_id: 1
         }
 
-        await expect(likeTable.createLike(like)).rejects.toThrow();
+        await expect(likeCRUD.createLike(like)).rejects.toThrow();
     });
 
     test('get list of posts that a user has liked', async () => {
-        await expect(likeTable.getLikedPosts(exampleUser1)).resolves.toEqual([{post: 
+        await expect(likeCRUD.getLikedPosts(exampleUser1)).resolves.toEqual([{post: 
             {
                 post_id: 2,
                 author_id: 2,
@@ -153,4 +154,72 @@ describe('Like table tests', () => {
             }
         }]);
     });
-})
+
+    test('get correct like count for a post', async () => {
+        await expect(likeCRUD.getLikeCountForPost({post_id: 2})).resolves.toEqual(1);
+    });
+});
+
+
+
+describe('Reply tests (involves both Reply table and Post table)', () => {
+    test('get list of replies for a particular post', async () => {
+        await expect(replyCRUD.getThread({post_id : 2})).resolves.toEqual([
+            {
+                post_id: 2,
+                author_id: 2,
+                date_created: new Date('2025-01-01'),
+                content: 'Hello World 2'
+              },
+              {
+                post_id: 3,
+                author_id: 1,
+                date_created: new Date('2025-01-01'),
+                content: 'I like this post'
+              },
+              {
+                post_id: 4,
+                author_id: 1,
+                date_created: new Date('2025-01-01'),
+                content: 'I forgot to mention, this post rocks'
+              },
+              {
+                post_id: 5,
+                author_id: 2,
+                date_created: new Date('2025-01-01'),
+                content: 'Thanks for the like'
+              },
+              {
+                post_id: 6,
+                author_id: 1,
+                date_created: new Date('2025-01-01'),
+                content: 'No problem'
+              }
+        ]);
+    });
+
+    test('create a reply', async () => {
+        const post = {
+            parent_post_id: 1,
+            author_id: 1,
+            date_created: new Date('2025-01-02'),
+            content: 'hi'
+        }
+        await expect(replyCRUD.createReply(post)).resolves.toHaveProperty("content", "hi");
+    });
+
+    test('get correct reply count', async () => {
+        await expect(replyCRUD.getReplyCount({post_id: 2})).resolves.toEqual(4);
+    });
+
+    test('get correct parent post of reply', async () => {
+        await expect(replyCRUD.getParentOfReply({post_id: 4})).resolves.toEqual({parent_post: 
+            {
+                post_id: 2,
+                author_id: 2,
+                date_created: new Date('2025-01-01'),
+                content: 'Hello World 2'
+            }
+        });
+    });
+});
