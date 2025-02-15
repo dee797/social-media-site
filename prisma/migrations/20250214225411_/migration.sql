@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE IF NOT EXISTS "User" (
+CREATE TABLE "User" (
     "user_id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "handle" VARCHAR(255) NOT NULL,
@@ -13,20 +13,20 @@ CREATE TABLE IF NOT EXISTS "User" (
 );
 
 -- CreateTable
-CREATE TABLE IF NOT EXISTS "Notification" (
+CREATE TABLE "Notification" (
     "notification_id" SERIAL NOT NULL,
     "receiver_id" INTEGER NOT NULL,
     "sender_id" INTEGER NOT NULL,
     "source_url" VARCHAR(255) NOT NULL,
     "type_id" INTEGER NOT NULL,
-    "read_status" BOOLEAN DEFAULT FALSE
+    "read_status" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Notification_pkey" PRIMARY KEY ("notification_id"),
     CONSTRAINT "Not_same_sender_receiver" CHECK ("receiver_id" <> "sender_id")
 );
 
 -- CreateTable
-CREATE TABLE IF NOT EXISTS "Notification_Type" (
+CREATE TABLE "Notification_Type" (
     "notification_type_id" SERIAL NOT NULL,
     "type" TEXT NOT NULL,
 
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS "Notification_Type" (
 );
 
 -- CreateTable
-CREATE TABLE IF NOT EXISTS "Follow" (
+CREATE TABLE "Follow" (
     "follow_id" SERIAL NOT NULL,
     "followed_user_id" INTEGER NOT NULL,
     "follower_id" INTEGER NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS "Follow" (
 );
 
 -- CreateTable
-CREATE TABLE IF NOT EXISTS "Post" (
+CREATE TABLE "Post" (
     "post_id" SERIAL NOT NULL,
     "author_id" INTEGER NOT NULL,
     "date_created" TIMESTAMP NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS "Post" (
 );
 
 -- CreateTable
-CREATE TABLE IF NOT EXISTS "Like" (
+CREATE TABLE "Like" (
     "like_id" SERIAL NOT NULL,
     "post_id" INTEGER NOT NULL,
     "user_id" INTEGER NOT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS "Like" (
 );
 
 -- CreateTable
-CREATE TABLE IF NOT EXISTS "Reply" (
+CREATE TABLE "Reply" (
     "reply_id" SERIAL NOT NULL,
     "reply_post_id" INTEGER NOT NULL,
     "parent_post_id" INTEGER NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS "Reply" (
 );
 
 -- CreateTable
-CREATE TABLE IF NOT EXISTS "Repost" (
+CREATE TABLE "Repost" (
     "repost_id" SERIAL NOT NULL,
     "user_id" INTEGER NOT NULL,
     "parent_post_id" INTEGER NOT NULL,
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS "Repost" (
 );
 
 -- CreateTable
-CREATE TABLE IF NOT EXISTS "Quote_Repost" (
+CREATE TABLE "Quote_Repost" (
     "quote_id" SERIAL NOT NULL,
     "user_id" INTEGER NOT NULL,
     "parent_post_id" INTEGER NOT NULL,
@@ -95,6 +95,9 @@ CREATE TABLE IF NOT EXISTS "Quote_Repost" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_handle_key" ON "User"("handle");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Notification_receiver_id_sender_id_source_url_type_id_key" ON "Notification"("receiver_id", "sender_id", "source_url", "type_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Follow_followed_user_id_follower_id_key" ON "Follow"("followed_user_id", "follower_id");
@@ -158,3 +161,14 @@ ALTER TABLE "Quote_Repost" ADD CONSTRAINT "Quote_Repost_parent_post_id_fkey" FOR
 
 -- AddForeignKey
 ALTER TABLE "Quote_Repost" ADD CONSTRAINT "Quote_Repost_quote_post_id_fkey" FOREIGN KEY ("quote_post_id") REFERENCES "Post"("post_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Start autoincrement values at 100 for all sequence tables
+ALTER SEQUENCE "Follow_follow_id_seq" RESTART WITH 100;
+ALTER SEQUENCE "Like_like_id_seq" RESTART WITH 100;
+ALTER SEQUENCE "Notification_Type_notification_type_id_seq" RESTART WITH 100;
+ALTER SEQUENCE "Notification_notification_id_seq" RESTART WITH 100;
+ALTER SEQUENCE "Post_post_id_seq" RESTART WITH 100;
+ALTER SEQUENCE "Quote_Repost_quote_id_seq" RESTART WITH 100;
+ALTER SEQUENCE "Reply_reply_id_seq" RESTART WITH 100;
+ALTER SEQUENCE "Repost_repost_id_seq" RESTART WITH 100;
+ALTER SEQUENCE "User_user_id_seq" RESTART WITH 100;
