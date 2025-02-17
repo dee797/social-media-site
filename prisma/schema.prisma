@@ -69,8 +69,8 @@ model Post {
 
   replies               Reply[]           @relation(name: "parent_of_reply")
   reply_parent          Reply[]           @relation(name: "reply_post")
-  quotes                Quote_Repost[]     @relation(name: "quote_post")
-  quote_parent          Quote_Repost[]     @relation(name: "parent_of_quote")
+  quotes                Quote_Repost[]     @relation(name: "parent_of_quote")
+  quote_parent          Quote_Repost[]     @relation(name: "quote_post")
   likes                 Like[]
   reposts               Repost[]
 }
