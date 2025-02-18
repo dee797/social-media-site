@@ -24,6 +24,13 @@ const getUserByHandle = async (user) => {
     return findUser;
 }
 
+const getUserByID = async (user) => {
+    const findUser = await prisma.user.findUnique({
+        where: { user_id: user.user_id }
+    });
+    return findUser;
+}
+
 
 const updateUser = async (user) => {
     return await prisma.user.update({
@@ -43,6 +50,7 @@ const deleteUser = async (user) => {
 module.exports = {
     createUser,
     getUserByHandle,
+    getUserByID,
     updateUser,
     deleteUser
 }
