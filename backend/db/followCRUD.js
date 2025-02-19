@@ -19,26 +19,12 @@ const getFollowers = async (user) => {
     return followers;
 }
 
-const getFollowerCount = async (user) => {
-    const count = await prisma.follow.count({
-        where: { followed_user_id: user.user_id }
-    });
-    return count;
-}
-
 const getFollowing = async (user) => {
     const following = await prisma.follow.findMany({
         where: { follower_id: user.user_id },
         select: { followed_user: true }
     });
     return following;
-}
-
-const getFollowingCount = async (user) => {
-    const count = await prisma.follow.count({
-        where: { follower_id: user.user_id }
-    });
-    return count;
 }
 
 // This is the same as unfollowing someone
@@ -55,8 +41,6 @@ const deleteFollow = async (follow) => {
 module.exports = {
     createFollow,
     getFollowers,
-    getFollowerCount,
     getFollowing,
-    getFollowingCount,
     deleteFollow
 }
