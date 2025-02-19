@@ -3,62 +3,65 @@ require("dotenv").config();
 const path = require("node:path");
 const express = require("express");
 const cors = require("cors");
+const passport = require("passport");
 
 
 // Router / Controller imports
-
-
+const loginRouter = require("./backend/routes/loginRouter");
+const signUpRouter = require("./backend/routes/signUpRouter");
 
 
 // Configurations
 const app = express();
 app.use(express.json());
-app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname,"public")));
-
 app.use(cors({
     origin: "http://localhost:3000",
     optionsSuccessStatus: 200
 }));
 
 
-/** 
- * Prevent web pages from being cached in browser, 
- * as caching causes issues with the login system 
- * if user uses the back/forward buttons
- */
-app.use((req, res, next) => {
-    res.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
-    next();
+// Endpoint URIs
+
+// On frontend: fetch isAuthenticated on every page
+app.get("/isAuthenticated", (req, res) => {
+    passport.authenticate("jwt", {session: false})
+
+    if (req.isAuthenticated()) {
+        res.json({ authenticated: true });
+    } else {
+        res.json({ authenticated: false });
+    }
 });
 
-
-// Routing
 app.use("/signup", signUpRouter);
 app.use("/login", loginRouter);
+app.use("/users", usersRouter); 
+// include search/?handle=[something] ; search by itself should display "search for a user to get started"
+app.use("search", searchRouter);
 
-// include profile/edit, profile/settings, profile/posts, profile/replies profile/:id for another user's profile
-app.use("/profile", isAuthenticated, profileRouter); 
-// include post/:id, post/new (to create a post)
-app.use("/post", isAuthenticated);
-// include search/?handle=[something] ; search by itself should display "try searching to get started"
-app.use("search", isAuthenticated)
-app.use("/logout", isAuthenticated);
-app.use("/", isAuthenticated, indexRouter);
+app.use("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});
 
 
 
 // Error handling
 app.use((err, req, res, next) => {
     console.error(err);
-    res.status(err.statusCode || 500).send(err.message || "Internal server error");
+    res.status(err.statusCode || 500).json({error: "Internal server error"});
   });
   
-  app.all("/*", (req, res, next) => {
-    res.status(404).send("404 - Not found");
-    ;
-  });
+app.all("/*", (req, res, next) => {
+  res.status(404).json({error: "404 - Not Found" });
+  ;
+});
 
 
 
