@@ -7,8 +7,7 @@ const passport = require("passport");
 
 
 // Router / Controller imports
-const loginRouter = require("./routes/loginRouter");
-const signUpRouter = require("./routes/signUpRouter");
+const usersRouter = require("./routes/usersRouter");
 
 
 // Configurations
@@ -35,9 +34,10 @@ app.get("/isAuthenticated", (req, res) => {
     }
 });
 
-app.use("/signup", signUpRouter);
-app.use("/login", loginRouter);
+
 app.use("/users", usersRouter); 
+// gets data to display on home page
+app.use("/home", homeRouter);
 // include search/?handle=[something] ; search by itself should display "search for a user to get started"
 app.use("search", searchRouter);
 

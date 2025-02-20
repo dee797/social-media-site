@@ -1,34 +1,39 @@
 const { Router } = require("express");
 const usersController = require("../controllers/usersController");
+const postsRouter = require("./postsRouter");
 const usersRouter = Router();
-// include users/posts, users/replies,
+// users/replies,
 
 
 // GET requests
-usersRouter.get("/", usersController.getAllUsers);
 
-usersRouter.get("/:id", usersController.getUser);
+usersRouter.get("/:user_id", usersController.getUser);
 
-usersRouter.get("/:id/profile", usersController.getUserProfile);
+usersRouter.get("/:user_id/profile", usersController.getUserProfile);
 
-usersRouter.get("/:id/posts", usersController.getUserPosts);
+usersRouter.get("/:user_id/following", usersController.getUserFollowing);
 
-usersRouter.get("/:id/posts/:id")
+usersRouter.get("/:user_id/followers", usersController.getUserFollowers);
 
-usersRouter.get("/:id/following", usersController.getUserFollowing);
-
-usersRouter.get("/:id/followers", usersController.getUserFollowers);
-
-usersRouter.get("/:id/likes", usersController.getUserLikedPosts);
+usersRouter.get("/:user_id/likes", usersController.getUserLikedPosts);
 
 
 // POST requests
 
-usersRouter.post("/:id/profile/edit", usersController.postEditUserProfile);
+usersRouter.post("/login", usersController.postLogin);
 
-usersRouter.post("/:id/change_password", usersController.postChangeUserPassword);
+usersRouter.post("/new_user", usersController.postNewUser);
 
-usersRouter.post("/:id/delete", usersController.postDeleteUser);
+usersRouter.post("/:user_id/profile/edit", usersController.postEditUserProfile);
 
-usersRouter.post("/:id/post")
+usersRouter.post("/:user_id/change_password", usersController.postChangeUserPassword);
 
+usersRouter.post("/:user_id/delete", usersController.postDeleteUser);
+
+
+// Use postsRouter for posts-related paths
+
+usersRouter.use("/:user_id/posts", postsRouter);
+
+
+module.exports = usersRouter;
