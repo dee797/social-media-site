@@ -1,6 +1,8 @@
 const { PrismaClient } = require('@prisma/client');
-const { getReposts } = require('./repostCRUD');
+const { getReposts, getRepostCountForPost } = require('./repostCRUD');
 const { getQuoteReposts } = require('./quoteRepostCRUD');
+const { getLikeCountForPost } = require('./likeCRUD');
+const { getReplyCount } = require('./replyCRUD');
 
 const prisma = new PrismaClient();
 
@@ -56,9 +58,38 @@ const getUserPosts = async (user) => {
     return arr;
 }
 
+const getUserPostData = async (user) => {
+    const posts = await getUserPosts({user_id: user.user_id});
 
+    for (const post of posts) {
+        let numLikes = 0;
+        let numReposts = 0;
+        let numReplies = 0;
+
+        if ('quote_post' in post) {
+            numLikes = await getLikeCountForPost({post_id: post.quote_post.post_id});
+            numReposts = await getRepostCountForPost({post_id: post.quote_post.post_id});
+            numReplies = await getReplyCount({post_id: post.quote_post.post_id});
+        } else if ('parent_post' in post) {
+            numLikes = await getLikeCountForPost({post_id: post.parent_post.post_id});
+            numReposts = await getRepostCountForPost({post_id: post.parent_post.post_id});
+            numReplies = await getReplyCount({post_id: post.parent_post.post_id});
+        } else {
+            numLikes = await getLikeCountForPost({post_id: post.post_id});
+            numReposts = await getRepostCountForPost({post_id: post.post_id});
+            numReplies = await getReplyCount({post_id: post.post_id});
+        }
+
+        post.numLikes = numLikes;
+        post.numReposts = numReposts;
+        post.numReplies = numReplies;
+    }
+
+    return posts;
+}
 
 module.exports = {
     createPost,
-    getUserPosts
+    getUserPosts,
+    getUserPostData
 }
