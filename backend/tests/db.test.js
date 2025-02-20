@@ -202,7 +202,7 @@ describe('Reply tests (involves both Reply table and Post table)', () => {
     test('create a reply', async () => {
         const post = {
             parent_post_id: 1,
-            author_id: 1,
+            author_id: 2,
             date_created: new Date('2025-01-02'),
             content: 'hi'
         }
@@ -223,6 +223,21 @@ describe('Reply tests (involves both Reply table and Post table)', () => {
             }
         });
     });
+
+    test('get all the replies a user has created (but not the entire reply thread for each one)', async () => {
+        await expect(replyCRUD.getUserReplies({user_id: 1})).resolves.toEqual([
+            {
+                "parent_post": {"author": {"name": "Kevin"}, "post_id": 2}, 
+                "reply_post": {"author_id": 1, "content": "I like this post", "date_created": new Date('2025-01-01'), "post_id": 3}}, 
+            {
+                "parent_post": {"author": {"name": "Kevin"}, "post_id": 2}, 
+                "reply_post": {"author_id": 1, "content": "I forgot to mention, this post rocks", "date_created": new Date('2025-01-01'), "post_id": 4}}, 
+            {
+                "parent_post": {"author": {"name": "Kevin"}, "post_id": 5}, 
+                "reply_post": {"author_id": 1, "content": "No problem", "date_created": new Date('2025-01-01'), "post_id": 6}
+            }
+        ]);
+    });
 });
 
 describe('Post tests', () => {
@@ -239,5 +254,5 @@ describe('Post tests', () => {
                 "author_id": 2, "content": "Hello World 2", "date_created": new Date('2025-01-01'), "post_id": 2
             }
         ]);
-    })
-})
+    });
+});
