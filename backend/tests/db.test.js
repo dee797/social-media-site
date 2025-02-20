@@ -3,6 +3,7 @@ const notifCRUD = require('../db/notificationCRUD');
 const followCRUD = require('../db/followCRUD');
 const likeCRUD = require('../db/likeCRUD');
 const replyCRUD = require('../db/replyCRUD');
+const postCRUD = require('../db/postCRUD');
 
 const {exampleUser1, exampleUser2} = require('../db/exampleUsers')
 
@@ -223,3 +224,20 @@ describe('Reply tests (involves both Reply table and Post table)', () => {
         });
     });
 });
+
+describe('Post tests', () => {
+    test("get list of user's posts, including reposts and quote reposts", async () => {
+        await expect(postCRUD.getUserPosts({user_id: 2})).resolves.toEqual([
+            {
+                "parent_post": { 
+                    "author_id": 1, "content": "Hello World", "date_created": new Date('2025-01-01'), "post_id": 1}, 
+                "quote_post": {
+                    "author_id": 2, "content": "This is a cool post", "date_created": new Date('2025-01-01'), "post_id": 7}
+            }, 
+                    
+            {
+                "author_id": 2, "content": "Hello World 2", "date_created": new Date('2025-01-01'), "post_id": 2
+            }
+        ]);
+    })
+})
