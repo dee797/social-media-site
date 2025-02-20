@@ -255,4 +255,25 @@ describe('Post tests', () => {
             }
         ]);
     });
+
+    test("get list of user's posts like above, but this time include counts for the number of likes, reposts, and replies", async () => {
+        await expect(postCRUD.getUserPostData({user_id: 2})).resolves.toEqual([
+            {
+                "numLikes": 0, 
+                "numReplies": 0, 
+                "numReposts": 0, 
+                "parent_post": {"author_id": 1, "content": "Hello World", "date_created": new Date('2025-01-01'), "post_id": 1}, 
+                "quote_post": {"author_id": 2, "content": "This is a cool post", "date_created": new Date('2025-01-01'), "post_id": 7}
+            }, 
+            {
+                "author_id": 2, 
+                "content": "Hello World 2", 
+                "date_created": new Date('2025-01-01'), 
+                "numLikes": 1, 
+                "numReplies": 4, 
+                "numReposts": 1, 
+                "post_id": 2
+            }
+        ]);
+    })
 });
