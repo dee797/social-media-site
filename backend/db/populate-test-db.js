@@ -22,6 +22,7 @@ async function main() {
                 content: 'Hello World',
                 date_created: new Date('2025-01-01')
             },
+            // create first post for user2
             {
                 post_id: 2,
                 author_id: 2,
