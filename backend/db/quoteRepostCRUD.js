@@ -26,9 +26,20 @@ const getParentOfQuote = async (post) => {
     return parent;
 }
 
+const getQuoteReposts = async (user) => {
+    const posts = await prisma.quote_Repost.findMany({
+        where: { user_id: user.user_id },
+        select: {
+            parent_post: true,
+            quote_post: true
+        }
+    });
+    return posts;
+}
 
 
 module.exports = {
     createQuoteRepost,
     getParentOfQuote,
+    getQuoteReposts
 }
