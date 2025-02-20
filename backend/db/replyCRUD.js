@@ -47,6 +47,8 @@ const getParentOfReply = async (post) => {
 
 const getReplyCount = async (post) => {
     const arr = await getThread(post);
+    if (arr.length === 0 ) return arr.length;
+
     return arr.length - 1;
 }
 
