@@ -50,10 +50,27 @@ const getReplyCount = async (post) => {
     return arr.length - 1;
 }
 
+// gets all the replies a user has made, but not the entire reply thread for each one
+const getUserReplies = async (user) => {
+    const replies = await prisma.user.findUnique({
+        where: { user_id: user.user_id },
+        select: {
+            replies: { 
+                select: { 
+                    reply_post: true, 
+                    parent_post: { select: { post_id: true, author: { select: { name: true }}}}
+                }
+            }
+        }
+    });
+    return replies.replies;
+}
+
 
 module.exports = {
     createReply,
     getThread,
     getParentOfReply,
-    getReplyCount
+    getReplyCount,
+    getUserReplies
 }
