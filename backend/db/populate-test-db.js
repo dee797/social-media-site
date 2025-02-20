@@ -139,7 +139,7 @@ async function main() {
         data: {
             reply_id: 4,
             reply_post_id: 6,
-            parent_post_id: 4,
+            parent_post_id: 5,
             user_id: 1
         }
     });
