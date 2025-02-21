@@ -1,4 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
+const { getLikeCountForPost } = require('./likeCRUD');
+const { getRepostCountForPost } = require('./repostCRUD');
 
 const prisma = new PrismaClient();
 
@@ -40,7 +42,18 @@ const getThread = async (post) => {
 const getParentOfReply = async (post) => {
     const parent = await prisma.reply.findFirst({
         where: { reply_post_id: post.post_id },
-        select: { parent_post: true }
+        select: { parent_post: {
+            select: {
+                post_id: true,
+                author: {
+                    select: {
+                        name: true,
+                        handle: true,
+                        user_id: true
+                    }
+                }
+            }
+        } }
     });
     return parent;
 }
@@ -60,12 +73,42 @@ const getUserReplies = async (user) => {
             replies: { 
                 select: { 
                     reply_post: true, 
-                    parent_post: { select: { post_id: true, author: { select: { name: true }}}}
+                    parent_post: { select: { post_id: true, author: { select: { name: true, handle: true, user_id: true }}}}
                 }
             }
         }
     });
     return replies.replies;
+}
+
+const getUserReplyData = async (user) => {
+    const replies = await getUserReplies({user_id: user.user_id});
+
+    for (const reply of replies) {
+        const numLikes = await getLikeCountForPost({post_id: reply.reply_post.post_id});
+        const numReposts = await getRepostCountForPost({post_id: reply.reply_post.post_id});
+        const numReplies = await getReplyCount({post_id: reply.reply_post.post_id});
+    
+        reply.numLikes = numLikes;
+        reply.numReposts = numReposts;
+        reply.numReplies = numReplies;
+    }
+
+    const userInfo = await prisma.user.findUnique({
+        where: { user_id : user.user_id },
+        select: { 
+            name: true,
+            handle: true
+        }
+    });
+
+    const replyData = {
+        name: userInfo.name,
+        username: userInfo.handle,
+        replies: replies
+    }
+
+    return replyData;
 }
 
 
@@ -74,5 +117,6 @@ module.exports = {
     getThread,
     getParentOfReply,
     getReplyCount,
-    getUserReplies
+    getUserReplies,
+    getUserReplyData
 }
