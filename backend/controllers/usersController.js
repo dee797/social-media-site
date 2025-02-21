@@ -1,10 +1,85 @@
 require('dotenv').config();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const db = require("../db/userCRUD");
 const bcrypt = require("bcryptjs");
 const { body, validationResult } = require("express-validator");
 const asyncHandler = require("express-async-handler");
+
+const userDB = require("../db/userCRUD");
+const followDB = require("../db/followCRUD");
+const likeDB = require("../db/likeCRUD");
+
+
+
+// GET requests
+
+const getUserInfo = asyncHandler(async (req, res, next) => {
+  const user = await userDB.getUserByID({user_id: parseInt(req.params.user_id)});
+  if (!user) next();
+
+  const userInfo = {
+    user_id: user.user_id,
+    name: user.name,
+    handle: user.handle,
+    bio: user.bio,
+    profile_pic_url: user.profile_pic_url,
+    banner_pic_url: user.banner_pic_url,
+    date_joined: user.date_joined
+  }
+
+  if (req.path.includes("/profile")) {
+    res.locals.userInfo = userInfo;
+    next();
+  } else {
+    res.json(userInfo);
+  }
+});
+
+
+const getUserFollowing = asyncHandler(async (req, res, next) => {
+  const following = await followDB.getFollowing({user_id: parseInt(req.params.user_id)});
+
+  if (!following) next();
+
+  if (req.path.includes("/profile")) {
+    res.locals.following = following;
+    next();
+  } else {
+    res.json(following);
+  }
+});
+
+
+const getUserFollowers = asyncHandler(async (req, res, next) => {
+  const followers = await followDB.getFollowers({user_id: parseInt(req.params.user_id)});
+
+  if (!followers) next();
+
+  if (req.path.includes("/profile")) {
+    res.locals.followers = followers;
+    next();
+  } else {
+    res.json(followers);
+  }
+});
+
+
+const getUserLikedPosts = asyncHandler(async (req, res, next) => {
+  const likedPosts = await likeDB.getLikedPosts({user_id: parseInt(req.params.user_id)});
+
+  if (!likedPosts) next();
+
+  if (req.path.includes("/profile")) {
+    res.json({
+      userInfo: res.locals.userInfo, 
+      following: res.locals.following,
+      followers: res.locals.followers,
+      likedPosts: likedPosts
+    });
+  } else {
+    res.json(likedPosts);
+  }
+});
 
 
 // Sanitization / Validation
@@ -15,7 +90,7 @@ const validate = [
     .isLength({ min: 8, max: 50 })
     .withMessage(`Username must be between 8 and 50 characters.`)
     .custom(async username => {
-      const user = await db.getUserByHandle({handle: username});
+      const user = await userDB.getUserByHandle({handle: username});
       if (user) { 
         throw new Error("Username already in use.");
       }
@@ -78,7 +153,7 @@ const postNewUser = [
 
     asyncHandler(async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        await db.createUser({
+        await userDB.createUser({
             name: req.body.name,
             handle: req.body.username, 
             password: hashedPassword,
@@ -96,6 +171,10 @@ const postNewUser = [
 
 
 module.exports = { 
-    postNewUser,
-    postLogin
+  getUserInfo,
+  getUserFollowing,
+  getUserFollowers,
+  getUserLikedPosts,
+  postNewUser,
+  postLogin
 }
