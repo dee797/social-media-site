@@ -14,7 +14,17 @@ const createFollow = async (follow) => {
 const getFollowers = async (user) => {
     const followers = await prisma.follow.findMany({
         where: { followed_user_id: user.user_id },
-        select: { follower: true }
+        select: { follower: { select: 
+            {
+                user_id: true,
+                name: true,
+                handle: true, 
+                bio: true,
+                profile_pic_url: true,
+                banner_pic_url: true,
+                date_joined: true
+            }
+        } }
     });
     return followers;
 }
@@ -22,7 +32,18 @@ const getFollowers = async (user) => {
 const getFollowing = async (user) => {
     const following = await prisma.follow.findMany({
         where: { follower_id: user.user_id },
-        select: { followed_user: true }
+        select: { followed_user: { select: 
+            {
+                user_id: true,
+                name: true,
+                handle: true, 
+                bio: true,
+                profile_pic_url: true,
+                banner_pic_url: true,
+                date_joined: true
+            
+            }
+        } }
     });
     return following;
 }

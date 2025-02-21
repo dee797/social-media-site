@@ -20,7 +20,6 @@ const {exampleUser1, exampleUser2} = require('../db/exampleUsers')
         user_id: 1,
         name: 'Kelly',
         handle: '@kelly',
-        password: 'test',
         bio: '',
         profile_pic_url: '',
         banner_pic_url: '',
@@ -31,7 +30,6 @@ const {exampleUser1, exampleUser2} = require('../db/exampleUsers')
         user_id: 2,
         name: 'Kevin',
         handle: '@kevin',
-        password: 'test',
         bio: '',
         profile_pic_url: '',
         banner_pic_url: '',
@@ -48,7 +46,6 @@ describe('User table tests', () => {
         const user2 = {
             name: 'Kelly2',
             handle: '@kelly',
-            password: 'test',
             bio: '',
             profile_pic_url: '',
             banner_pic_url: '',
