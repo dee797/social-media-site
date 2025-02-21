@@ -2,7 +2,8 @@ const { PrismaClient } = require('@prisma/client');
 const { getReposts, getRepostCountForPost } = require('./repostCRUD');
 const { getQuoteReposts } = require('./quoteRepostCRUD');
 const { getLikeCountForPost } = require('./likeCRUD');
-const { getReplyCount } = require('./replyCRUD');
+const { getReplyCount, getThread, getParentOfReply } = require('./replyCRUD');
+const { getUserByID } = require('./userCRUD');
 
 const prisma = new PrismaClient();
 
@@ -62,34 +63,67 @@ const getUserPostData = async (user) => {
     const posts = await getUserPosts({user_id: user.user_id});
 
     for (const post of posts) {
-        let numLikes = 0;
-        let numReposts = 0;
-        let numReplies = 0;
+        let post_id_value;
 
         if ('quote_post' in post) {
-            numLikes = await getLikeCountForPost({post_id: post.quote_post.post_id});
-            numReposts = await getRepostCountForPost({post_id: post.quote_post.post_id});
-            numReplies = await getReplyCount({post_id: post.quote_post.post_id});
+            post_id_value = post.quote_post.post_id;
         } else if ('parent_post' in post) {
-            numLikes = await getLikeCountForPost({post_id: post.parent_post.post_id});
-            numReposts = await getRepostCountForPost({post_id: post.parent_post.post_id});
-            numReplies = await getReplyCount({post_id: post.parent_post.post_id});
+            post_id_value = post.parent_post.post_id;
         } else {
-            numLikes = await getLikeCountForPost({post_id: post.post_id});
-            numReposts = await getRepostCountForPost({post_id: post.post_id});
-            numReplies = await getReplyCount({post_id: post.post_id});
+            post_id_value = post.post_id;
         }
+
+        const numLikes = await getLikeCountForPost({post_id: post_id_value});
+        const numReposts = await getRepostCountForPost({post_id: post_id_value});
+        const numReplies = await getReplyCount({post_id: post_id_value});
 
         post.numLikes = numLikes;
         post.numReposts = numReposts;
         post.numReplies = numReplies;
     }
 
-    return posts;
+    const userInfo = await getUserByID({user_id: user.user_id});
+
+    const postData = { 
+        name: userInfo.name, 
+        username: userInfo.handle,
+        posts: posts
+    }
+
+    return postData;
+}
+
+const getPostData = async (post) => {
+    const thread = await getThread({post_id: post.post_id});
+
+    if (!thread) return null;
+
+    for (const part of thread) {
+        const numLikes = await getLikeCountForPost({post_id: part.post_id});
+        const numReposts = await getRepostCountForPost({post_id: part.post_id});
+        const numReplies = await getReplyCount({post_id: part.post_id});
+
+        const userInfo = await getUserByID({user_id: part.author_id});
+
+        part.numLikes = numLikes;
+        part.numReposts = numReposts;
+        part.numReplies = numReplies;
+        part.name = userInfo.name;
+        part.username = userInfo.handle;
+    }
+    
+    const parent = await getParentOfReply({post_id: post.post_id});
+    const postData = {
+        thread: thread,
+        parent: parent
+    }
+
+    return postData;
 }
 
 module.exports = {
     createPost,
     getUserPosts,
-    getUserPostData
+    getUserPostData,
+    getPostData
 }
