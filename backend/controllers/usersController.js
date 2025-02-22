@@ -85,10 +85,15 @@ const getUserLikedPosts = asyncHandler(async (req, res, next) => {
 // Sanitization / Validation
 
 const validate = [
+  body("name")
+    .trim()
+    .isLength({ max: 50})
+    .withMessage("Name cannot be more than 50 characters"),
+
   body("username")
     .trim()
-    .isLength({ min: 8, max: 50 })
-    .withMessage(`Username must be between 8 and 50 characters.`)
+    .isLength({ min: 1, max: 50 })
+    .withMessage("Username must be between 1 and 50 characters.")
     .custom(async username => {
       const user = await userDB.getUserByHandle({handle: username});
       if (user) { 
@@ -105,7 +110,7 @@ const validate = [
       minSymbols: 1,
       returnScore: false
     })
-    .withMessage(`Password does not meet the requirements.`),
+    .withMessage("Password does not meet the requirements."),
 
   body("confirmPassword")
     .custom((value, { req }) => {
@@ -163,7 +168,7 @@ const postNewUser = [
             date_joined: new Date()
         });
         
-        res.json({signupSuccess: true});
+        res.status(201).json({signupSuccess: true});
     })
 ];
   
