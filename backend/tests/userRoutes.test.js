@@ -80,8 +80,23 @@ describe('GET tests for /users/:user_id path', () => {
       }}]
     })
     .expect(200, done);
+  });
 });
 
-});
-
+describe('POST or other related requests for /users path', () => {
+  test("create a new user", done => {
+    request(app)
+    .post("/users")
+    .type("form")
+    .send({
+      username: "@test",
+      password: "1234ThisIsAPassword!",
+      confirmPassword: "1234ThisIsAPassword!",
+      name: "test"
+    })
+    .expect("Content-Type", /json/)
+    .expect({signupSuccess: true})
+    .expect(201, done)
+  })
+})
 
