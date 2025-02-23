@@ -31,6 +31,19 @@ const getUserByID = async (user) => {
     return findUser;
 }
 
+const get10Users = async () => {
+    const users = await prisma.user.findMany({ 
+        take: 10,
+        select: {
+            user_id: true,
+            name: true,
+            handle: true,
+            profile_pic_url: true
+        }
+    });
+    return users;
+}
+
 
 const updateUser = async (user) => {
     return await prisma.user.update({
@@ -52,5 +65,6 @@ module.exports = {
     getUserByHandle,
     getUserByID,
     updateUser,
-    deleteUser
+    deleteUser,
+    get10Users
 }
