@@ -8,6 +8,7 @@ const passport = require("passport");
 
 // Router / Controller imports
 const usersRouter = require("./routes/usersRouter");
+const homeRouter = require("./routes/homeRouter");
 
 
 // Configurations
@@ -21,36 +22,32 @@ app.use(cors({
 }));
 
 
-// Endpoint URIs
+// Check if there is an authenitcated user on all incoming requests
+/*
+app.use((req, res, next) => {
+  passport.authenticate("jwt", {session: false});
 
-// On frontend: fetch isAuthenticated on every page
-app.get("/isAuthenticated", (req, res) => {
-    passport.authenticate("jwt", {session: false})
-
-    if (req.isAuthenticated()) {
-        res.json({ authenticated: true });
-    } else {
-        res.json({ authenticated: false });
-    }
+  if (req.isAuthenticated()) {
+      res.locals.currentUser = req.user;
+      next();
+  } else {
+      res.json({ authenticated: false });
+  }
 });
+*/
 
-
+// Endpoint URIs
 app.use("/users", usersRouter); 
-// gets data to display on home page
+
+// gets data to display on home page 
 app.use("/home", homeRouter);
+
+/*
 // include search/?handle=[something] ; search by itself should display "search for a user to get started"
 app.use("search", searchRouter);
+app.use("notifications", notificationsRouter)
 
-app.use("/logout", (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    res.redirect("/");
-  });
-});
-
-
+*/
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -66,4 +63,6 @@ app.all("/*", (req, res, next) => {
 
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT);
+//app.listen(PORT);
+
+module.exports = app;
