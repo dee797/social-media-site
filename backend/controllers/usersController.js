@@ -1,4 +1,5 @@
-require('dotenv').config();
+require("dotenv").config();
+require("../config/passport");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -87,15 +88,15 @@ const getUserLikedPosts = asyncHandler(async (req, res, next) => {
 const validate = [
   body("name")
     .trim()
-    .isLength({ max: 50})
-    .withMessage("Name cannot be more than 50 characters"),
+    .isLength({ max:25 })
+    .withMessage("Name cannot be more than 25 characters"),
 
   body("username")
     .trim()
-    .isLength({ min: 1, max: 50 })
-    .withMessage("Username must be between 1 and 50 characters.")
+    .isLength({ min: 1, max: 25 })
+    .withMessage("Username must be between 1 and 25 characters.")
     .custom(async username => {
-      const user = await userDB.getUserByHandle({handle: username});
+      const user = await userDB.getUserByHandle({handle: '@' + username});
       if (user) { 
         throw new Error("Username already in use.");
       }
@@ -123,25 +124,6 @@ const validate = [
 // POST requests
 
 
-const postLogin = (req, res, next) => {
-    passport.authenticate("local", {session: false}, (err, user, info) => {
-        if (err) return next(err)
-        if (!user) {
-            return res.json({ message: info.message });
-        }
-        
-        req.login(user, {session: false}, (err) => {
-            if (err) return next(err);
-
-            const token = jwt.sign(user, process.env.SECRET, { expiresIn: '8h'});
-            // On frontend, if user_id && token then redirect to home path ("/")
-            return res.json({user_id: user.user_id, token});
-        });
-    })(req, res, next);
-};
-
-
-
 const postNewUser = [
     validate,
 
@@ -160,7 +142,7 @@ const postNewUser = [
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         await userDB.createUser({
             name: req.body.name,
-            handle: req.body.username, 
+            handle: '@' + req.body.username, 
             password: hashedPassword,
             bio: '',
             profile_pic_url: '',
@@ -171,6 +153,35 @@ const postNewUser = [
         res.status(201).json({signupSuccess: true});
     })
 ];
+
+
+const postLogin = (req, res, next) => {
+  passport.authenticate("local", {session: false}, (err, user, info) => {
+      if (err) return next(err)
+      if (!user) {
+          return res.json({ message: info.message });
+      }
+      
+      req.login(user, {session: false}, (err) => {
+          if (err) return next(err);
+
+          const token = jwt.sign(user, process.env.SECRET, { expiresIn: '8h'});
+          res.setHeader("Authorization", `Bearer ${token}`);
+          // On frontend, if loginSuccess === true then redirect to home path ("/")
+          return res.json({user_id: user.user_id, loginSuccess: true});
+      });
+  })(req, res, next);
+};
+
+
+const postLogout = (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+};
   
 
 
@@ -181,5 +192,6 @@ module.exports = {
   getUserFollowers,
   getUserLikedPosts,
   postNewUser,
-  postLogin
+  postLogin,
+  postLogout
 }
