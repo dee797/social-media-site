@@ -14,7 +14,20 @@ const createRepost = async (repost) => {
 const getReposts = async (user) => {
     const reposts = await prisma.repost.findMany({
         where: { user_id: user.user_id },
-        select: { parent_post: true }
+        select: { parent_post: {select:{
+            post_id: true,
+            content: true,
+            date_created: true,
+            author: { select: {
+                user_id: true,
+                name: true,
+                handle: true,
+                profile_pic_url: true
+                }
+            }
+        }},
+            
+         }
     });
     return reposts;
 }
