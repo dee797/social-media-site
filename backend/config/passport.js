@@ -8,10 +8,10 @@ const passportJWT = require('passport-jwt');
 const JWTStrategy   = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
-passport.use(
+passport.use("local",
     new LocalStrategy(async (username, password, done) => {
       try {
-        const user = await db.getUserByHandle({handle: username});
+        const user = await db.getUserByHandle({handle: '@' + username});
   
         if (!user) {
           return done(null, false, { message: "Incorrect username or password" });
@@ -31,7 +31,7 @@ passport.use(
   );
 
 
-passport.use(
+passport.use("jwt",
     new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
         secretOrKey: process.env.SECRET
