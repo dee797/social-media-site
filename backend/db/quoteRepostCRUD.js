@@ -30,8 +30,28 @@ const getQuoteReposts = async (user) => {
     const posts = await prisma.quote_Repost.findMany({
         where: { user_id: user.user_id },
         select: {
-            parent_post: true,
-            quote_post: true
+            parent_post: { select: {
+                post_id: true,
+                content: true,
+                date_created: true,
+                author: { select: {
+                    user_id: true,
+                    name: true,
+                    handle: true,
+                    profile_pic_url: true
+                }}
+            }},
+            quote_post: { select: {
+                post_id: true,
+                content: true,
+                date_created: true,
+                author: { select: {
+                    user_id: true,
+                    name: true,
+                    handle: true,
+                    profile_pic_url: true
+                }}
+            }}
         }
     });
     return posts;
