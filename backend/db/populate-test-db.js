@@ -1,5 +1,7 @@
 const { PrismaClient } = require('@prisma/client')
 const {exampleUser1, exampleUser2} = require('./exampleUsers')
+const copy1 = {...exampleUser1, password: 'test'};
+const copy2 = {...exampleUser2, password: 'test'};
 
 const prisma = new PrismaClient();
 
@@ -7,9 +9,9 @@ async function main() {
     await prisma.user.createMany({
         data: [
             // create user in db, exampleUser1
-            exampleUser1,
+            copy1,
             // create another user in db, exampleUser2
-            exampleUser2
+            copy2
         ]
     });
 
