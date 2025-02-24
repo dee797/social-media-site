@@ -38,7 +38,7 @@ passport.use("jwt",
     },
     (jwtPayload, done) => {
 
-    return db.getUserByID({ user_id: jwtPayload.sub })
+    return db.getUserByID({ user_id: jwtPayload.user_id })
         .then(user => {
             return done(null, user);
         })
