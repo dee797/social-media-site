@@ -1,14 +1,15 @@
 // node_modules imports
 require("dotenv").config();
+require("./config/passport");
 const path = require("node:path");
 const express = require("express");
 const cors = require("cors");
-const passport = require("passport");
 
 
 // Router / Controller imports
 const usersRouter = require("./routes/usersRouter");
 const homeRouter = require("./routes/homeRouter");
+const { isAuthenticated } = require("./controllers/authicateController");
 
 
 // Configurations
@@ -17,30 +18,34 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname,"public")));
 app.use(cors({
-    origin: "http://localhost:3000",
-    optionsSuccessStatus: 200
+  origin: "http://localhost:3000",
+  optionsSuccessStatus: 200
 }));
-
-
-// Check if there is an authenitcated user on all incoming requests
-/*
 app.use((req, res, next) => {
-  passport.authenticate("jwt", {session: false});
-
-  if (req.isAuthenticated()) {
-      res.locals.currentUser = req.user;
-      next();
-  } else {
-      res.json({ authenticated: false });
-  }
+  res.locals.currentUser = req.user;
+  next();
 });
-*/
+
+/** 
+ * Prevent web pages from being cached in browser, 
+ * as caching causes issues with the login system 
+ * if user uses the back/forward buttons
+ */ 
+
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+  next();
+})
+
+
+
+
 
 // Endpoint URIs
 app.use("/users", usersRouter); 
 
 // gets data to display on home page 
-app.use("/home", homeRouter);
+app.use("/home", isAuthenticated, homeRouter);
 
 /*
 // include search/?handle=[something] ; search by itself should display "search for a user to get started"
