@@ -1,5 +1,4 @@
 require("dotenv").config();
-require("../config/passport");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -125,37 +124,44 @@ const validate = [
 
 
 const postNewUser = [
-    validate,
+  (req, res, next) => {
+    if (res.locals.currentUser) return res.json({authenticated: true});
+    next();
+  },
 
-    (req, res, next) => {
-      const errors = validationResult(req);
+  validate,
 
-      if (!errors.isEmpty()) {
-        return res.status(400).json({
-          validationErrors: errors.mapped()
-        });
-      }
-      next();
-    },
+  (req, res, next) => {
+    const errors = validationResult(req);
 
-    asyncHandler(async (req, res) => {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        await userDB.createUser({
-            name: req.body.name,
-            handle: '@' + req.body.username, 
-            password: hashedPassword,
-            bio: '',
-            profile_pic_url: '',
-            banner_pic_url: '',
-            date_joined: new Date()
-        });
-        
-        res.status(201).json({signupSuccess: true});
-    })
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        validationErrors: errors.mapped()
+      });
+    }
+    next();
+  },
+
+  asyncHandler(async (req, res) => {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      await userDB.createUser({
+          name: req.body.name,
+          handle: '@' + req.body.username, 
+          password: hashedPassword,
+          bio: '',
+          profile_pic_url: '',
+          banner_pic_url: '',
+          date_joined: new Date()
+      });
+      
+      res.status(201).json({signupSuccess: true});
+  })
 ];
 
 
 const postLogin = (req, res, next) => {
+  if (res.locals.currentUser) return res.json({authenticated: true});
+
   passport.authenticate("local", {session: false}, (err, user, info) => {
       if (err) return next(err)
       if (!user) {
@@ -165,10 +171,9 @@ const postLogin = (req, res, next) => {
       req.login(user, {session: false}, (err) => {
           if (err) return next(err);
 
-          const token = jwt.sign(user, process.env.SECRET, { expiresIn: '8h'});
-          res.setHeader("Authorization", `Bearer ${token}`);
+          const token = jwt.sign({user_id: user.user_id}, process.env.SECRET, { expiresIn: '8h'});
           // On frontend, if loginSuccess === true then redirect to home path ("/")
-          return res.json({user_id: user.user_id, loginSuccess: true});
+          return res.json({user_id: user.user_id, loginSuccess: true, token});
       });
   })(req, res, next);
 };
