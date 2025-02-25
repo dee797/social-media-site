@@ -14,7 +14,17 @@ const createLike = async (like) => {
 const getLikedPosts = async (user) => {
     const likes = await prisma.like.findMany({
         where: { user_id: user.user_id },
-        select: { post: true }
+        select: { post: { select: {
+            post_id: true,
+            content: true,
+            date_created: true,
+            author: { select: {
+                user_id: true,
+                name: true,
+                handle: true,
+                profile_pic_url: true
+            }}
+        }} }
     });
     return likes;
 }
