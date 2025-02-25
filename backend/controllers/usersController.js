@@ -93,6 +93,7 @@ const getUserLikedPosts = asyncHandler(async (req, res, next) => {
 });
 
 
+
 // Sanitization / Validation
 
 const validate = [
@@ -236,6 +237,27 @@ const putEditedUserInfo = [
 
 
 
+const deleteFollow = asyncHandler(async (req, res) => {
+  await followDB.deleteFollow({
+    follower_id: req.params.user_id,
+    followed_user_id: req.params.followed_user_id
+  });
+
+  res.json({deleteFollowSuccess: true});
+});
+
+
+
+const deleteLike = asyncHandler(async (req, res) => {
+  await likeDB.deleteLike({
+    user_id: req.params.user_id,
+    post_id: req.params.post_id
+  });
+
+  res.json({deleteLikeSucess: true});
+})
+
+
 
 module.exports = { 
   getUserInfo,
@@ -245,5 +267,7 @@ module.exports = {
   postNewUser,
   postLogin,
   postLogout,
-  putEditedUserInfo
+  putEditedUserInfo,
+  deleteFollow,
+  deleteLike
 }
