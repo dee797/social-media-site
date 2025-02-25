@@ -182,7 +182,7 @@ const getCounts = async (post) => {
     const numReposts = await getRepostCountForPost({post_id: post.post_id});
     const numReplies = await getReplyCount({post_id: post.post_id});
 
-   return {numLikes, numReposts, numReplies};
+    return {numLikes, numReposts, numReplies};
 }
 
 module.exports = {
@@ -190,5 +190,6 @@ module.exports = {
     getUserPosts,
     getUserPostData,
     getPostData,
-    get10Posts
+    get10Posts,
+    getCounts
 }
