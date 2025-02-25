@@ -146,7 +146,7 @@ describe('Like table tests', () => {
         await expect(likeCRUD.getLikedPosts(exampleUser1)).resolves.toEqual([{post: 
             {
                 post_id: 2,
-                author_id: 2,
+                author: { handle: "@kevin", name: "Kevin", profile_pic_url: "", user_id: 2 },
                 date_created: new Date('2025-01-01'),
                 content: 'Hello World 2'
             }
