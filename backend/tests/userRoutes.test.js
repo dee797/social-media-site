@@ -1,5 +1,6 @@
 const request = require('supertest');
 const app = require('../index');
+const userDB = require('../db/userCRUD');
 
 const {exampleUser1, exampleUser2} = require('../db/exampleUsers')
 
@@ -116,9 +117,12 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
       followers: [],
       likedPosts: [{ post: {
         post_id: 2,
-        author_id: 2,
+        author: {user_id: 2, name: 'Kevin', handle: '@kevin', profile_pic_url: ''},
         content: 'Hello World 2',
-        date_created: '2025-01-01T00:00:00.000Z'
+        date_created: '2025-01-01T00:00:00.000Z',
+        numLikes: 1,
+        numReplies: 4,
+        numReposts: 1
       }}]
     })
     .expect(200, done);
@@ -126,8 +130,37 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
 });
 
 
+describe('POST/other tests for paths under /users', () => {
+  test("Update user info", done => {
+    userDB.getUserByHandle({handle: '@test'}).then((userTest) => {
+      request.agent(app)
+      .put(`/users/${userTest.user_id}`)
+      .auth(testJWT, {type: 'bearer'})
+      .type('form')
+      .send({
+        name: '123test',
+        username: '@kevin',
+        profile_pic_url: 'abc',
+        banner_pic_url: 'abc',
+        bio: 'idk'
+      })
+      .expect("Content-Type", /json/)
+      .expect({updateSuccess: true})
+      .expect(200, done)
+      });
+  });
 
-describe('POST or other related requests for /users path', () => {
+  test("Successfully log out as @test user", done => {
+    setTimeout(() => {
+      request.agent(app)
+      .post("/users/logout")
+      .auth(testJWT, {type: 'bearer'})
+      .expect("Content-Type", /json/)
+      .expect({logoutSuccess: true})
+      .expect(200, done)
+      }, 1000);
+  });
+
   test("send back errors for invalid inputs when creating new user", done => {
     request(app)
     .post("/users")
@@ -175,3 +208,15 @@ describe('POST or other related requests for /users path', () => {
   });
 });
 
+
+describe('Security tests', () => {
+  test("Prevent reuse of token that was issued before @test logged out", done => {
+    request.agent(app)
+    .get("/users/1/profile")
+    .auth(testJWT, {type: 'bearer'})
+    .expect("Content-Type", /json/)
+    .expect({error: "An error has occurred."})
+    .expect(400, done);
+  });
+})
+  
