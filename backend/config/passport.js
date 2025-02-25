@@ -22,6 +22,7 @@ passport.use("local",
           return done(null, false, { message: "Incorrect username or password" });
         }
 
+        await db.updateUser({user_id: user.user_id, token_valid_after: Math.floor(Date.now() / 1000)});
         return done(null, user);
 
       } catch(err) {
@@ -38,12 +39,15 @@ passport.use("jwt",
     },
     (jwtPayload, done) => {
 
-    return db.getUserByID({ user_id: jwtPayload.user_id })
+    return db.getUserByID({ user_id: jwtPayload.sub })
         .then(user => {
-            return done(null, user);
+          if (jwtPayload.iat < Number(user.token_valid_after)) {
+            throw new Error("Invalid token.");
+          }
+          return done(null, user);
         })
         .catch(err => {
-            return done(err);
+          return done(err);
         });
     }
 ));
