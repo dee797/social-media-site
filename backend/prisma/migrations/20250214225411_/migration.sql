@@ -8,7 +8,7 @@ CREATE TABLE "User" (
     "profile_pic_url" VARCHAR(255),
     "banner_pic_url" VARCHAR(255),
     "date_joined" DATE NOT NULL,
-    "token_valid_after" DATE,
+    "token_valid_after" INTEGER,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("user_id")
 );
