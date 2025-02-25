@@ -18,6 +18,7 @@ model User {
   profile_pic_url   String?         @db.VarChar(255)
   banner_pic_url    String?         @db.VarChar(255)
   date_joined        DateTime        @db.Date
+  token_valid_after  DateTime?        @db.Date
 
 
   followers         Follow[]        @relation(name: "followed_user")
