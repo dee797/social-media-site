@@ -15,7 +15,10 @@ usersRouter.post("/login", usersController.postLogin);
 
 // Apply Authenticate Controller for the following protected routes
 
-usersRouter.use(isAuthenticated);
+usersRouter.use(isAuthenticated, (req, res, next) => {
+    res.locals.currentUser = req.user;
+    next();
+});
 
 
 
@@ -31,7 +34,7 @@ usersRouter.get("/:user_id/likes", usersController.getUserLikedPosts);
 
 // this route is like the above four routes combined into one (it gets user info, following, followers, and likes)
 // this route has been provided so that four separate fetch calls don't need to be made on the frontend
-// however, the four separate routes have been provided in the event that only one of the above types of data are needed
+// however, the above four separate routes have been provided in the event that only one type of data is needed
 usersRouter.get("/:user_id/profile", usersController.getUserInfo, usersController.getUserFollowing, usersController.getUserFollowers, usersController.getUserLikedPosts);
 
 
@@ -39,17 +42,14 @@ usersRouter.get("/:user_id/profile", usersController.getUserInfo, usersControlle
 // POST/DELETE/PUT requests
 
 usersRouter.post("/logout", usersController.postLogout);
-/*
-// this route can be used to change the user's password as well
+
 usersRouter.put("/:user_id", usersController.putEditedUserInfo);
 
-usersRouter.delete("/:user_id", usersController.deleteUser);
-
 // use this route when someone unfollows a user
-usersRouter.delete("/:user_id/following/:followed_user_id");
+usersRouter.delete("/:user_id/following/:followed_user_id", usersController.deleteFollow);
 
 // use this route when someone unlikes a post
-usersRouter.delete("/:user_id/likes/:post_id");
+usersRouter.delete("/:user_id/likes/:post_id", usersController.deleteLike);
 
 
 
@@ -57,5 +57,5 @@ usersRouter.delete("/:user_id/likes/:post_id");
 
 usersRouter.use("/:user_id/posts", postsRouter);
 
-*/
+
 module.exports = usersRouter;
