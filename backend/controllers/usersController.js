@@ -239,8 +239,8 @@ const putEditedUserInfo = [
 
 const deleteFollow = asyncHandler(async (req, res) => {
   await followDB.deleteFollow({
-    follower_id: req.params.user_id,
-    followed_user_id: req.params.followed_user_id
+    follower_id: parseInt(req.params.user_id),
+    followed_user_id: parseInt(req.params.followed_user_id)
   });
 
   res.json({deleteFollowSuccess: true});
@@ -250,8 +250,8 @@ const deleteFollow = asyncHandler(async (req, res) => {
 
 const deleteLike = asyncHandler(async (req, res) => {
   await likeDB.deleteLike({
-    user_id: req.params.user_id,
-    post_id: req.params.post_id
+    user_id: parseInt(req.params.user_id),
+    post_id: parseInt(req.params.post_id)
   });
 
   res.json({deleteLikeSucess: true});
