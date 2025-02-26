@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const usersController = require("../controllers/usersController");
 const { isAuthenticated } = require("../controllers/authicateController");
+const postsController = require("../controllers/postsController");
 const postsRouter = require("./postsRouter");
 const usersRouter = Router();
 
@@ -32,10 +33,26 @@ usersRouter.get("/:user_id/followers", usersController.getUserFollowers);
 
 usersRouter.get("/:user_id/likes", usersController.getUserLikedPosts);
 
-// this route is like the above four routes combined into one (it gets user info, following, followers, and likes)
-// this route has been provided so that four separate fetch calls don't need to be made on the frontend
-// however, the above four separate routes have been provided in the event that only one type of data is needed
-usersRouter.get("/:user_id/profile", usersController.getUserInfo, usersController.getUserFollowing, usersController.getUserFollowers, usersController.getUserLikedPosts);
+// gets all profile-related data for a user
+usersRouter.get("/:user_id/profile", 
+    usersController.getUserInfo, 
+    usersController.getUserFollowing, 
+    usersController.getUserFollowers, 
+    usersController.getUserLikedPosts,
+    postsController.getUserPosts,
+    postsController.getUserReplies,
+    
+    (req, res) => {
+        res.json({
+            userInfo: res.locals.userInfo,
+            following: res.locals.followers,
+            following: res.locals.following,
+            likedPosts: res.locals.likedPosts,
+            userPosts: res.locals.userPosts,
+            userReplies: res.locals.userReplies
+        })
+    }
+);
 
 
 
