@@ -81,12 +81,8 @@ const getUserLikedPosts = asyncHandler(async (req, res, next) => {
   }
 
   if (req.path.includes("/profile")) {
-    res.json({
-      userInfo: res.locals.userInfo, 
-      following: res.locals.following,
-      followers: res.locals.followers,
-      likedPosts: likedPosts
-    });
+    res.locals.likedPosts = likedPosts;
+    next();
   } else {
     res.json(likedPosts);
   }
@@ -210,6 +206,12 @@ const postLogout = asyncHandler(async (req, res, next) => {
 
 const putEditedUserInfo = [
   validate[0],
+
+  body("bio")
+  .optional()
+  .trim()
+  .isLength({max:500})
+  .withMessage("Bio cannot be more than 500 characters."),
 
   (req, res, next) => {
     const errors = validationResult(req);
