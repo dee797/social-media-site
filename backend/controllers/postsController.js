@@ -51,8 +51,76 @@ const getUserReplies = asyncHandler(async (req, res, next) => {
 
 
 
+// POST requests
+
+const postNewPost = asyncHandler(async (req, res) => {
+    await postDB.createPost({
+        author_id: req.params.user_id,
+        date_created: new Date(),
+        content: req.body.content
+    });
+
+    res.json({createPostSuccess: true});
+});
+
+
+
+const postNewReply = asyncHandler(async (req, res) => {
+    await replyDB.createReply({
+        author_id: req.params.user_id,
+        date_created: new Date(),
+        content: req.body.content,
+        parent_post_id: req.params.post_id
+    });
+
+    res.json({createReplySuccess: true});
+});
+
+
+
+const postNewRepost = asyncHandler(async (req, res) => {
+    await repostDB.createRepost({
+        parent_post_id: req.params.post_id,
+        user_id: req.params.user_id
+    });
+
+    res.json({createRepostSuccess: true});
+});
+
+
+
+const deleteRepost = asyncHandler(async (req, res) => {
+    await repostDB.deleteRepost({
+        user_id: req.params.user_id,
+        parent_post_id: req.params.post_id
+    });
+
+    res.json({deleteRepostSuccess: true});
+});
+
+
+
+const postNewQuoteRepost = asyncHandler(async (req, res) => {
+    await quoteRepostDB.createQuoteRepost({
+        author_id: req.params.user_id,
+        date_created: new Date(),
+        content: req.body.content,
+        parent_post_id: req.params.post_id
+    });
+
+    res.json({createQuoteRepostSuccess: true})
+});
+
+
+
+
 module.exports = {
     getUserPosts,
     getPostData,
     getUserReplies,
+    postNewPost,
+    postNewReply,
+    postNewRepost,
+    deleteRepost,
+    postNewQuoteRepost
 }
