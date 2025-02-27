@@ -45,11 +45,31 @@ const get10Users = async () => {
 }
 
 
+const getMatchingUsers = async (query) => {
+    const users = await prisma.user.findMany({
+        where: {
+            handle: {
+                contains: query,
+                mode: "insensitive"
+            }
+        },
+        select: {
+            user_id: true,
+            name: true,
+            handle: true,
+            profile_pic_url: true
+        }
+    });
+
+    return users;
+}
+
+
 const updateUser = async (user) => {
     return await prisma.user.update({
         where: { user_id: user.user_id },
         data: user
-    })
+    });
 }
 
 
@@ -64,6 +84,7 @@ module.exports = {
     createUser,
     getUserByHandle,
     getUserByID,
+    getMatchingUsers,
     updateUser,
     deleteUser,
     get10Users
