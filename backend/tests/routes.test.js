@@ -178,7 +178,7 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
 
 
 
-describe('GET tests for /users/:user_id/posts path (protected routes as well', () => {
+describe('GET tests for /users/:user_id/posts path (protected routes as well)', () => {
   test("posts prop should be empty array for @test, since they haven't created any posts", done => {
     userDB.getUserByHandle({handle: '@test'}).then((userTest) => {
       request.agent(app)
@@ -213,13 +213,23 @@ describe('GET tests for /users/:user_id/posts path (protected routes as well', (
 
 
 
-describe.skip('POST/other tests for paths under /users', () => {
-  
+describe('GET test for /search path', () => {
+  test("gets a list of matching users for usernames that contain 'Ke'", done => {
+    request.agent(app)
+    .get("/search?handle=Ke")
+    .auth(testJWT, {type: 'bearer'})
+    .expect("Content-Type", /json/)
+    .expect([
+      { user_id: 1, name: 'Kelly', handle: '@kelly', profile_pic_url: '' },
+      { user_id: 2, name: 'Kevin', handle: '@kevin', profile_pic_url: '' }
+    ])
+    .expect(200, done);
+  });
 });
 
 
 
-describe('Security tests', () => {
+describe('Security/Input validation tests', () => {
   test("Successfully log out as @test user", done => {
     setTimeout(() => {
       request.agent(app)
