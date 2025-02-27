@@ -1,6 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const { getReposts, getRepostCountForPost } = require('./repostCRUD');
-const { getQuoteReposts } = require('./quoteRepostCRUD');
+const { getQuoteReposts, getParentOfQuote } = require('./quoteRepostCRUD');
 const { getLikeCountForPost } = require('./likeCRUD');
 const { getReplyCount, getThread, getParentOfReply } = require('./replyCRUD');
 const { getUserByID } = require('./userCRUD');
@@ -118,10 +118,12 @@ const getPostData = async (post) => {
         part.profile_pic_url = userInfo.profile_pic_url;
     }
     
-    const parent = await getParentOfReply({post_id: post.post_id});
+    const replyParent = await getParentOfReply({post_id: post.post_id});
+    const quoteParent = await getParentOfQuote({post_id: post.post_id})
     const postData = {
         thread: thread,
-        parent: parent
+        replyParent,
+        quoteParent
     }
 
     return postData;
