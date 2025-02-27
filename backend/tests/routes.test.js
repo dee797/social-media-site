@@ -2,12 +2,13 @@ const request = require('supertest');
 const app = require('../index');
 const userDB = require('../db/userCRUD');
 
-const {exampleUser1, exampleUser2} = require('../db/exampleUsers')
+const {exampleUser2} = require('../db/exampleUsers')
 
 let testJWT;
 
 /**
- *  To run the tests in this file, please first run 'node backend/db/populate-test-db.js
+ *  To run the tests in this file, please first run 'node backend/db/populate-test-db.js, 
+ *  and also comment out the like 'app.listen(PORT);' in the index.js file
  *  
  *  This ensures that the necessary records are created in the test db in order to test
  *  the json data returned by the controllers
@@ -117,7 +118,7 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
     .expect(404, done);
   });
 
-  test("get /users/1/following returns a list of users that user_id:1 is following", done => {
+  test("get /users/1/following returns a list of users that @kelly is following", done => {
     request.agent(app)
     .get("/users/1/following")
     .auth(testJWT, {type: 'bearer'})
