@@ -13,8 +13,12 @@ const createNotification = async (notification) => {
     });
 }
 
-const getNotifications = async () => {
-    const notifications = await prisma.notification.findMany();
+const getNotifications = async (user) => {
+    const notifications = await prisma.notification.findMany({
+        where: {
+            receiver_id: user.user_id
+        }
+    });
     return notifications;
 }
 
@@ -34,10 +38,18 @@ const updateNotification = async (notification) => {
 }
 
 
+const updateAllNotifications = async (user) => {
+    return await prisma.notification.updateMany({
+        where: { receiver_id: user.user_id },
+        data: { read_status: true }
+    });
+}
+
 
 module.exports = {
     createNotification,
     getNotifications,
     getNotification,
     updateNotification,
+    updateAllNotifications
 }
