@@ -3,6 +3,7 @@ const usersController = require("../controllers/usersController");
 const { isAuthenticated } = require("../controllers/authicateController");
 const postsController = require("../controllers/postsController");
 const postsRouter = require("./postsRouter");
+const notificationsRouter = require("./notificationsRouter");
 const usersRouter = Router();
 
 
@@ -77,6 +78,13 @@ usersRouter.delete("/:user_id/likes/:post_id", usersController.deleteLike);
 // use postsRouter for posts-related paths
 
 usersRouter.use("/:user_id/posts", postsRouter);
+
+
+
+// use notificationsRouter for notifications
+
+usersRouter.use("/:user_id/notifications", notificationsRouter);
+
 
 
 module.exports = usersRouter;
