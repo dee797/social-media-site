@@ -186,7 +186,7 @@ async function main() {
             {
                 notification_id: 1,
                 receiver_id: 2,
-                source_url: 'test',
+                source_url: '/users/2/posts/2',
                 sender_id: 1,
                 type_id: 1
             },
@@ -194,7 +194,7 @@ async function main() {
             {
                 notification_id: 2,
                 receiver_id: 2,
-                source_url: 'test',
+                source_url: '/users/1/profile',
                 sender_id: 1,
                 type_id: 2
             },
@@ -202,7 +202,7 @@ async function main() {
             {
                 notification_id: 3,
                 receiver_id: 2,
-                source_url: 'test',
+                source_url: '/users/2/posts/2',
                 sender_id: 1,
                 type_id: 3
             },
@@ -210,7 +210,7 @@ async function main() {
             {
                 notification_id: 4,
                 receiver_id: 1,
-                source_url: 'test',
+                source_url: '/users/2/posts/7',
                 sender_id: 2,
                 type_id: 3
             },
@@ -218,7 +218,7 @@ async function main() {
             {
                 notification_id: 5,
                 receiver_id: 2,
-                source_url: 'test',
+                source_url: '/users/2/posts/2',
                 sender_id: 1,
                 type_id: 4
             }

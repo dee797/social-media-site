@@ -80,7 +80,7 @@ describe('Notification table tests', () => {
             notification_id: 1,
             receiver_id: 2,
             sender_id: 1,
-            source_url: 'test',
+            source_url: '/users/2/posts/2',
             type_id: 1,
             read_status: true
         });
@@ -92,7 +92,7 @@ describe('Notification table tests', () => {
         const notif = {
             receiver_id: 1,
             sender_id: 2,
-            source_url: 'test',
+            source_url: '/users/2/posts/7',
             type_id: 3
         }
 
@@ -316,7 +316,8 @@ describe('Post tests', () => {
     test('get post data for a single post', async () => {
         await expect(postCRUD.getPostData({post_id: 2})).resolves.toEqual(
             {
-                "parent": null, 
+                "quoteParent": null,
+                "replyParent": null,
                 "thread": [
                     {"author_id": 2, "content": "Hello World 2", "date_created": new Date('2025-01-01'), "name": "Kevin", "numLikes": 1, "numReplies": 4, "numReposts": 1, "post_id": 2, "username": "@kevin", "profile_pic_url": ""}, 
                     {"author_id": 1, "content": "I like this post", "date_created": new Date('2025-01-01'), "name": "Kelly", "numLikes": 0, "numReplies": 2, "numReposts": 0, "post_id": 3, "username": "@kelly", "profile_pic_url": ""}, 
@@ -331,7 +332,7 @@ describe('Post tests', () => {
     test('get post data for a reply post (only a part of a thread)', async () => {
         await expect(postCRUD.getPostData({post_id: 3})).resolves.toEqual(
             {
-                "parent": {
+                "replyParent": {
                     "parent_post": {
                         "author": {
                             "handle": "@kevin", "name": "Kevin", "user_id": 2
@@ -339,6 +340,7 @@ describe('Post tests', () => {
                         "post_id": 2
                     }
                 }, 
+                "quoteParent": null,
                 "thread": [
                     { "author_id": 1, "content": "I like this post", "date_created": new Date('2025-01-01'), "name": "Kelly", "numLikes": 0, "numReplies": 2, "numReposts": 0, "post_id": 3, "username": "@kelly", "profile_pic_url": "" }, 
                     { "author_id": 2, "content": "Thanks for the like", "date_created": new Date('2025-01-01'), "name": "Kevin", "numLikes": 0, "numReplies": 1, "numReposts": 0, "post_id": 5, "username": "@kevin", "profile_pic_url": "" }, 
