@@ -62,6 +62,10 @@ usersRouter.post("/logout", usersController.postLogout);
 
 usersRouter.put("/:user_id", usersController.putEditedUserInfo);
 
+usersRouter.post("/:user_id/likes/:post_id/:author_id", usersController.postLike);
+
+usersRouter.post("/:user_id/following/:followed_user_id", usersController.postFollow);
+
 // use this route when someone unfollows a user
 usersRouter.delete("/:user_id/following/:followed_user_id", usersController.deleteFollow);
 

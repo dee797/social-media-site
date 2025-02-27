@@ -9,6 +9,7 @@ const userDB = require("../db/userCRUD");
 const followDB = require("../db/followCRUD");
 const likeDB = require("../db/likeCRUD");
 const postDB = require("../db/postCRUD");
+const notificationDB = require("../db/notificationCRUD");
 
 
 
@@ -239,6 +240,42 @@ const putEditedUserInfo = [
 
 
 
+const postLike = asyncHandler(async (req, res) => {
+  await likeDB.createLike({
+    post_id: parseInt(req.params.post_id),
+    user_id: parseInt(req.params.user_id)
+  });
+
+  await notificationDB.createNotification({
+    receiver_id: parseInt(req.params.author_id),
+    sender_id: parseInt(req.params.user_id),
+    source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+    type_id: 1
+  });
+
+  res.json({createLikeSuccess: true});
+});
+
+
+
+const postFollow = asyncHandler(async (req, res) => {
+  await followDB.createFollow({
+    followed_user_id: parseInt(req.params.followed_user_id),
+    follower_id: parseInt(req.params.user_id)
+  });
+
+  await notificationDB.createNotification({
+    receiver_id: parseInt(req.params.followed_user_id),
+    sender_id: parseInt(req.params.user_id),
+    source_url: `/users/${req.params.user_id}/profile`,
+    type_id: 2
+  });
+
+  res.json({createFollowSuccess: true})
+});
+
+
+
 const deleteFollow = asyncHandler(async (req, res) => {
   await followDB.deleteFollow({
     follower_id: parseInt(req.params.user_id),
@@ -270,6 +307,8 @@ module.exports = {
   postLogin,
   postLogout,
   putEditedUserInfo,
+  postLike,
+  postFollow,
   deleteFollow,
   deleteLike
 }
