@@ -17,13 +17,13 @@ postsRouter.get("/:post_id", postsController.getPostData);
 
 postsRouter.post("/", postsController.postNewPost);
 
-postsRouter.post("/:post_id/replies", postsController.postNewReply);
+postsRouter.post("/:post_id/:author_id/replies", postsController.postNewReply);
 
-postsRouter.post("/:post_id/repost", postsController.postNewRepost);
+postsRouter.post("/:post_id/:author_id/repost", postsController.postNewRepost);
 
 postsRouter.delete("/:post_id/repost", postsController.deleteRepost);
 
-postsRouter.post("/:post_id/quote_repost", postsController.postNewQuoteRepost);
+postsRouter.post("/:post_id/:author_id/quote_repost", postsController.postNewQuoteRepost);
 
 
 module.exports = postsRouter;

@@ -5,6 +5,7 @@ const postDB = require("../db/postCRUD");
 const replyDB = require("../db/replyCRUD");
 const repostDB = require("../db/repostCRUD");
 const quoteRepostDB = require("../db/quoteRepostCRUD");
+const notificationDB =require("../db/notificationCRUD");
 
 
 
@@ -79,7 +80,7 @@ const postNewPost = [
 
     asyncHandler(async (req, res) => {
         await postDB.createPost({
-            author_id: req.params.user_id,
+            author_id: parseInt(req.params.user_id),
             date_created: new Date(),
             content: req.body.content
         });
@@ -106,11 +107,20 @@ const postNewReply = [
 
     asyncHandler(async (req, res) => {
         await replyDB.createReply({
-            author_id: req.params.user_id,
+            author_id: parseInt(req.params.user_id),
             date_created: new Date(),
             content: req.body.content,
-            parent_post_id: req.params.post_id
+            parent_post_id: parseInt(req.params.post_id)
         });
+
+        if (req.params.user_id !== req.params.author_id) {
+            await notificationDB.createNotification({
+                receiver_id: parseInt(req.params.author_id),
+                sender_id: parseInt(req.params.user_id),
+                source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+                type_id: 4
+            });
+        }
     
         res.json({createReplySuccess: true});
     })
@@ -120,10 +130,18 @@ const postNewReply = [
 
 const postNewRepost = asyncHandler(async (req, res) => {
     await repostDB.createRepost({
-        parent_post_id: req.params.post_id,
-        user_id: req.params.user_id
+        parent_post_id: parseInt(req.params.post_id),
+        user_id: parseInt(req.params.user_id)
     });
 
+    if (req.params.user_id !== req.params.author_id) {
+        await notificationDB.createNotification({
+            receiver_id: parseInt(req.params.author_id),
+            sender_id: parseInt(req.params.user_id),
+            source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+            type_id: 3
+        });
+    }
     res.json({createRepostSuccess: true});
 });
 
@@ -131,8 +149,8 @@ const postNewRepost = asyncHandler(async (req, res) => {
 
 const deleteRepost = asyncHandler(async (req, res) => {
     await repostDB.deleteRepost({
-        user_id: req.params.user_id,
-        parent_post_id: req.params.post_id
+        user_id: parseInt(req.params.user_id),
+        parent_post_id: parseInt(req.params.post_id)
     });
 
     res.json({deleteRepostSuccess: true});
@@ -156,12 +174,20 @@ const postNewQuoteRepost = [
 
     asyncHandler(async (req, res) => {
         await quoteRepostDB.createQuoteRepost({
-            author_id: req.params.user_id,
+            author_id: parseInt(req.params.user_id),
             date_created: new Date(),
             content: req.body.content,
-            parent_post_id: req.params.post_id
+            parent_post_id: parseInt(req.params.post_id)
         });
-    
+
+        if (req.params.user_id !== req.params.author_id) {
+            await notificationDB.createNotification({
+                receiver_id: parseInt(req.params.author_id),
+                sender_id: parseInt(req.params.user_id),
+                source_url: `/users/${req.params.user_id}/posts/${req.params.post_id}`,
+                type_id: 3
+            });
+        }
         res.json({createQuoteRepostSuccess: true})
     })
 ];
