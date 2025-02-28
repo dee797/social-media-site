@@ -2,7 +2,7 @@ require("dotenv").config();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { body, validationResult } = require("express-validator");
+const { body } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 
 const userDB = require("../db/userCRUD");
@@ -10,6 +10,8 @@ const followDB = require("../db/followCRUD");
 const likeDB = require("../db/likeCRUD");
 const postDB = require("../db/postCRUD");
 const notificationDB = require("../db/notificationCRUD");
+
+const validationController = require("../controllers/validationController");
 
 
 
@@ -93,7 +95,7 @@ const getUserLikedPosts = asyncHandler(async (req, res, next) => {
 
 // Sanitization / Validation
 
-const validate = [
+const validationChain = [
   body("name")
     .trim()
     .isLength({ max:25 })
@@ -138,18 +140,9 @@ const postNewUser = [
     next();
   },
 
-  validate,
+  validationChain,
 
-  (req, res, next) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        validationErrors: errors.mapped()
-      });
-    }
-    next();
-  },
+  validationController,
 
   asyncHandler(async (req, res) => {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -206,7 +199,7 @@ const postLogout = asyncHandler(async (req, res, next) => {
 
 
 const putEditedUserInfo = [
-  validate[0],
+  validationChain[0],
 
   body("bio")
   .optional()
@@ -214,16 +207,7 @@ const putEditedUserInfo = [
   .isLength({max:500})
   .withMessage("Bio cannot be more than 500 characters."),
 
-  (req, res, next) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        validationErrors: errors.mapped()
-      });
-    }
-    next();
-  },
+  validationController,
 
   asyncHandler(async (req, res) => {
     const {name, profile_pic_url, banner_pic_url, bio} = req.body;

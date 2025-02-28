@@ -1,11 +1,13 @@
-const { body, validationResult } = require("express-validator");
+const { body } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 
 const postDB = require("../db/postCRUD");
 const replyDB = require("../db/replyCRUD");
 const repostDB = require("../db/repostCRUD");
 const quoteRepostDB = require("../db/quoteRepostCRUD");
-const notificationDB =require("../db/notificationCRUD");
+const notificationDB = require("../db/notificationCRUD");
+
+const validationController = require("../controllers/validationController");
 
 
 
@@ -54,7 +56,7 @@ const getUserReplies = asyncHandler(async (req, res, next) => {
 
 // Sanitization / Validation
 
-const validate = [
+const validationChain = [
     body("content")
     .trim()
     .isLength({max:500})
@@ -65,18 +67,9 @@ const validate = [
 // POST requests
 
 const postNewPost = [
-    validate,
+    validationChain,
 
-    (req, res, next) => {
-        const errors = validationResult(req);
-    
-        if (!errors.isEmpty()) {
-          return res.status(400).json({
-            validationErrors: errors.mapped()
-          });
-        }
-        next();
-    },
+    validationController,
 
     asyncHandler(async (req, res) => {
         await postDB.createPost({
@@ -92,18 +85,9 @@ const postNewPost = [
 
 
 const postNewReply = [
-    validate,
+    validationChain,
 
-    (req, res, next) => {
-        const errors = validationResult(req);
-    
-        if (!errors.isEmpty()) {
-          return res.status(400).json({
-            validationErrors: errors.mapped()
-          });
-        }
-        next();
-    },
+    validationController,
 
     asyncHandler(async (req, res) => {
         await replyDB.createReply({
@@ -159,18 +143,9 @@ const deleteRepost = asyncHandler(async (req, res) => {
 
 
 const postNewQuoteRepost = [
-    validate,
+    validationChain,
 
-    (req, res, next) => {
-        const errors = validationResult(req);
-    
-        if (!errors.isEmpty()) {
-          return res.status(400).json({
-            validationErrors: errors.mapped()
-          });
-        }
-        next();
-    },
+    validationController,
 
     asyncHandler(async (req, res) => {
         await quoteRepostDB.createQuoteRepost({
