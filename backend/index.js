@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname,"public")));
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "http://localhost:5173",
   optionsSuccessStatus: 200
 }));
 
@@ -63,6 +63,6 @@ app.all("/*", (req, res, next) => {
 
 
 const PORT = process.env.PORT || 3000;
-//app.listen(PORT);
+app.listen(PORT);
 
 module.exports = app;
