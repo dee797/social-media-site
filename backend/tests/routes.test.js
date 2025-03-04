@@ -248,7 +248,7 @@ describe('Security/Input validation tests', () => {
     .auth(testJWT, {type: 'bearer'})
     .expect("Content-Type", /json/)
     .expect({error: "An error has occurred."})
-    .expect(400, done);
+    .expect(401, done);
   });
 
   test("send back errors for invalid inputs when creating new user", done => {
