@@ -4,9 +4,9 @@ import Loader from './Loader';
 import ServerErrorPage from './ServerErrorPage';
 
 
-const fetchNotifications = (token, setCurrentUser, setNotifications, setError, setLoading, navigate) => {
+const fetchNotifications = async (token, currentUser, setCurrentUser, setNotifications, setError, setLoading, navigate) => {
 
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/home`, {
+    return fetch(`${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.user_id}/notifications`, {
         mode: "cors", 
         method: "get",
         headers: {
@@ -19,9 +19,9 @@ const fetchNotifications = (token, setCurrentUser, setNotifications, setError, s
         return res.json();
     })
     .then(res => {
-        if (res.error || !res.authenticated) {
-            setCurrentUser(null);
+        if (res.error || res.authenticated === false) {
             localStorage.clear();
+            setCurrentUser(null);
             return navigate("/login");
         }
 
@@ -48,7 +48,7 @@ const Navigation = ({ currentUser, setCurrentUser, token }) => {
 
     useEffect(() => {
         if (token && currentUser) {
-            fetchNotifications(token, setCurrentUser, setNotifications, setError, setLoading, navigate);
+            fetchNotifications(token, currentUser, setCurrentUser, setNotifications, setError, setLoading, navigate);
         } else {
             setLoading(false);
             navigate("/login");
@@ -66,7 +66,6 @@ const Navigation = ({ currentUser, setCurrentUser, token }) => {
         </>
     )
 }
-
 
 
 export { 
