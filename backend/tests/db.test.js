@@ -1,3 +1,6 @@
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient();
+
 const userCRUD = require('../db/userCRUD');
 const notifCRUD = require('../db/notificationCRUD');
 const followCRUD = require('../db/followCRUD');
@@ -5,41 +8,37 @@ const likeCRUD = require('../db/likeCRUD');
 const replyCRUD = require('../db/replyCRUD');
 const postCRUD = require('../db/postCRUD');
 
-const {exampleUser1, exampleUser2} = require('../db/exampleUsers')
+const {exampleUser1, exampleUser2} = require('../db/exampleUsers');
+const populateTestDB = require("../db/populate-test-db");
+const resetTestDB = require("../db/reset-test-db");
 
-/**
- *  To run the tests in this file, please first run 'node backend/db/populate-test-db.js
- *  
- *  This ensures that the necessary records are created in the test db in order to test
- *  constraints on various tables
- * 
- *  These are two examples of users' records that will be populated in the db
-    (they have been imported as exampleUser1 and exampleUser2 above): 
-    
-    {
-        user_id: 1,
-        name: 'Kelly',
-        handle: '@kelly',
-        bio: '',
-        profile_pic_url: '',
-        banner_pic_url: '',
-        date_joined: new Date('2025-01-01')
-    }
 
-    {
-        user_id: 2,
-        name: 'Kevin',
-        handle: '@kevin',
-        bio: '',
-        profile_pic_url: '',
-        banner_pic_url: '',
-        date_joined: new Date(),
-    }
 
- *  When finished testing you can run 'node backend/db/reset-test-db.js' to clear all
- *  test tables of their records
- * 
- */
+beforeAll(async () => {
+    return populateTestDB()
+    .then(async () => {
+        await prisma.$disconnect();
+      })
+    .catch(async (e) => {
+        console.error(e);
+        await prisma.$disconnect();
+    });
+});
+
+
+
+afterAll(async () => {
+    return resetTestDB()
+    .then(async () => {
+        await prisma.$disconnect();
+      })
+    .catch(async (e) => {
+        console.error(e);
+        await prisma.$disconnect();
+    });
+});
+
+
 
 describe('User table tests', () => {
     test('prevent user from being created if their chosen handle already exists', async () =>{
