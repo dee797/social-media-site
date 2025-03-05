@@ -135,11 +135,6 @@ const validationChain = [
 // POST / other requests
 
 const postNewUser = [
-  (req, res, next) => {
-    if (res.app.locals.currentUser) return res.json({authenticated: true});
-    next();
-  },
-
   validationChain,
 
   validationController,
@@ -164,8 +159,6 @@ const postNewUser = [
 
 
 const postLogin = (req, res, next) => {
-  if (res.app.locals.currentUser) return res.json({authenticated: true});
-
   passport.authenticate("local", {session: false}, (err, user, info) => {
       if (err) return next(err)
       if (!user) {

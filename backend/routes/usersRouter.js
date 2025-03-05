@@ -14,6 +14,13 @@ usersRouter.post("/", usersController.postNewUser);
 usersRouter.post("/login", usersController.postLogin);
 
 
+// Check if user is already authenticated if they try to access /login route (which is unnecessary)
+
+usersRouter.get("/login", isAuthenticated, (req, res) => {
+    res.locals.currentUser = req.user;
+    res.json({authenticated: true})
+});
+
 
 // Apply Authenticate Controller for the following protected routes
 
