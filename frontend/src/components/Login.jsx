@@ -4,9 +4,9 @@ import Loader from "./Loader";
 import ServerErrorPage from './ServerErrorPage';
 
 
-const fetchLogin = (setCurrentUser, setAuthenticationError, setServerError, setLoading, formData, navigate) => {
+const fetchLogin = async (setCurrentUser, setAuthenticationError, setServerError, setLoading, formData, navigate) => {
 
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
+    return fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
         method: 'post',
         mode: "cors",
         body: JSON.stringify(formData),
@@ -43,10 +43,10 @@ const fetchLogin = (setCurrentUser, setAuthenticationError, setServerError, setL
 
 
 
-const checkUser = (token, setCurrentUser, setServerError, setLoading, navigate) => {
+const checkUser = async (token, setCurrentUser, setServerError, setLoading, navigate) => {
 
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
-        method: "post",
+    return fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
+        method: "get",
         mode: "cors",
         headers: {
             "Authorization": `Bearer ${token}`
@@ -59,7 +59,7 @@ const checkUser = (token, setCurrentUser, setServerError, setLoading, navigate) 
         return res.json();
     })
     .then(res => {
-        if (res.error) {
+        if (res.error || res.authenticated === false) {
             localStorage.clear();
             setCurrentUser(null);
             return;
