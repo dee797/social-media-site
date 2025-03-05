@@ -178,7 +178,17 @@ const postLogin = (req, res, next) => {
           res.app.locals.currentUser = req.user;
           const token = jwt.sign({sub: user.user_id}, process.env.SECRET, { expiresIn: '2h'});
           // On frontend, if loginSuccess === true then redirect to home path ("/")
-          return res.json({current_user_id: user.user_id, loginSuccess: true, token});
+          return res.json({user: {
+            user_id: user.user_id,
+            name: user.name,
+            handle: user.handle,
+            bio: user.bio,
+            profile_pic_url: user.profile_pic_url,
+            banner_pic_url: user.banner_pic_url,
+            date_joined: user.date_joined
+          }, 
+          loginSuccess: true, 
+          token});
       });
   })(req, res, next);
 };
