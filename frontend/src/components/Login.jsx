@@ -1,5 +1,7 @@
 import {useEffect, useState} from 'react';
 import { useNavigate, useOutletContext } from "react-router-dom";
+import Loader from "./Loader";
+import ServerErrorPage from './ServerErrorPage';
 
 
 const fetchLogin = (setCurrentUser, setAuthenticationError, setServerError, setLoading, formData, navigate) => {
@@ -77,7 +79,6 @@ const checkUser = (token, setCurrentUser, setServerError, setLoading, navigate) 
 
 
 
-//setCurrentUser sets hook at App.jsx level
 const Login = () => {
     const [currentUser, setCurrentUser, token] = useOutletContext();
 
@@ -118,15 +119,14 @@ const Login = () => {
     }, []);
 
         
-    if (serverError) return (<p className="h-screen w-screen text-center">A network error was encountered.</p>);
+    if (serverError) return (<ServerErrorPage />);
 
     return (
         <>
             <form onSubmit={handleSubmitLogin}>
-            
                 {   
                     loading 
-                        ? <div className="h-screen w-screen flex items-center justify-center"><div className="loader mx-auto"></div></div>
+                        ? <Loader />
                         :
                         <>
                         {
@@ -154,7 +154,6 @@ const Login = () => {
                             <button>Submit</button>
                         </>
                 }
-                
             </form>
         </>
     )

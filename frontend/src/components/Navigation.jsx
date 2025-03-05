@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import { useLocation, useNavigate } from 'react-router';
-
+import Loader from './Loader';
+import ServerErrorPage from './ServerErrorPage';
 
 
 const fetchNotifications = (token, setCurrentUser, setNotifications, setError, setLoading, navigate) => {
@@ -37,7 +38,6 @@ const fetchNotifications = (token, setCurrentUser, setNotifications, setError, s
 }
 
 
-
 const Navigation = ({ currentUser, setCurrentUser, token }) => {
     const [notifications, setNotifications] = useState([]);
     const [error, setError] = useState(null);
@@ -56,9 +56,9 @@ const Navigation = ({ currentUser, setCurrentUser, token }) => {
     }, [location]);
 
 
-    if (loading) return (<div className="h-screen w-screen flex items-center justify-center"><div className="loader mx-auto"></div></div>)
+    if (loading) return (<Loader />);
 
-    if (error) return (<p className="h-screen w-screen text-center">A network error was encountered.</p>);
+    if (error) return (<ServerErrorPage />);
 
     return (
         <>
