@@ -6,9 +6,9 @@ import ServerErrorPage from './components/ServerErrorPage';
 import './App.css'
 
 
-const fetchUserInfo = (token, currentUserID, setCurrentUser, setError, setLoading, navigate) => {
+const fetchUserInfo = async (token, currentUserID, setCurrentUser, setError, setLoading, navigate) => {
 
-  fetch(`${import.meta.env.VITE_BACKEND_URL}/users/${currentUserID}`, {
+  return fetch(`${import.meta.env.VITE_BACKEND_URL}/users/${currentUserID}`, {
       method: 'get',
       mode: "cors",
       headers: {
@@ -23,9 +23,9 @@ const fetchUserInfo = (token, currentUserID, setCurrentUser, setError, setLoadin
     return res.json();
   })
   .then(res => {
-    if (res.error || !res.authenticated) {
-      setCurrentUser(null);
+    if (res.error || res.authenticated === false) {
       localStorage.clear();
+      setCurrentUser(null);
       return navigate("/login");
     }
 
