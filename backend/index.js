@@ -51,7 +51,7 @@ app.use("/search", isAuthenticated, searchRouter);
 // Error handling
 app.use((err, req, res, next) => {
     console.error(err);
-    // if statuscode = 400 && error redirect to login page on frontend (invalid token)
+    // if statuscode = 401 && error redirect to login page on frontend (invalid token)
     res.status(err.statusCode || 500).json({error: "An error has occurred."});
   });
   
