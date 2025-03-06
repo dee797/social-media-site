@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Navigation } from './components/Navigation';
 import { Outlet, useNavigate } from 'react-router';
-import { fetchData } from './fetchCalls';
+import { useFetchData } from './helpers';
 import Loader from './components/Loader';
 import ServerErrorPage from './components/ServerErrorPage';
 import './App.css'
@@ -17,16 +17,10 @@ const App = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (token && currentUserID) {
-      const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserID}`;
-      const expectedKey = 'userInfo';
-      fetchData(token, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, expectedKey);
-    } else {
-      setLoading(false);
-      navigate("/login");
-    }
-  }, []);
+  const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserID}`;
+  const expectedKey = 'userInfo';
+  useFetchData(token, currentUserID, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, expectedKey);
+
 
   if (loading) return (<Loader />);
 

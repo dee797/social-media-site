@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router';
-import { fetchData } from '../fetchCalls';
+import { useFetchData } from '../helpers';
 import Loader from './Loader';
 import ServerErrorPage from './ServerErrorPage';
 
@@ -14,15 +14,9 @@ const Home = () => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (token && currentUser) {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/home`;
-            fetchData(token, setCurrentUser, setHomeData, setError, setLoading, navigate, url);
-        } else {
-            setLoading(false);
-            navigate("/login");
-        }
-    }, []);
+    const url = `${import.meta.env.VITE_BACKEND_URL}/home`;
+    useFetchData(token, currentUser, setCurrentUser, setHomeData, setError, setLoading, navigate, url);
+
 
     if (loading) return (<Loader />);
 

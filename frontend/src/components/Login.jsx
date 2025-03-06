@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { checkUser } from '../fetchCalls';
+import { useCheckUser, handleInputChange, handleSubmitForm } from '../helpers';
 import Loader from "./Loader";
 import ServerErrorPage from './ServerErrorPage';
 
@@ -43,7 +43,6 @@ const fetchLogin = async (setCurrentUser, setAuthenticationError, setServerError
 }
 
 
-
 const Login = () => {
     const [currentUser, setCurrentUser, token] = useOutletContext();
 
@@ -53,42 +52,22 @@ const Login = () => {
     });
 
     const [serverError, setServerError] = useState(null);
-
     const [authenticationError, setAuthenticationError] = useState(null);
-
     const [loading, setLoading] = useState(true);
 
     const navigate = useNavigate();
 
 
-    const handleChange = event => {
-        const { name, value } = event.target;
-        setFormData(data => ({...data, [name]: value}));
-    }
+    useCheckUser(token, currentUser, setCurrentUser, setServerError, setLoading, navigate);
 
-
-    const handleSubmitLogin = event => {
-        event.preventDefault();
-        setLoading(true);
-        
-        fetchLogin(setCurrentUser, setAuthenticationError, setServerError, setLoading, formData, navigate);
-    }
-
-
-    useEffect(() => {
-        if (token && currentUser) {
-            checkUser(token, setCurrentUser, setServerError, setLoading, navigate);
-        } else {
-            setLoading(false);
-        }
-    }, []);
-
-        
+    
     if (serverError) return (<ServerErrorPage />);
 
     return (
         <>
-            <form onSubmit={handleSubmitLogin}>
+            <form onSubmit={(event) => handleSubmitForm(event, setLoading, () => {
+                fetchLogin(setCurrentUser, setAuthenticationError, setServerError, setLoading, formData, navigate);
+            })}>
                 {   
                     loading 
                         ? <Loader />
@@ -104,7 +83,7 @@ const Login = () => {
                             <input 
                                 name='username'
                                 value={formData.username}
-                                onChange={handleChange}    
+                                onChange={(event) => handleInputChange(event, setFormData)}    
                             />
                             </label>
                             <label>
@@ -112,7 +91,7 @@ const Login = () => {
                             <input 
                                 name='password'
                                 value={formData.password}
-                                onChange={handleChange}
+                                onChange={(event) => handleInputChange(event, setFormData)}
                             />
                             </label>
 

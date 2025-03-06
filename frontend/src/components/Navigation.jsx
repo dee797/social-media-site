@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { fetchData } from '../fetchCalls';
+import { useFetchData } from '../helpers';
 import Loader from './Loader';
 import ServerErrorPage from './ServerErrorPage';
 
@@ -13,17 +13,10 @@ const Navigation = ({ currentUser, setCurrentUser, token }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    useEffect(() => {
-        if (token && currentUser) {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.user_id}/notifications`;
-            const expectedKey = 'notifications';
-            fetchData(token, setCurrentUser, setNotifications, setError, setLoading, navigate, url, expectedKey);
-        } else {
-            setLoading(false);
-            navigate("/login");
-        }
-    }, [location]);
-
+    const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.user_id}/notifications`;
+    const expectedKey = 'notifications';
+    useFetchData(token, currentUser, setCurrentUser, setNotifications, setError, setLoading, navigate, url, expectedKey, location);
+       
 
     if (loading) return (<Loader />);
 
