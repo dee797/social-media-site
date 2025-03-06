@@ -1,46 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Navigation } from './components/Navigation';
 import { Outlet, useNavigate } from 'react-router';
+import { fetchData } from './fetchCalls';
 import Loader from './components/Loader';
 import ServerErrorPage from './components/ServerErrorPage';
 import './App.css'
-
-
-const fetchUserInfo = async (token, currentUserID, setCurrentUser, setError, setLoading, navigate) => {
-
-  return fetch(`${import.meta.env.VITE_BACKEND_URL}/users/${currentUserID}`, {
-      method: 'get',
-      mode: "cors",
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-  })
-  .then(res => {
-    if (res.status > 401) {
-      throw new Error();
-    }
-
-    return res.json();
-  })
-  .then(res => {
-    if (res.error || res.authenticated === false) {
-      localStorage.clear();
-      setCurrentUser(null);
-      return navigate("/login");
-    }
-
-    if (res.userInfo) {
-      setCurrentUser(res.userInfo);
-    }
-  })
-  .catch(err => {
-    setError(err);
-  })
-  .finally(() => {
-    setLoading(false);
-  })
-}
-
 
 
 const App = () => {
@@ -55,7 +19,9 @@ const App = () => {
 
   useEffect(() => {
     if (token && currentUserID) {
-      fetchUserInfo(token, currentUserID, setCurrentUser, setError, setLoading, navigate);
+      const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserID}`;
+      const expectedKey = 'userInfo';
+      fetchData(token, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, expectedKey);
     } else {
       setLoading(false);
       navigate("/login");

@@ -1,40 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useOutletContext } from 'react-router';
+import { fetchData } from '../fetchCalls';
 import Loader from './Loader';
 import ServerErrorPage from './ServerErrorPage';
-
-const fetchHomeData = async (token, setCurrentUser, setHomeData, setError, setLoading, navigate) => {
-
-    return fetch(`${import.meta.env.VITE_BACKEND_URL}/home`, {
-        mode: "cors", 
-        method: "get",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }})
-    .then(res => {
-        if (res.status > 401) {
-            throw new Error();
-        }
-        return res.json();
-    })
-    .then(res => {
-        if (res.error || res.authenticated === false) {
-            localStorage.clear();
-            setCurrentUser(null);
-            return navigate("/login");
-        }
-
-        if (res.users && res.posts) {
-            setHomeData({users: res.users, posts: res.posts});
-        }
-    })
-    .catch(err => {
-        setError(err);
-    })
-    .finally(() => {
-        setLoading(false);
-    });
-}
 
 
 const Home = () => {
@@ -48,7 +16,8 @@ const Home = () => {
 
     useEffect(() => {
         if (token && currentUser) {
-            fetchHomeData(token, setCurrentUser, setHomeData, setError, setLoading, navigate);
+            const url = `${import.meta.env.VITE_BACKEND_URL}/home`;
+            fetchData(token, setCurrentUser, setHomeData, setError, setLoading, navigate, url);
         } else {
             setLoading(false);
             navigate("/login");

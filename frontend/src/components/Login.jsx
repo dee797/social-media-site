@@ -1,5 +1,6 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { checkUser } from '../fetchCalls';
 import Loader from "./Loader";
 import ServerErrorPage from './ServerErrorPage';
 
@@ -31,42 +32,6 @@ const fetchLogin = async (setCurrentUser, setAuthenticationError, setServerError
 
         } catch (err) {
             throw new Error(err);
-        }
-    })
-    .catch(err => {
-        setServerError(err);
-    })
-    .finally(() => {
-        setLoading(false);
-    });
-}
-
-
-
-const checkUser = async (token, setCurrentUser, setServerError, setLoading, navigate) => {
-
-    return fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
-        method: "get",
-        mode: "cors",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
-    })
-    .then(res => {
-        if (res.status > 401) {
-            throw new Error();
-        }
-        return res.json();
-    })
-    .then(res => {
-        if (res.error || res.authenticated === false) {
-            localStorage.clear();
-            setCurrentUser(null);
-            return;
-        }
-
-        if (res.authenticated) {
-            navigate("/");
         }
     })
     .catch(err => {
@@ -159,4 +124,4 @@ const Login = () => {
     )
 }
 
-export { Login, checkUser, fetchLogin }
+export { Login, fetchLogin }
