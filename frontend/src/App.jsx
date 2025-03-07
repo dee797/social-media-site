@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Navigation } from './components/Navigation';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useFetchData } from './helpers';
 import Loader from './components/Loader';
 import ServerErrorPage from './components/ServerErrorPage';
@@ -16,10 +16,11 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserID}`;
   const expectedKey = 'userInfo';
-  useFetchData(token, currentUserID, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, expectedKey);
+  useFetchData(token, currentUserID, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, expectedKey, location);
 
 
   if (loading) return (<Loader />);
