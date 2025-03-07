@@ -42,8 +42,19 @@ const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoa
 
 
 const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, navigate, url, expectedKey=null, location=null) => {
-    let arr = [];
-    if (location) arr = [location];
+    let arr;
+    if (typeof currentUser === "number" || currentUser === null || !location) {
+        arr = [];
+    } else {
+        arr = [location];
+    }
+
+    let goTo = "";
+    if (location && (location.pathname === "/signup" || location.pathname === "/login")) {
+        goTo = location.pathname;
+    } else {
+        goTo = "/signup";
+    }
 
     useEffect(() => {
         if (token && currentUser) {
@@ -81,7 +92,7 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
             });
         } else {
             setLoading(false);
-            navigate("/login");
+            navigate(goTo);
         }
     }, arr);
 }
