@@ -1,36 +1,44 @@
 import { describe, it, expect, vi, afterAll, beforeAll } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
-import { useCheckUser } from "../src/helpers";
+import { useCheckUser, useFetchData } from "../src/helpers";
 import { fetchLogin } from "../src/components/Login";
 import { fetchSignup } from "../src/components/Signup";
-const resetDB = require("../../backend/db/reset-test-db");
+const main = require("../../backend/db/reset-test-db");
 
 /**
  * To run the tests in this file, please first make sure the backend is running
  * You can run the backend app with the command 'node index.js' from the backend directory
  */
 
+let testToken;
+let testCurrentUserId;
+
 
 const mockNavigate = vi.fn((url) => url);
 const mockSetCurrentUser = vi.fn((user) => user);
 const mockSetServerError = vi.fn((err) => err);
 const mockSetInputError = vi.fn((err) => err);
+const mockSetData = vi.fn((data) => data);
 const mockSetLoading = vi.fn((bool) => bool);
 
 
-beforeAll(() => {
-    resetDB()
+beforeAll(async () => {
+    return main()
+    .catch(err => console.log(err));
+});
+
+afterAll(async () => {
+    return main()
     .catch(err => console.log(err));
 });
 
 afterAll(() => {
-    resetDB()
-    .catch(err => console.log(err));
-});
+    localStorage.clear();
+})
 
 
 describe("Signup functionality", () => {
-    it("validation errors should be received from fetch call for each field, when given invalid data", async () => {
+    it("receive validation errors for each form field, when given invalid data", async () => {
         const formData = {
             name: "really long name that's more than 25 characters",
             username: "a",
@@ -67,13 +75,27 @@ describe("Signup functionality", () => {
                 }
             );
         });
+    });
 
-    })
+    it("successfully sign up as a new user and get redirected to login page", async () => {
+        const formData = {
+            name: "someUser",
+            username: "someUser",
+            password: "Some_password1",
+            confirmPassword: "Some_password1"
+        }
+
+        await fetchSignup(mockSetInputError, mockSetServerError, mockSetLoading, formData, mockNavigate);
+
+        await waitFor(() => {
+            expect(mockNavigate).toHaveBeenCalledWith("/login");
+        });
+    });
 })
 
 
 describe("Authentication functionality", () => {
-    it("currentUser state should be set to null since provided token and user are not real", () => {
+    it("set currentUser state to null since provided token and user are not real", () => {
         const { result } = renderHook(async () => useCheckUser("token", "someUser", mockSetCurrentUser, mockSetServerError, mockSetLoading, mockNavigate)); 
         
         if (result.current === null) {
@@ -82,7 +104,7 @@ describe("Authentication functionality", () => {
         }
     });
     
-    it("error message should be received from fetch call for invalid credentials", async () => {
+    it("receive error message for attempted login with invalid credentials", async () => {
         const formData = {
             username: "nonexistentUser",
             password: "nonexistentPassword"
@@ -94,4 +116,43 @@ describe("Authentication functionality", () => {
             expect(mockSetInputError).toHaveBeenCalledWith("Incorrect username or password");
         });
     });
+
+    it("successfully login as @someUser, and store token and user_id in localStorage", async () => {
+        const formData = {
+            username: "someUser",
+            password: "Some_password1"
+        }
+
+        await fetchLogin(mockSetCurrentUser, mockSetInputError, mockSetServerError, mockSetLoading, formData, mockNavigate);
+
+        await waitFor(() => {
+            expect(mockSetCurrentUser).toHaveBeenCalled();
+
+            testToken = localStorage.getItem("token");
+            testCurrentUserId = localStorage.getItem("current_user_id");
+
+            expect(testToken).toBeTruthy();
+            expect(testCurrentUserId).toBeTruthy();
+        });
+    });
 });
+
+
+describe("Authorization functionality", () => {
+    it("set state using fetch data (from protected route) when valid token is provided", async () => {
+        renderHook(async () => useFetchData(
+            testToken, 
+            testCurrentUserId, 
+            mockSetCurrentUser, 
+            mockSetData, 
+            mockSetServerError, 
+            mockSetLoading, 
+            mockNavigate,
+            `${import.meta.env.VITE_BACKEND_URL}/home`
+        ));
+
+        await waitFor(() => {
+            expect(mockSetData).toHaveBeenCalled();
+        })
+    });
+})
