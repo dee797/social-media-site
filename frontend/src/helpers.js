@@ -42,10 +42,8 @@ const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoa
 
 
 const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, navigate, url, expectedKey=null, location=null) => {
-    let arr;
-    if (typeof currentUser === "number" || currentUser === null || !location) {
-        arr = [];
-    } else {
+    let arr = [];
+    if (location && expectedKey === 'notifications') {
         arr = [location];
     }
 
