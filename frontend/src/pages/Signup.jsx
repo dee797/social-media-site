@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useCheckUser, handleInputChange, handleSubmitForm } from '../helpers';
-import Loader from "./Loader";
+import Loader from "../components/Loader";
 import ServerErrorPage from './ServerErrorPage';
 
 const fetchSignup = async (setValidationError, setServerError, setLoading, formData, navigate) => {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useFetchData } from '../helpers';
 import Loader from './Loader';
-import ServerErrorPage from './ServerErrorPage';
+import ServerErrorPage from '../pages/ServerErrorPage';
 
 
 const Navigation = ({ currentUser, setCurrentUser, token }) => {

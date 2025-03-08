@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router';
 import { useFetchData } from '../helpers';
-import Loader from './Loader';
+import Loader from '../components/Loader';
 import ServerErrorPage from './ServerErrorPage';
 
 
