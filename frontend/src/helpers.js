@@ -63,6 +63,9 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
                     "Authorization": `Bearer ${token}`
                 }})
             .then(res => {
+                if (res.status === 404) {
+                    throw new Error("404");
+                }
                 if (res.status > 401) {
                     throw new Error("Server error");
                 }
@@ -96,6 +99,47 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
 }
 
 
+const usePostData = (token, currentUser, setCurrentUser, postData, setPostSuccess, setError, setLoading, navigate, url, expectedKey=null) => {
+
+    useEffect(() => {
+        if (token && currentUser) {
+            fetch(url, {
+                mode: "cors",
+                method: "post",
+                body: JSON.stringify(postData),
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(res => {
+                if (res.status > 401) {
+                    throw new Error("Server error");
+                }
+                return res.json();
+            })
+            .then(res => {
+                if (res.error || res.authenticated === false) {
+                    localStorage.clear();
+                    setCurrentUser(null);
+                    return;
+                }
+
+                if (res[expectedKey]) {
+                    setPostSuccess(res[expectedKey]);
+                }
+            })
+            .catch(err => {
+                setError(err);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+        }
+    }, []);
+}
+
+
 const handleInputChange = (event, setFormData) => {
     const { name, value } = event.target;
     setFormData(data => ({...data, [name]: value}));
@@ -112,6 +156,7 @@ const handleSubmitForm = (event, setLoading, callback) => {
 export {
     useCheckUser,
     useFetchData,
+    usePostData,
     handleInputChange,
     handleSubmitForm
 }
