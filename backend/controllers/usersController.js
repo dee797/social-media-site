@@ -19,7 +19,7 @@ const validationController = require("../controllers/validationController");
 
 const getUserInfo = asyncHandler(async (req, res, next) => {
   const user = await userDB.getUserByID({user_id: parseInt(req.params.user_id)});
-  if (!user) next();
+  if (!user) return next();
 
   const userInfo = {
     user_id: user.user_id,
@@ -33,7 +33,7 @@ const getUserInfo = asyncHandler(async (req, res, next) => {
 
   if (req.path.includes("/profile")) {
     res.locals.userInfo = userInfo;
-    next();
+    return next();
   } else {
     res.json(userInfo);
   }
@@ -44,11 +44,11 @@ const getUserInfo = asyncHandler(async (req, res, next) => {
 const getUserFollowing = asyncHandler(async (req, res, next) => {
   const following = await followDB.getFollowing({user_id: parseInt(req.params.user_id)});
 
-  if (!following) next();
+  if (!following) return next();
 
   if (req.path.includes("/profile")) {
     res.locals.following = following;
-    next();
+    return next();
   } else {
     res.json(following);
   }
@@ -59,11 +59,11 @@ const getUserFollowing = asyncHandler(async (req, res, next) => {
 const getUserFollowers = asyncHandler(async (req, res, next) => {
   const followers = await followDB.getFollowers({user_id: parseInt(req.params.user_id)});
 
-  if (!followers) next();
+  if (!followers) return next();
 
   if (req.path.includes("/profile")) {
     res.locals.followers = followers;
-    next();
+    return next();
   } else {
     res.json(followers);
   }
@@ -74,7 +74,7 @@ const getUserFollowers = asyncHandler(async (req, res, next) => {
 const getUserLikedPosts = asyncHandler(async (req, res, next) => {
   const likedPosts = await likeDB.getLikedPosts({user_id: parseInt(req.params.user_id)});
 
-  if (!likedPosts) next();
+  if (!likedPosts) return next();
 
   for (const post of likedPosts) {
     const {numLikes, numReposts, numReplies} = await postDB.getCounts({post_id: post.post.post_id});
@@ -85,7 +85,7 @@ const getUserLikedPosts = asyncHandler(async (req, res, next) => {
 
   if (req.path.includes("/profile")) {
     res.locals.likedPosts = likedPosts;
-    next();
+    return next();
   } else {
     res.json(likedPosts);
   }

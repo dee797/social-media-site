@@ -20,7 +20,7 @@ const getUserPosts = asyncHandler(async (req, res, next) => {
 
     if (req.path.includes("/profile")) {
         res.locals.userPosts = posts;
-        next();
+        return next();
     } else {
         res.json(posts);
     }
@@ -33,7 +33,7 @@ const getPostData = asyncHandler(async (req, res, next) => {
         post_id: parseInt(req.params.post_id)
     });
 
-    if (!post) next();
+    if (!post) return next();
     res.json(post);
 });
 
@@ -46,7 +46,7 @@ const getUserReplies = asyncHandler(async (req, res, next) => {
 
     if (req.path.includes("/profile")) {
         res.locals.userReplies = replies;
-        next();
+        return next();
     } else {
         res.json(replies);
     }
