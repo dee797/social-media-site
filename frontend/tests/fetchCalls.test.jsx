@@ -1,14 +1,15 @@
 import { describe, it, expect, vi, afterAll, beforeAll } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { useCheckUser, useFetchData } from "../src/helpers";
-import { fetchLogin } from "../src/components/Login";
-import { fetchSignup } from "../src/components/Signup";
+import { fetchLogin } from "../src/pages/Login";
+import { fetchSignup } from "../src/pages/Signup";
 const main = require("../../backend/db/reset-test-db");
 
 /**
  * To run the tests in this file, please first make sure the backend is running
  * You can run the backend app with the command 'node index.js' from the backend directory
  */
+
 
 let testToken;
 let testCurrentUserId;
@@ -139,7 +140,7 @@ describe("Authentication functionality", () => {
 
 
 describe("Authorization functionality", () => {
-    it("set state using fetch data (from protected route) when valid token is provided", async () => {
+    it("setData state with fetch data (from protected route) when valid token is provided", async () => {
         renderHook(async () => useFetchData(
             testToken, 
             testCurrentUserId, 
@@ -155,4 +156,22 @@ describe("Authorization functionality", () => {
             expect(mockSetData).toHaveBeenCalled();
         })
     });
-})
+
+    it("setError state to '404' when user is authenticated but requests a post that doesn't exist on backend", async () => {
+        renderHook(async () => useFetchData(
+            testToken,
+            testCurrentUserId,
+            mockSetCurrentUser,
+            mockSetData,
+            mockSetServerError,
+            mockSetLoading,
+            mockNavigate,
+            `${import.meta.env.VITE_BACKEND_URL}/users/${testCurrentUserId}/posts/0`
+        ));
+
+        await waitFor(() => {
+            expect(mockSetServerError).toHaveBeenCalledWith(Error("404"));
+        });
+    })
+});
+
