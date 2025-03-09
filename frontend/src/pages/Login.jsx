@@ -25,7 +25,7 @@ const fetchLogin = async (setCurrentUser, setAuthenticationError, setServerError
 
             if (resBody.loginSuccess) {
                 localStorage.setItem('token', resBody.token);
-                localStorage.setItem('current_user_id', resBody.user.current_user_id);
+                localStorage.setItem('current_user_id', resBody.user.user_id);
                 setCurrentUser(resBody.user);
                 navigate("/");
             }
