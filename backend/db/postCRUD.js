@@ -104,7 +104,7 @@ const getUserPostData = async (user) => {
 const getPostData = async (post) => {
     const thread = await getThread({post_id: post.post_id});
 
-    if (!thread) return null;
+    if (thread.length === 0) return null;
 
     for (const part of thread) {
         const {numLikes, numReplies, numReposts} = await getCounts(part);
