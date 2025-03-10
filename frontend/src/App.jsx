@@ -3,7 +3,7 @@ import { Navigation } from './components/Navigation';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { useFetchData } from './helpers';
 import Loader from './components/Loader';
-import ServerErrorPage from './components/ServerErrorPage';
+import ServerErrorPage from './pages/ServerErrorPage';
 import './App.css'
 
 
@@ -19,8 +19,7 @@ const App = () => {
   const location = useLocation();
 
   const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserID}`;
-  const expectedKey = 'userInfo';
-  useFetchData(token, currentUserID, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, expectedKey, location);
+  useFetchData(token, currentUserID, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, null, location);
 
 
   if (loading) return (<Loader />);
