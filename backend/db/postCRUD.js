@@ -103,8 +103,12 @@ const getUserPostData = async (user) => {
 
 const getPostData = async (post) => {
     const thread = await getThread({post_id: post.post_id});
+    const checkPost = await prisma.post.findUnique({
+        where: { post_id: post.post_id }
+    });
 
-    if (thread.length === 0) return null;
+    if (thread.length === 0 && !checkPost) return null;
+    if (thread.length === 0 && checkPost) thread.push(checkPost);
 
     for (const part of thread) {
         const {numLikes, numReplies, numReposts} = await getCounts(part);
