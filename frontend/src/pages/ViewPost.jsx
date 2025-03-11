@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Navigate, useOutletContext, useParams } from 'react-router';
 import { useFetchData } from '../helpers';
 import Loader from '../components/Loader';
@@ -16,14 +16,9 @@ const ViewPost = () => {
     const params = useParams();
     const postId = parseInt(params.id);
 
-    if (currentUser)  {
-        const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.user_id}/posts/${postId}` 
-        useFetchData(token, currentUser, setCurrentUser, setPostData, setError, setLoading, setNavigateTo, url)
-    } else {
-        useEffect(() => {
-            setNavigateTo("/signup");
-        }, []);
-    }
+    let currentUserID = currentUser && currentUser.user_id;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserID}/posts/${postId}` 
+    useFetchData(token, currentUser, setCurrentUser, setPostData, setError, setLoading, setNavigateTo, url)
 
 
     if (loading) return (<Loader />);
