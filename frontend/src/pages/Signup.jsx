@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useOutletContext, Navigate } from "react-router-dom";
+import { useNavigate, useOutletContext, Navigate, useLocation } from "react-router-dom";
 import { useCheckUser, handleInputChange, handleSubmitForm } from '../helpers';
 import Loader from "../components/Loader";
 import ServerErrorPage from './ServerErrorPage';
@@ -55,8 +55,9 @@ const Signup = () => {
     const [navigateTo, setNavigateTo] = useState(null);
 
     const navigate = useNavigate();
+    const location = useLocation();
 
-    useCheckUser(token, currentUser, setCurrentUser, setServerError, setLoading, setNavigateTo);
+    useCheckUser(token, currentUser, setCurrentUser, setServerError, setLoading, setNavigateTo, location);
        
 
     if (loading) return (<Loader />);

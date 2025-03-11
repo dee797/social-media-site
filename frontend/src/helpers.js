@@ -1,47 +1,56 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoading, setNavigateTo) => {
+const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoading, setNavigateTo, location) => {
+    const effectRan = useRef(false);
 
     useEffect(() => {
-        if (token && currentUser) {
-            fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
-                method: "get",
-                mode: "cors",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            })
-            .then(res => {
-                if (res.status > 401) {
-                    throw new Error();
-                }
-                return res.json();
-            })
-            .then(res => {
-                if (res.error || res.authenticated === false) {
-                    localStorage.clear();
-                    setCurrentUser(null);
-                    return;
-                }
-        
-                if (res.authenticated) {
-                    setNavigateTo("/");
-                }
-            })
-            .catch(err => {
-                setServerError(err);
-            })
-            .finally(() => {
+        if (!effectRan.current) {
+            if (token && currentUser) {
+                fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
+                    method: "get",
+                    mode: "cors",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                .then(res => {
+                    if (res.status > 401) {
+                        throw new Error();
+                    }
+                    return res.json();
+                })
+                .then(res => {
+                    if (res.error || res.authenticated === false) {
+                        localStorage.clear();
+                        setCurrentUser(null);
+                        if (location.pathname === "/signup" || location.pathname === "/login") return;
+
+                        return setNavigateTo("/signup");
+                    }
+            
+                    if (res.authenticated && location.pathname === "/signup" || location.pathname === "/login") {
+                        setNavigateTo("/");
+                    }
+                })
+                .catch(err => {
+                    setServerError(err);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+            } else {
                 setLoading(false);
-            });
-        } else {
-            setLoading(false);
+            }
         }
+
+        return () => effectRan.current = true;
     }, []);
 }
 
 
 const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, setNavigateTo, url, expectedKey=null, location=null) => {
+    const effectRan = useRef(false);
+
     let arr = [];
     if (location && expectedKey === 'notifications') {
         arr = [location];
@@ -55,46 +64,50 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
     }
 
     useEffect(() => {
-        if (token && currentUser) {
-            fetch(url, {
-                mode: "cors", 
-                method: "get",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }})
-            .then(res => {
-                if (res.status === 404) {
-                    throw new Error("404");
-                }
-                if (res.status > 401) {
-                    throw new Error("Server error");
-                }
-                return res.json();
-            })
-            .then(res => {
-                if (res.error || res.authenticated === false) {
-                    localStorage.clear();
-                    setCurrentUser(null);
-                    return setNavigateTo("/login");
-                }
-        
-                if (expectedKey) {
-                    setData(res[expectedKey]);
-                } else {
-                    setData(res);
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                setError(err);
-            })
-            .finally(() => {
+        if (!effectRan.current) {
+            if (token && currentUser) {
+                fetch(url, {
+                    mode: "cors", 
+                    method: "get",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }})
+                .then(res => {
+                    if (res.status === 404) {
+                        throw new Error("404");
+                    }
+                    if (res.status > 401) {
+                        throw new Error("Server error");
+                    }
+                    return res.json();
+                })
+                .then(res => {
+                    if (res.error || res.authenticated === false) {
+                        localStorage.clear();
+                        setCurrentUser(null);
+                        return setNavigateTo("/login");
+                    }
+            
+                    if (expectedKey) {
+                        setData(res[expectedKey]);
+                    } else {
+                        setData(res);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    setError(err);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+            } else {
                 setLoading(false);
-            });
-        } else {
-            setLoading(false);
-            setNavigateTo(goTo);
+                setNavigateTo(goTo);
+            }
         }
+
+        return () => effectRan.current = true;
     }, arr);
 }
 

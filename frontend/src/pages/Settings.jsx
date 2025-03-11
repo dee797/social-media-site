@@ -1,36 +1,32 @@
 import { useState } from 'react';
-import { Navigate, useOutletContext } from 'react-router';
-import { useFetchData } from '../helpers';
+import { Navigate, useLocation, useOutletContext } from 'react-router';
+import { useCheckUser } from '../helpers';
 import Loader from '../components/Loader';
 import ServerErrorPage from './ServerErrorPage';
 
 const Settings = () => {
     const [currentUser, setCurrentUser, token] = useOutletContext();
 
-    const [authenticated, setAuthenticated] = useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [navigateTo, setNavigateTo] = useState(null);
 
+    const location = useLocation();
 
-    // useFetchData instead of useCheckUser to verify user since useCheckUser does not navigate back to login
-    const url = `${import.meta.env.VITE_BACKEND_URL}/users/login`;
-    useFetchData(token, currentUser, setCurrentUser, setAuthenticated, setError, setLoading, setNavigateTo, url);
+    useCheckUser(token, currentUser, setCurrentUser, setError, setLoading, setNavigateTo, location);
 
     if (loading) return (<Loader />);
 
     if (error) return (<ServerErrorPage />);
 
-    if (authenticated) return (
+    if (navigateTo) return (<Navigate to={navigateTo}/>)
+
+    return (
         <>
             <p>Settings placeholder</p>
         </>
     );
 
-    if (navigateTo) return (<Navigate to={navigateTo}/>)
-
-
-    return <Navigate to="/login"/>;
 }
 
 export {
