@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, Navigate } from "react-router-dom";
 import { useCheckUser, handleInputChange, handleSubmitForm } from '../helpers';
 import Loader from "../components/Loader";
 import ServerErrorPage from './ServerErrorPage';
@@ -52,19 +52,22 @@ const Signup = () => {
     const [serverError, setServerError] = useState(null);
     const [validationError, setValidationError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [navigateTo, setNavigateTo] = useState(null);
 
     const navigate = useNavigate();
 
-    useCheckUser(token, currentUser, setCurrentUser, setServerError, setLoading, navigate);
+    useCheckUser(token, currentUser, setCurrentUser, setServerError, setLoading, setNavigateTo);
        
 
     if (loading) return (<Loader />);
 
     if (serverError) return (<ServerErrorPage />);
 
+    if (navigateTo) return (<Navigate to={navigateTo}/>)
+
     return (
         <>
-            <form onSubmit={(event) => handleSubmitForm(event, setLoading, () => {
+            <form method='post' onSubmit={(event) => handleSubmitForm(event, setLoading, () => {
                 fetchSignup(setValidationError, setServerError, setLoading, formData, navigate);
             })}>
                 {   

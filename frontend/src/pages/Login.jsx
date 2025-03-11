@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext, Navigate, useNavigate } from "react-router-dom";
 import { useCheckUser, handleInputChange, handleSubmitForm } from '../helpers';
 import Loader from "../components/Loader";
 import ServerErrorPage from './ServerErrorPage';
@@ -54,18 +54,21 @@ const Login = () => {
     const [serverError, setServerError] = useState(null);
     const [authenticationError, setAuthenticationError] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [navigateTo, setNavigateTo] = useState(null);
 
     const navigate = useNavigate();
 
 
-    useCheckUser(token, currentUser, setCurrentUser, setServerError, setLoading, navigate);
+    useCheckUser(token, currentUser, setCurrentUser, setServerError, setLoading, setNavigateTo);
 
     
     if (serverError) return (<ServerErrorPage />);
 
+    if (navigateTo) return (<Navigate to={navigateTo}/>)
+
     return (
         <>
-            <form onSubmit={(event) => handleSubmitForm(event, setLoading, () => {
+            <form method='post' onSubmit={(event) => handleSubmitForm(event, setLoading, () => {
                 fetchLogin(setCurrentUser, setAuthenticationError, setServerError, setLoading, formData, navigate);
             })}>
                 {   
