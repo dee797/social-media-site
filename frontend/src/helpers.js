@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoading, navigate) => {
+const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoading, setNavigateTo) => {
 
     useEffect(() => {
         if (token && currentUser) {
@@ -25,7 +25,7 @@ const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoa
                 }
         
                 if (res.authenticated) {
-                    navigate("/");
+                    setNavigateTo("/");
                 }
             })
             .catch(err => {
@@ -41,7 +41,7 @@ const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoa
 }
 
 
-const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, navigate, url, expectedKey=null, location=null) => {
+const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, setNavigateTo, url, expectedKey=null, location=null) => {
     let arr = [];
     if (location && expectedKey === 'notifications') {
         arr = [location];
@@ -75,7 +75,7 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
                 if (res.error || res.authenticated === false) {
                     localStorage.clear();
                     setCurrentUser(null);
-                    return navigate("/login");
+                    return setNavigateTo("/login");
                 }
         
                 if (expectedKey) {
@@ -93,50 +93,60 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
             });
         } else {
             setLoading(false);
-            navigate(goTo);
+            setNavigateTo(goTo);
         }
     }, arr);
 }
 
 
-const usePostData = (token, currentUser, setCurrentUser, postData, setPostSuccess, setError, setLoading, navigate, url, expectedKey=null) => {
+const postData = async (token, currentUser, setCurrentUser, formData, setPostSuccess, setValidationError, setError, setLoading, setNavigateTo, url, expectedKey=null) => {
 
-    useEffect(() => {
-        if (token && currentUser) {
-            fetch(url, {
-                mode: "cors",
-                method: "post",
-                body: JSON.stringify(postData),
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
+    if (token && currentUser) {
+        return fetch(url, {
+            mode: "cors",
+            method: "post",
+            body: JSON.stringify(formData),
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        })
+        .then(async res => {
+            try {
+                const resBody = await res.json();
+    
+                if (res.status === 400 && resBody.validationErrors) {
+                    return setValidationError(resBody.validationErrors);
                 }
-            })
-            .then(res => {
-                if (res.status > 401) {
-                    throw new Error("Server error");
-                }
-                return res.json();
-            })
-            .then(res => {
-                if (res.error || res.authenticated === false) {
+
+                if (res.status === 401 && (resBody.error || resBody.authenticated === false)) {
                     localStorage.clear();
                     setCurrentUser(null);
                     return;
                 }
 
+                if (res.status > 401) {
+                    throw new Error();
+                }
+    
                 if (res[expectedKey]) {
                     setPostSuccess(res[expectedKey]);
                 }
-            })
-            .catch(err => {
-                setError(err);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-        }
-    }, []);
+    
+            } catch (err) {
+                throw new Error(err);
+            }
+        })            
+        .catch(err => {
+            setError(err);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
+    } else {
+        setLoading(false);
+        setNavigateTo("/signup");
+    }
 }
 
 
@@ -156,7 +166,7 @@ const handleSubmitForm = (event, setLoading, callback) => {
 export {
     useCheckUser,
     useFetchData,
-    usePostData,
+    postData,
     handleInputChange,
     handleSubmitForm
 }
