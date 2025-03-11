@@ -8,8 +8,7 @@ const NewPost = () => {
     const [currentUser, setCurrentUser, token] = useOutletContext();
 
     const [formData, setFormData] = useState({
-        username: "",
-        password: ""
+        content: "",
     });
 
     const [postSuccess, setPostSuccess] = useState(false);
@@ -49,9 +48,13 @@ const NewPost = () => {
                                     <p>{validationError.content.msg}</p> 
                                     : null
                                 }
-                                <textarea name='content' onChange={(event) => {
-                                    handleInputChange(event, setFormData);
-                                }}>
+                                <textarea 
+                                    name='content' 
+                                    onChange={(event) => {
+                                        handleInputChange(event, setFormData);
+                                    }}
+                                    maxLength={500}
+                                >
                                 </textarea>
                             </>
                         }
