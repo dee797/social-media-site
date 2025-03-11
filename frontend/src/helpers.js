@@ -129,8 +129,8 @@ const postData = async (token, currentUser, setCurrentUser, formData, setPostSuc
                     throw new Error();
                 }
     
-                if (res[expectedKey]) {
-                    setPostSuccess(res[expectedKey]);
+                if (resBody[expectedKey]) {
+                    setPostSuccess(resBody[expectedKey]);
                 }
     
             } catch (err) {
