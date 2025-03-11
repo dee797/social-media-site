@@ -22,11 +22,17 @@ const Search = () => {
 
     if (navigateTo) return (<Navigate to={navigateTo}/>);
 
+    if (query.size === 0 || query.get("handle") === "") {
+        return (
+            <p>Try searching for a user</p>
+        );
+    }
+
     return (
         <>
             <p>Search placeholder</p>
         </>
-    )
+    );
 }
 
 export {
