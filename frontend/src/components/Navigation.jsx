@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useFetchData } from '../helpers';
+import { SearchBar } from './SearchBar';
 import Loader from './Loader';
 import ServerErrorPage from '../pages/ServerErrorPage';
 
@@ -24,7 +25,8 @@ const Navigation = ({ currentUser, setCurrentUser, token }) => {
 
     return (
         <>
-        <p>{notifications}</p>
+            <SearchBar />
+            <p>Navbar placeholder</p>
         </>
     )
 }
