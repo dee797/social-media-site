@@ -18,7 +18,14 @@ const validationController = require("../controllers/validationController");
 // GET requests
 
 const getUserInfo = asyncHandler(async (req, res, next) => {
-  const user = await userDB.getUserByID({user_id: parseInt(req.params.user_id)});
+  let user;
+
+  if (req.params.user_id) {
+    user = await userDB.getUserByID({user_id: parseInt(req.params.user_id)});
+  } else if (req.params.handle) {
+    user = await userDB.getUserByHandle({handle: '@' + req.params.handle});
+  }
+
   if (!user) return next();
 
   const userInfo = {
@@ -42,7 +49,9 @@ const getUserInfo = asyncHandler(async (req, res, next) => {
 
 
 const getUserFollowing = asyncHandler(async (req, res, next) => {
-  const following = await followDB.getFollowing({user_id: parseInt(req.params.user_id)});
+  const userId = res.locals.userInfo && res.locals.userInfo.user_id;
+
+  const following = await followDB.getFollowing({user_id: userId || parseInt(req.params.user_id)});
 
   if (!following) return next();
 
@@ -57,7 +66,9 @@ const getUserFollowing = asyncHandler(async (req, res, next) => {
 
 
 const getUserFollowers = asyncHandler(async (req, res, next) => {
-  const followers = await followDB.getFollowers({user_id: parseInt(req.params.user_id)});
+  const userId = res.locals.userInfo && res.locals.userInfo.user_id;
+
+  const followers = await followDB.getFollowers({user_id: userId || parseInt(req.params.user_id)});
 
   if (!followers) return next();
 
@@ -72,7 +83,9 @@ const getUserFollowers = asyncHandler(async (req, res, next) => {
 
 
 const getUserLikedPosts = asyncHandler(async (req, res, next) => {
-  const likedPosts = await likeDB.getLikedPosts({user_id: parseInt(req.params.user_id)});
+  const userId = res.locals.userInfo && res.locals.userInfo.user_id;
+  
+  const likedPosts = await likeDB.getLikedPosts({user_id: userId || parseInt(req.params.user_id)});
 
   if (!likedPosts) return next();
 
@@ -189,6 +202,7 @@ const postLogin = (req, res, next) => {
 
 
 const postLogout = asyncHandler(async (req, res, next) => {
+  console.log(res.app.locals.currentUser.user_id);
   await userDB.updateUser({
     user_id: res.app.locals.currentUser.user_id,
     token_valid_after: Math.floor(Date.now()/ 1000)

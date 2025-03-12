@@ -42,7 +42,7 @@ usersRouter.get("/:user_id/followers", usersController.getUserFollowers);
 usersRouter.get("/:user_id/likes", usersController.getUserLikedPosts);
 
 // gets all profile-related data for a user
-usersRouter.get("/:user_id/profile", 
+usersRouter.get("/:handle/profile", 
     usersController.getUserInfo, 
     usersController.getUserFollowing, 
     usersController.getUserFollowers, 

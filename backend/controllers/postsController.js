@@ -14,8 +14,10 @@ const validationController = require("../controllers/validationController");
 // GET requests
 
 const getUserPosts = asyncHandler(async (req, res, next) => {
+    const userId = res.locals.userInfo && res.locals.userInfo.user_id;
+
     const posts = await postDB.getUserPostData({
-        user_id: parseInt(req.params.user_id)
+        user_id: userId || parseInt(req.params.user_id)
     });
 
     if (req.path.includes("/profile")) {
@@ -40,8 +42,10 @@ const getPostData = asyncHandler(async (req, res, next) => {
 
 
 const getUserReplies = asyncHandler(async (req, res, next) => {
+    const userId = res.locals.userInfo && res.locals.userInfo.user_id;
+
     const replies = await replyDB.getUserReplyData({
-        user_id: parseInt(req.params.user_id)
+        user_id: userId || parseInt(req.params.user_id)
     });
 
     if (req.path.includes("/profile")) {
