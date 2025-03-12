@@ -26,7 +26,7 @@ const getUserInfo = asyncHandler(async (req, res, next) => {
     user = await userDB.getUserByHandle({handle: '@' + req.params.handle});
   }
 
-  if (!user) return next();
+  if (!user) return res.status(404).json({error: "404 - Not Found"});
 
   const userInfo = {
     user_id: user.user_id,
