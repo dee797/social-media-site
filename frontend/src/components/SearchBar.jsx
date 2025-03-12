@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate, createSearchParams } from "react-router";
 import { handleInputChange } from '../helpers';
 
+import Form from "react-bootstrap/Form";
+
 
 const SearchBar = () => {
     const navigate = useNavigate();
@@ -12,7 +14,7 @@ const SearchBar = () => {
 
     return (
         <>
-            <form method="get" onSubmit={(event) => {
+            <Form method="get" onSubmit={(event) => {
                 event.preventDefault();
                 navigate({
                     pathname: "/search",
@@ -21,15 +23,11 @@ const SearchBar = () => {
                     })}`
                 })
             }}>
-                <input
-                    name= "handle"
-                    type="text"
-                    maxLength={255}
-                    onChange={(event) => {
+                <Form.Control type="text" name="handle" maxLength={255} placeholder="Search for users" onChange={
+                    (event) => {
                         handleInputChange(event, setFormData);
-                    }}
-                />
-            </form>
+                    }}/>
+            </Form>
         </>
     );
 }
