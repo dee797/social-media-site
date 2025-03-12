@@ -17,7 +17,6 @@ usersRouter.post("/login", usersController.postLogin);
 // Check if user is already authenticated if they try to access /login route (which is unnecessary)
 
 usersRouter.get("/login", isAuthenticated, (req, res) => {
-    res.locals.currentUser = req.user;
     res.json({authenticated: true})
 });
 
@@ -25,7 +24,6 @@ usersRouter.get("/login", isAuthenticated, (req, res) => {
 // Apply Authenticate Controller for the following protected routes
 
 usersRouter.use(isAuthenticated, (req, res, next) => {
-    res.locals.currentUser = req.user;
     next();
 });
 
@@ -66,7 +64,7 @@ usersRouter.get("/:handle/profile",
 
 // POST/DELETE/PUT requests
 
-usersRouter.post("/logout", usersController.postLogout);
+usersRouter.post("/:user_id/logout", usersController.postLogout);
 
 usersRouter.put("/:user_id", usersController.putEditedUserInfo);
 

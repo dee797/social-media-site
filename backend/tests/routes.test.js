@@ -11,6 +11,7 @@ const populateTestDB = require("../db/populate-test-db");
 const resetTestDB = require("../db/reset-test-db");
 
 let testJWT;
+let testUserID;
 
 
 /**
@@ -93,8 +94,10 @@ describe("Setup tests (must be done before any other tests)", () => {
 
   test("update user info", done => {
     userDB.getUserByHandle({handle: '@test'}).then((userTest) => {
+      testUserID = userTest.user_id;
+
       request.agent(app)
-      .put(`/users/${userTest.user_id}`)
+      .put(`/users/${testUserID}`)
       .auth(testJWT, {type: 'bearer'})
       .type('form')
       .send({
@@ -194,9 +197,8 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
 
 describe('GET tests for /users/:user_id/posts path (protected routes as well)', () => {
   test("posts prop should be empty array for @test, since they haven't created any posts", done => {
-    userDB.getUserByHandle({handle: '@test'}).then((userTest) => {
       request.agent(app)
-      .get(`/users/${userTest.user_id}/posts`)
+      .get(`/users/${testUserID}/posts`)
       .auth(testJWT, {type: 'bearer'})
       .expect("Content-Type", /json/)
       .expect({
@@ -206,13 +208,11 @@ describe('GET tests for /users/:user_id/posts path (protected routes as well)', 
         posts: []
       })
       .expect(200, done);
-    });
   });
 
   test("replies prop should be empty array for @test, since they haven't created any replies", done => {
-    userDB.getUserByHandle({handle: '@test'}).then((userTest) => {
       request.agent(app)
-      .get(`/users/${userTest.user_id}/posts/replies`)
+      .get(`/users/${testUserID}/posts/replies`)
       .auth(testJWT, {type: 'bearer'})
       .expect("Content-Type", /json/)
       .expect({
@@ -222,7 +222,6 @@ describe('GET tests for /users/:user_id/posts path (protected routes as well)', 
       })
       .expect(200, done);
     });
-  });
 });
 
 
@@ -247,7 +246,7 @@ describe('Security/Input validation tests', () => {
   test("Successfully log out as @test user", done => {
     setTimeout(() => {
       request.agent(app)
-      .post("/users/logout")
+      .post(`/users/${testUserID}/logout`)
       .auth(testJWT, {type: 'bearer'})
       .expect("Content-Type", /json/)
       .expect({logoutSuccess: true})
