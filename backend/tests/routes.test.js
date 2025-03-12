@@ -21,6 +21,18 @@ let testJWT;
 
 
 beforeAll(async () => {
+  return resetTestDB()
+  .then(async () => {
+      await prisma.$disconnect();
+    })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+  });
+});
+
+
+beforeAll(async () => {
   return populateTestDB()
   .then(async () => {
       await prisma.$disconnect();
@@ -128,9 +140,9 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
     .expect(200, done);
   });
 
-  test("get /users/1/profile returns object with profile-related data", done => {
+  test("get /users/kelly/profile returns object with profile-related data", done => {
     request.agent(app)
-    .get("/users/1/profile")
+    .get("/users/kelly/profile")
     .auth(testJWT, {type: 'bearer'})
     .expect("Content-Type", /json/)
     .expect({

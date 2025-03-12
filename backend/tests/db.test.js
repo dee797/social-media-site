@@ -13,6 +13,17 @@ const populateTestDB = require("../db/populate-test-db");
 const resetTestDB = require("../db/reset-test-db");
 
 
+beforeAll(async () => {
+    return resetTestDB()
+    .then(async () => {
+        await prisma.$disconnect();
+      })
+    .catch(async (e) => {
+      console.error(e);
+      await prisma.$disconnect();
+    });
+  });
+
 
 beforeAll(async () => {
     return populateTestDB()
