@@ -181,7 +181,6 @@ const postLogin = (req, res, next) => {
       req.login(user, {session: false}, (err) => {
           if (err) return next(err);
 
-          res.app.locals.currentUser = req.user;
           const token = jwt.sign({sub: user.user_id}, process.env.SECRET, { expiresIn: '2h'});
           // On frontend, if loginSuccess === true then redirect to home path ("/")
           return res.json({user: {
@@ -202,12 +201,10 @@ const postLogin = (req, res, next) => {
 
 
 const postLogout = asyncHandler(async (req, res, next) => {
-  console.log(res.app.locals.currentUser.user_id);
   await userDB.updateUser({
-    user_id: res.app.locals.currentUser.user_id,
+    user_id: parseInt(req.params.user_id),
     token_valid_after: Math.floor(Date.now()/ 1000)
   })
-  delete res.app.locals.currentUser;
   
   // if logout success, delete jwt from localstorage on client side
   res.json({logoutSuccess: true});
