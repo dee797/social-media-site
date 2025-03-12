@@ -1,6 +1,8 @@
+import Spinner from 'react-bootstrap/Spinner';
+
 const Loader = () => {
     return (
-        <div className="h-screen w-screen flex items-center justify-center"><div className="loader mx-auto"></div></div>
+        <Spinner variant='primary'/>
     )
 }
 
