@@ -28,7 +28,7 @@ const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoa
                         return setNavigateTo("/signup");
                     }
             
-                    if (res.authenticated && location.pathname === "/signup" || location.pathname === "/login") {
+                    if (res.authenticated && (location.pathname === "/signup" || location.pathname === "/login")) {
                         setNavigateTo("/");
                     }
                 })
@@ -88,7 +88,7 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
                         return setNavigateTo("/login");
                     }
             
-                    if (expectedKey) {
+                    if (res[expectedKey]) {
                         setData(res[expectedKey]);
                     } else {
                         setData(res);
