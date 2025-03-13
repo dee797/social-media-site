@@ -1,32 +1,36 @@
-import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
-import { useFetchData } from '../helpers';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+
 import { SearchBar } from './SearchBar';
-import Loader from './Loader';
-import ServerErrorPage from '../pages/ServerErrorPage';
+import { NotificationList } from './NotificationList';
 
 
-const Navigation = ({ currentUser, setCurrentUser, token }) => {
-    const [notifications, setNotifications] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.user_id}/notifications`;
-    const expectedKey = 'notifications';
-    useFetchData(token, currentUser, setCurrentUser, setNotifications, setError, setLoading, navigate, url, expectedKey, location);
-       
-
-    if (loading) return (<Loader />);
-
-    if (error) return (<ServerErrorPage />);
+const Navigation = ({ currentUser, setCurrentUser, token, setError }) => {
 
     return (
         <>
-            <SearchBar />
-            <p>Navbar placeholder</p>
+            <Navbar expand="lg" id='navbar'>
+                <Container>
+                    <Navbar.Brand href="/">Home</Navbar.Brand>
+                    <Navbar.Toggle aria-controls='basic-navbar-nav'/>
+                    <Navbar.Collapse id='basic-navbar-nav'>
+                        <Nav className='me-auto'>
+                            <NavDropdown title="Notifications">
+                                <NotificationList token={token} currentUser={currentUser} setCurrentUser={setCurrentUser} setError={setError}/>
+                            </NavDropdown>
+                            <SearchBar />
+                            <NavDropdown title="User">
+                                <NavDropdown.Item href={`/${currentUser.handle}`}>View Profile</NavDropdown.Item>
+                                <NavDropdown.Item href="/settings/profile">Edit Profile</NavDropdown.Item>
+                                <NavDropdown.Item>Logout</NavDropdown.Item>
+                            </NavDropdown>
+                        </Nav>
+                    </Navbar.Collapse>
+                </Container>
+
+            </Navbar>
         </>
     )
 }

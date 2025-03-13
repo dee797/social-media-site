@@ -28,7 +28,7 @@ const App = () => {
 
   if (token && currentUser) return (
     <>
-      <Navigation currentUser={currentUser} setCurrentUser={setCurrentUser} token={token}/>
+      <Navigation currentUser={currentUser} setCurrentUser={setCurrentUser} token={token} setError={setError}/>
       <Outlet context={[currentUser, setCurrentUser, token]}/>
     </>
   );
