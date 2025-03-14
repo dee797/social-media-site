@@ -2,6 +2,14 @@
   max-width: 1280px;
   margin: 0 auto;
   text-align: center;
+  min-height: 100vh;
+  box-shadow: 0px 0px 7px 1px rgb(0 0 0 / 10%);
+  background-color: white;
+}
+
+body {
+   min-height: 100vh;
+   background-color:whitesmoke;
 }
 
 :root {
@@ -13,16 +21,22 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  min-height: 100vh;
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
+  color: var(--bs-body-color);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--bs-body-color);
 }
+
+.link:hover {
+  background-color: var(--bs-dropdown-link-hover-bg);
+}
+
 
 h1 {
   font-size: 3.2em;
