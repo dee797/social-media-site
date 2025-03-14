@@ -6,7 +6,8 @@ import { Signup } from "./pages/Signup";
 import { Settings } from "./pages/Settings";
 import { NewPost } from "./pages/NewPost";
 import { ViewPost } from "./pages/ViewPost";
-
+import { Search } from "./pages/Search";
+import { Profile } from "./pages/Profile";
 
 const routes = [
     {
@@ -20,10 +21,8 @@ const routes = [
             { path: "/settings/profile", element: <Settings /> },
             { path: "/post", element: <NewPost />},
             { path: "/post/:id", element: <ViewPost /> },
-            /*
             { path: "/search", element: <Search /> },
-            { path: "/:handle", element: <Profile /> },
-        */
+            { path: "/:handle", element: <Profile /> }
         ]
     }   
 ];
