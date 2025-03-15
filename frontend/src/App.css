@@ -43,6 +43,11 @@ h1 {
   line-height: 1.1;
 }
 
+h2 {
+  margin-bottom: 20px;
+}
+
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -63,6 +68,20 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+
 #notificationDropdown::after, #userDropdown::after {
   display: none;
+}
+
+#search.form-control:focus {
+  box-shadow: none;
+}
+
+.navigate {
+  color: var(--bs-primary);
+  text-decoration: underline;
+}
+
+.navigate:hover {
+  color: royalblue;
 }
