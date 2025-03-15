@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { useOutletContext, Navigate, useNavigate, useLocation } from "react-router-dom";
+import { useOutletContext, Navigate, useNavigate, useLocation, Link } from "react-router";
 import { useCheckUser, handleInputChange, handleSubmitForm } from '../helpers';
+
+import Form from "react-bootstrap/Form";
+import Button from 'react-bootstrap/Button';
+
 import Loader from "../components/Loader";
 import ServerErrorPage from './ServerErrorPage';
 
@@ -65,45 +69,51 @@ const Login = () => {
     
     if (serverError) return (<ServerErrorPage />);
 
-    if (navigateTo) return (<Navigate to={navigateTo}/>)
+    if (navigateTo) return (<Navigate to={navigateTo}/>);
+
+    if (loading) return (<Loader />);
 
     return (
-        <>
-            <form method='post' onSubmit={(event) => handleSubmitForm(event, setLoading, () => {
-                fetchLogin(setCurrentUser, setAuthenticationError, setServerError, setLoading, formData, navigate);
-            })}>
-                {   
-                    loading 
-                        ? <Loader />
-                        :
-                        <>
-                        {
-                            authenticationError
-                                ? <p>{authenticationError}</p>
-                                : null
-                        }
-                            <label>
-                            Username
-                            <input 
-                                name='username'
-                                value={formData.username}
-                                onChange={(event) => handleInputChange(event, setFormData)}    
-                            />
-                            </label>
-                            <label>
-                            Password
-                            <input 
-                                name='password'
-                                value={formData.password}
-                                onChange={(event) => handleInputChange(event, setFormData)}
-                            />
-                            </label>
+        <div style={{width: "100%", minHeight: "100vh", display: "flex", alignItems: 'center', justifyContent: 'center', flexDirection: "column", textAlign: "left", rowGap: "30px"}}>
+            <Form 
+                method='post' 
+                onSubmit={(event) => handleSubmitForm(event, setLoading, () => {
+                    fetchLogin(setCurrentUser, setAuthenticationError, setServerError, setLoading, formData, navigate);
+                })}
+                style={{width: "500px"}}
+            >
+                
+            <h2>Login</h2>
+            {
+                authenticationError
+                    ? <p style={{color: "red"}}>{authenticationError}</p>
+                    : null
+            }
+                <Form.Group style={{marginBottom: '20px'}}>
+                    <Form.Label>Username</Form.Label>
+                    <Form.Control
+                        name='username'
+                        value={formData.username}
+                        onChange={(event) => handleInputChange(event, setFormData)}
+                    />
+                </Form.Group>
 
-                            <button>Submit</button>
-                        </>
-                }
-            </form>
-        </>
+
+                <Form.Group>
+                    <Form.Label >Password</Form.Label>
+                    <Form.Control
+                        name='password'
+                        value={formData.password}
+                        type='password'
+                        onChange={(event) => handleInputChange(event, setFormData)}
+                    />
+                </Form.Group>
+
+                <Button style={{marginTop: "30px"}} variant='primary' type='submit'>Submit</Button>                
+            </Form>
+
+            <p>Don't have an account? Create one <Link className="navigate" to="/signup">here</Link></p>
+        </div>
     )
 }
 
