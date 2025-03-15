@@ -171,8 +171,8 @@ const handleInputChange = (event, setFormData) => {
 
 const handleSubmitForm = (event, setLoading, callback) => {
         event.preventDefault();
-        setLoading(true);
         callback();
+        setLoading(true);
     }
 
 
