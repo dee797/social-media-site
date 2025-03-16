@@ -74,7 +74,7 @@ const Login = () => {
     if (loading) return (<Loader />);
 
     return (
-        <div style={{width: "100%", minHeight: "100vh", display: "flex", alignItems: 'center', justifyContent: 'center', flexDirection: "column", textAlign: "left", rowGap: "30px"}}>
+        <div className='formDiv'>
             <Form 
                 method='post' 
                 onSubmit={(event) => handleSubmitForm(event, setLoading, () => {
@@ -86,10 +86,10 @@ const Login = () => {
             <h2>Login</h2>
             {
                 authenticationError
-                    ? <p style={{color: "red"}}>{authenticationError}</p>
+                    ? <p className='invalidInput'>{authenticationError}</p>
                     : null
             }
-                <Form.Group style={{marginBottom: '20px'}}>
+                <Form.Group className='formGroup'>
                     <Form.Label>Username</Form.Label>
                     <Form.Control
                         name='username'

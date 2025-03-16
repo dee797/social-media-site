@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { useNavigate, useOutletContext, Navigate, useLocation } from "react-router-dom";
+import { useNavigate, useOutletContext, Navigate, useLocation, Link } from "react-router";
 import { useCheckUser, handleInputChange, handleSubmitForm } from '../helpers';
+
+import Form from "react-bootstrap/Form";
+import Button from 'react-bootstrap/Button';
+
 import Loader from "../components/Loader";
 import ServerErrorPage from './ServerErrorPage';
 
@@ -67,77 +71,94 @@ const Signup = () => {
     if (navigateTo) return (<Navigate to={navigateTo}/>)
 
     return (
-        <>
-            <form method='post' onSubmit={(event) => handleSubmitForm(event, setLoading, () => {
-                fetchSignup(setValidationError, setServerError, setLoading, formData, navigate);
-            })}>
-                {   
-                    loading ?
-                        <Loader /> :
-                        <>
-                            <p>Please note that your name and username will be visible to other users.</p>
+        <div className='formDiv'>
+            <Form 
+                method='post' 
+                onSubmit={(event) => handleSubmitForm(event, setLoading, () => {
+                    fetchSignup(setValidationError, setServerError, setLoading, formData, navigate);
+                })}
+                style={{width: "500px"}}
+            >
+                
+                <h2>Create Account</h2>
 
-                            <label>
-                            Name
-                            <input 
-                                name='name'
-                                value={formData.name}
-                                onChange={(event) => handleInputChange(event, setFormData)}    
-                            />
-                            </label>
-                            {
-                                validationError && validationError.name ?
-                                <p>{validationError.name.msg}</p> :
-                                null
-                            }
+                <p>Please note that your name and username will be visible to other users.</p>
 
-                            <label>
-                            Username
-                            <input 
-                                name='username'
-                                value={formData.username}
-                                onChange={(event) => handleInputChange(event, setFormData)}    
-                            />
-                            </label>
-                            {
-                                validationError && validationError.username ?
-                                <p>{validationError.username.msg}</p> :
-                                null
-                            }
+                <Form.Group className='formGroup'>
+                    <Form.Label>Name</Form.Label>
 
-                            <label>
-                            Password
-                            <input 
-                                name='password'
-                                value={formData.password}
-                                onChange={(event) => handleInputChange(event, setFormData)}
-                            />
-                            </label>
-                            {
-                                validationError && validationError.password ?
-                                <p>{validationError.password.msg}</p> :
-                                null
-                            }
+                    <Form.Control
+                        name='name'
+                        maxLength={25}
+                        type='text'
+                        value={formData.name}
+                        onChange={(event) => handleInputChange(event, setFormData)}
+                    />
+                    {
+                        validationError?.name ?
+                        <Form.Text className='invalidInput'>{validationError.name.msg}</Form.Text> :
+                        null
+                    }
+                </Form.Group>
 
-                            <label>
-                            Confirm Password
-                            <input 
-                                name='confirmPassword'
-                                value={formData.confirmPassword}
-                                onChange={(event) => handleInputChange(event, setFormData)}
-                            />
-                            </label>
-                            {
-                                validationError && validationError.confirmPassword ?
-                                <p>{validationError.confirmPassword.msg}</p> :
-                                null
-                            }
+                <Form.Group className='formGroup'>
+                    <Form.Label>Username</Form.Label>
 
-                            <button>Submit</button>
-                        </>
-                }
-            </form>
-        </>
+                    <Form.Control
+                        name='username'
+                        type='text'
+                        value={formData.username}
+                        maxLength={25}
+                        onChange={(event) => handleInputChange(event, setFormData)}
+                    />
+                    {
+                        validationError?.username ?
+                        <Form.Text className='invalidInput'>{validationError.username.msg}</Form.Text> :
+                        null
+                    }
+                </Form.Group>
+
+                <Form.Group className='formGroup'>
+                    <Form.Label>Password</Form.Label>
+
+                    <Form.Control
+                        name='password'
+                        type="password"
+                        value={formData.password}
+                        onChange={(event) => handleInputChange(event, setFormData)}
+                    />
+                        <Form.Text>
+                            Password must be at least 8 characters long, have at least 1 lowercase letter,
+                            have at least 1 uppercase letter, have at least 1 number, and have at least 1
+                            special character
+                        </Form.Text>
+                    {
+                        validationError?.password ?
+                        <Form.Text className='invalidInput'><br />{validationError.password.msg}</Form.Text> :
+                        null
+                    }
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Confirm Password</Form.Label>
+                    <Form.Control
+                        name='confirmPassword'
+                        type='password'
+                        value={formData.confirmPassword}
+                        onChange={(event) => handleInputChange(event, setFormData)}
+                    />
+                    {
+                        validationError?.confirmPassword ?
+                        <Form.Text className='invalidInput'>{validationError.confirmPassword.msg}</Form.Text> :
+                        null
+                    }
+                </Form.Group>
+
+                <Button style={{marginTop: "30px"}} variant='primary' type='submit'>Submit</Button>            
+            </Form>
+
+            <p>Already have an account? Sign in <Link to="/login" className='navigate'>here</Link></p>
+        </div>
     );
 }
 

@@ -85,3 +85,23 @@ button:focus-visible {
 .navigate:hover {
   color: royalblue;
 }
+
+.formDiv {
+  padding: 20px;
+  width: 100%; 
+  min-height: 100vh; 
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  flex-direction: column;
+  text-align: left;
+  row-gap: 30px
+}
+
+.invalidInput {
+  color: red;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
