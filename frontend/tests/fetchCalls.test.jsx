@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterAll, beforeAll } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
-import { useCheckUser, useFetchData } from "../src/helpers";
+import { useCheckUser, useFetchData, putData } from "../src/helpers";
 import { fetchLogin } from "../src/pages/Login";
 import { fetchSignup } from "../src/pages/Signup";
 const main = require("../../backend/db/reset-test-db");
@@ -172,6 +172,28 @@ describe("Authorization functionality", () => {
         await waitFor(() => {
             expect(mockSetServerError).toHaveBeenCalledWith(Error("404"));
         });
-    })
+    });
+    
+    it("update the read_status of all of the current user's notifications", async () => {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/users/${testCurrentUserId}/notifications`;
+
+        await putData(
+            testToken, 
+            testCurrentUserId, 
+            mockSetCurrentUser,
+            mockSetServerError,
+            mockSetLoading,
+            mockNavigate,
+            url,
+            null,
+            mockSetData,
+            null,
+            'updateAllNotifs'
+        );
+
+        await waitFor(() => {
+            expect(mockSetData).toHaveBeenCalled();
+        });
+    });
 });
 
