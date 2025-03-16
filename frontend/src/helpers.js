@@ -57,7 +57,7 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
     }
 
     let goTo = "";
-    if (location && (location.pathname === "/signup" || location.pathname === "/login")) {
+    if (location?.pathname === "/signup" || location?.pathname === "/login") {
         goTo = location.pathname;
     } else {
         goTo = "/signup";
@@ -107,7 +107,7 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
             }
         }
 
-        return () => effectRan.current = true;
+        return () => expectedKey !== 'notifications' ? effectRan.current = true : effectRan.current = false;
     }, arr);
 }
 
@@ -163,6 +163,56 @@ const postData = async (token, currentUser, setCurrentUser, formData, setPostSuc
 }
 
 
+const putData = async (token, currentUser, setCurrentUser, setError, setLoading, setNavigateTo, url, formData=null, setPutSuccess=null, setValidationError=null, expectedKey=null) => {
+
+    if (token && currentUser) {
+        return fetch(url, {
+            mode: "cors",
+            method: "put",
+            body: formData ?? '',
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        }).then(async res => {
+            try {
+                const resBody = await res.json();
+    
+                if (res.status === 400 && resBody.validationErrors) {
+                    return setValidationError(resBody.validationErrors);
+                }
+
+                if (res.status === 401 && (resBody.error || resBody.authenticated === false)) {
+                    localStorage.clear();
+                    setCurrentUser(null);
+                    return;
+                }
+
+                if (res.status > 401) {
+                    throw new Error();
+                }
+    
+                if (resBody[expectedKey] && setPutSuccess) {
+                    setPutSuccess(resBody[expectedKey]);
+                }
+    
+            } catch (err) {
+                throw new Error(err);
+            }
+        })
+        .catch(err => {
+            setError(err);
+        })
+        .finally(() => {
+            setLoading(false);
+        })
+    } else {
+        setLoading(false);
+        setNavigateTo("/signup");
+    }
+}
+
+
 const handleInputChange = (event, setFormData) => {
     const { name, value } = event.target;
     setFormData(data => ({...data, [name]: value}));
@@ -180,6 +230,7 @@ export {
     useCheckUser,
     useFetchData,
     postData,
+    putData,
     handleInputChange,
     handleSubmitForm
 }
