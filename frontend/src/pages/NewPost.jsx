@@ -1,8 +1,15 @@
 import { useState } from 'react';
-import { Navigate, useLocation, useOutletContext } from 'react-router';
+import { Navigate, useLocation, useOutletContext, Link } from 'react-router';
 import { useCheckUser, postData, handleSubmitForm, handleInputChange } from '../helpers';
+
 import Loader from '../components/Loader';
 import ServerErrorPage from './ServerErrorPage';
+
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+
+
 
 const NewPost = () => {
     const [currentUser, setCurrentUser, token] = useOutletContext();
@@ -30,44 +37,58 @@ const NewPost = () => {
 
     if (!postSuccess) {
         return (
-            <>
-                <form method="post" onSubmit={(event) => {
-                    handleSubmitForm(event, setLoading, () => {
-                        const posturl = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.user_id}/posts`;
-                        const expectedKey = 'createPostSuccess';
-                        postData(token, currentUser, setCurrentUser, formData, setPostSuccess, setValidationError, setError, setLoading, setNavigateTo, posturl, expectedKey);
-                    });
-                }}>
-                    {
-                        loading ?
-                        <Loader /> : 
-                        <>
-                            {
-                                validationError ? 
-                                <p>{validationError.content.msg}</p> 
-                                : null
-                            }
-                            <textarea 
-                                name='content' 
+            <div className='formDiv'>
+                <Form 
+                    method="post" 
+                    onSubmit={(event) => {
+                        handleSubmitForm(event, setLoading, () => {
+                            const posturl = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.user_id}/posts`;
+                            const expectedKey = 'createPostSuccess';
+                            postData(token, currentUser, setCurrentUser, formData, setPostSuccess, setValidationError, setError, setLoading, setNavigateTo, posturl, expectedKey);
+                        });
+                    }}
+                    style={{width: "100%", padding: "40px"}}
+                >
+                    <h2>Create New Post</h2>
+                    <>
+                        {
+                            validationError ? 
+                            <p>{validationError.content.msg}</p> 
+                            : null
+                        }
+                        <FloatingLabel
+                            controlId='floatingTextarea'
+                            label="What's happening?"
+                            className='mb-3'
+                        >
+                            <Form.Control
+                                as="textarea"
+                                name='content'
                                 onChange={(event) => {
                                     handleInputChange(event, setFormData);
                                 }}
                                 maxLength={500}
+                                style={{height: "200px", whiteSpace: "pre-wrap"}}
+                                placeholder=''
                             >
-                            </textarea>
-                        </>
-                    }
+                            </Form.Control>
+                        </FloatingLabel>
+                    </>
                     
-                    <button>Post</button>
-                </form>
-            </>
+                    <Button style={{marginTop: "20px"}} variant='dark' type='submit'>Post</Button>
+                </Form>
+            </div>
         );
     } else {
         return (
             <>
-                <p>Successfully created post</p>
-                <button type='button'>Home</button>
-                <button type='button'>Create another post</button>
+                <h2 style={{paddingTop: "30px"}}>Successfully created post</h2>
+                <Link to="/" replace>
+                    <Button style={{marginTop: "30px", marginRight: "30px"}} variant='dark' type='button'>Home</Button>
+                </Link>
+                <Link to="/post" replace reloadDocument={true}>
+                    <Button style={{marginTop: "30px"}} variant='dark' type='button'>Create another post</Button>
+                </Link>
             </>
         )
     }
@@ -77,3 +98,4 @@ const NewPost = () => {
 export {
     NewPost
 }
+
