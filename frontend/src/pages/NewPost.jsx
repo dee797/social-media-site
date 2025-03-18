@@ -26,7 +26,7 @@ const NewPost = () => {
 
     if (error) return (<ServerErrorPage />);
 
-    if (navigateTo) return (<Navigate to={navigateTo}/>)
+    if (navigateTo) return (<Navigate to={navigateTo} replace/>)
 
     if (!postSuccess) {
         return (

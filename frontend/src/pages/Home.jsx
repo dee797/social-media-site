@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useOutletContext, Navigate } from 'react-router';
 import { useFetchData } from '../helpers';
+
+import { Post } from '../components/Post';
+
 import Loader from '../components/Loader';
 import ServerErrorPage from './ServerErrorPage';
 
@@ -22,11 +25,20 @@ const Home = () => {
 
     if (error) return (<ServerErrorPage />);
 
-    if (navigateTo) return (<Navigate to={navigateTo}/>)
+    if (navigateTo) return (<Navigate to={navigateTo} replace/>)
 
     return (
         <>
-        <p>Home placeholder</p>
+            {
+                homeData.posts.length === 0 ?
+                    <p>There are currently no posts to view</p>
+                :
+                    homeData.posts.map(post => {
+                        return (
+                            <Post postData={post} key={post.post_id}/>
+                        );
+                    })
+            }
         </>
     );
 }

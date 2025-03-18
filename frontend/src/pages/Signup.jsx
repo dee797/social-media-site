@@ -27,7 +27,7 @@ const fetchSignup = async (setValidationError, setServerError, setLoading, formD
             }
 
             if (resBody.signupSuccess) {
-                navigate("/login");
+                navigate("/login", {replace: true});
             }
 
         } catch (err) {
@@ -68,7 +68,7 @@ const Signup = () => {
 
     if (serverError) return (<ServerErrorPage />);
 
-    if (navigateTo) return (<Navigate to={navigateTo}/>)
+    if (navigateTo) return (<Navigate to={navigateTo} replace/>)
 
     return (
         <div className='formDiv'>
@@ -157,7 +157,7 @@ const Signup = () => {
                 <Button style={{marginTop: "30px"}} variant='primary' type='submit'>Submit</Button>            
             </Form>
 
-            <p>Already have an account? Sign in <Link to="/login" className='navigate'>here</Link></p>
+            <p>Already have an account? Sign in <Link to="/login" className='navigate' replace>here</Link></p>
         </div>
     );
 }

@@ -20,7 +20,7 @@ const Search = () => {
 
     if (error) return (<ServerErrorPage />);
 
-    if (navigateTo) return (<Navigate to={navigateTo}/>);
+    if (navigateTo) return (<Navigate to={navigateTo} replace/>);
 
     if (query.size === 0 || query.get("handle") === "") {
         return (

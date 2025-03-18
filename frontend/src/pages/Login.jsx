@@ -31,7 +31,7 @@ const fetchLogin = async (setCurrentUser, setAuthenticationError, setServerError
                 localStorage.setItem('token', resBody.token);
                 localStorage.setItem('current_user_id', resBody.user.user_id);
                 setCurrentUser(resBody.user);
-                navigate("/");
+                navigate("/", {replace: true});
             }
 
         } catch (err) {
@@ -69,7 +69,7 @@ const Login = () => {
     
     if (serverError) return (<ServerErrorPage />);
 
-    if (navigateTo) return (<Navigate to={navigateTo}/>);
+    if (navigateTo) return (<Navigate to={navigateTo} replace/>);
 
     if (loading) return (<Loader />);
 
@@ -112,7 +112,7 @@ const Login = () => {
                 <Button style={{marginTop: "30px"}} variant='primary' type='submit'>Submit</Button>                
             </Form>
 
-            <p>Don't have an account? Create one <Link className="navigate" to="/signup">here</Link></p>
+            <p>Don't have an account? Create one <Link className="navigate" to="/signup" replace>here</Link></p>
         </div>
     )
 }
