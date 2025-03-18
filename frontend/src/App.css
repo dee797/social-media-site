@@ -48,23 +48,22 @@ h2 {
 }
 
 
-button {
-  border-radius: 8px;
+.searchButton {
+  border-radius: 0px 20px 20px 0px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
-  color: rgba(255,255,255,0.87);
+  background-color: royalblue;
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
+.searchButton:hover {
   border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
+.searchButton:focus,
+.searchButton:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
@@ -104,4 +103,13 @@ button:focus-visible {
 
 .formGroup {
   margin-bottom: 20px;
+}
+
+.logoutButton {
+  background-color: transparent;
+  outline: none;
+  border: none;
+  padding: 0px;
+  width: 100%;
+  text-align: left;
 }
