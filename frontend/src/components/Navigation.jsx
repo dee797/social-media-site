@@ -106,7 +106,7 @@ const Navigation = ({ currentUser, setCurrentUser, token, setError, setLoading }
                                 title={
                                     <div style={{display: "flex", alignItems: "center", textAlign: "left", fontSize: "15px", columnGap: "15px"}}>
                                         <div style={{gridTemplate: "1fr 1fr / 55px 1fr", display: "grid"}}>
-                                            <img src={currentUser.profile_pic_url} style={{gridRow: "1 / 3"}}></img>
+                                            <img src={currentUser.profile_pic_url} style={{gridRow: "1 / 3", width: "50px", height: "50px", borderRadius: "25px", marginRight: "10px"}}></img>
                                             <div>{currentUser.name}</div>
                                             <div>{currentUser.handle}</div>
                                         </div>
