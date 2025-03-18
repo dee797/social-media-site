@@ -3,6 +3,11 @@ import { useEffect, useRef } from "react";
 const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoading, setNavigateTo, location) => {
     const effectRan = useRef(false);
 
+    let goTo;
+    if (location?.pathname !== "/signup" && location?.pathname !== "/login") {
+        goTo = "/signup";
+    }
+
     useEffect(() => {
         if (!effectRan.current) {
             if (token && currentUser) {
@@ -40,6 +45,7 @@ const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoa
                 });
             } else {
                 setLoading(false);
+                goTo ? setNavigateTo(goTo) : null;
             }
         }
 
@@ -85,7 +91,7 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
                     if (res.error || res.authenticated === false) {
                         localStorage.clear();
                         setCurrentUser(null);
-                        return setNavigateTo("/login");
+                        return setNavigateTo("/login", {replace: true});
                     }
             
                     if (res[expectedKey]) {
@@ -103,11 +109,17 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
                 });
             } else {
                 setLoading(false);
-                setNavigateTo(goTo);
+                setNavigateTo(goTo, {replace: true});
             }
         }
 
-        return () => expectedKey !== 'notifications' ? effectRan.current = true : effectRan.current = false;
+        return () => {
+            if (expectedKey !== 'notifications' && expectedKey !=='profile') {
+                return effectRan.current = true  
+            } 
+            
+            return effectRan.current = false;
+        }
     }, arr);
 }
 
