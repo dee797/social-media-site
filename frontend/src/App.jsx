@@ -18,7 +18,7 @@ const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserHandle.slice(1)}/profile`;
+  const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserHandle?.slice(1)}/profile`;
   const expectedKey = 'profile';
   useFetchData(token, currentUserHandle, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, expectedKey, location);
 
