@@ -12,11 +12,14 @@ const main = require("../../backend/db/reset-test-db");
 
 
 let testToken;
+let testCurrentUserHandle;
 let testCurrentUserId;
 
 
 const mockNavigate = vi.fn((url) => url);
-const mockSetCurrentUser = vi.fn((user) => user);
+const mockSetCurrentUser = vi.fn((user) => {
+    user ? testCurrentUserId = user.userInfo.user_id : null;
+});
 const mockSetServerError = vi.fn((err) => err);
 const mockSetInputError = vi.fn((err) => err);
 const mockSetData = vi.fn((data) => data);
@@ -89,7 +92,7 @@ describe("Signup functionality", () => {
         await fetchSignup(mockSetInputError, mockSetServerError, mockSetLoading, formData, mockNavigate);
 
         await waitFor(() => {
-            expect(mockNavigate).toHaveBeenCalledWith("/login");
+            expect(mockNavigate).toHaveBeenCalledWith("/login", {"replace": true});
         });
     });
 })
@@ -130,10 +133,10 @@ describe("Authentication functionality", () => {
             expect(mockSetCurrentUser).toHaveBeenCalled();
 
             testToken = localStorage.getItem("token");
-            testCurrentUserId = localStorage.getItem("current_user_id");
+            testCurrentUserHandle = localStorage.getItem("currentUserHandle");
 
             expect(testToken).toBeTruthy();
-            expect(testCurrentUserId).toBeTruthy();
+            expect(testCurrentUserHandle).toBeTruthy();
         });
     });
 });
@@ -143,7 +146,7 @@ describe("Authorization functionality", () => {
     it("setData state with fetch data (from protected route) when valid token is provided", async () => {
         renderHook(async () => useFetchData(
             testToken, 
-            testCurrentUserId, 
+            testCurrentUserHandle, 
             mockSetCurrentUser, 
             mockSetData, 
             mockSetServerError, 
@@ -160,7 +163,7 @@ describe("Authorization functionality", () => {
     it("setError state to '404' when user is authenticated but requests a post that doesn't exist on backend", async () => {
         renderHook(async () => useFetchData(
             testToken,
-            testCurrentUserId,
+            testCurrentUserHandle,
             mockSetCurrentUser,
             mockSetData,
             mockSetServerError,
