@@ -3,7 +3,7 @@ CREATE TABLE "User" (
     "user_id" SERIAL NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "handle" VARCHAR(255) NOT NULL,
-    "password" VARCHAR(50) NOT NULL,
+    "password" VARCHAR(255) NOT NULL,
     "bio" VARCHAR(500),
     "profile_pic_url" VARCHAR(255),
     "banner_pic_url" VARCHAR(255),
