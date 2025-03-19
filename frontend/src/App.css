@@ -113,3 +113,19 @@ h2 {
   width: 100%;
   text-align: left;
 }
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+pre {
+  font-family: inherit;
+  color: inherit;
+  font-size: inherit;
+}
+
+.lightGray {
+  color: var(--bs-secondary-color);
+}
