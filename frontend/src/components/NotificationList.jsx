@@ -19,7 +19,7 @@ const NotificationList = ({token, currentUser, setCurrentUser, setError, setUnre
 
     const location = useLocation();
 
-    const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.user_id}/notifications`;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser?.userInfo.user_id}/notifications`;
     const expectedKey = 'notifications';
     useFetchData(token, currentUser, setCurrentUser, setNotifications, setError, setLoading, setNavigateTo, url, expectedKey, location);
 

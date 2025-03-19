@@ -17,7 +17,7 @@ import { handleSubmitForm } from '../helpers';
 const fetchLogout = async (token, currentUser, setCurrentUser, setError, setLoading, navigate) => {
 
     if (token && currentUser) {
-        return fetch(`${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.user_id}/logout`, {
+        return fetch(`${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.userInfo.user_id}/logout`, {
             mode: "cors",
             method: "post",
             headers: {
@@ -104,17 +104,17 @@ const Navigation = ({ currentUser, setCurrentUser, token, setError, setLoading }
                             <NavDropdown 
                                 id='userDropdown'
                                 title={
-                                    <div style={{display: "flex", alignItems: "center", textAlign: "left", fontSize: "15px", columnGap: "15px"}}>
-                                        <div style={{gridTemplate: "1fr 1fr / 55px 1fr", display: "grid"}}>
-                                            <img src={currentUser.profile_pic_url} style={{gridRow: "1 / 3", width: "50px", height: "50px", borderRadius: "25px", marginRight: "10px"}}></img>
-                                            <div>{currentUser.name}</div>
-                                            <div>{currentUser.handle}</div>
+                                    <div style={{display: "flex", alignItems: "center", textAlign: "left", fontSize: "15px", columnGap: "10px"}}>
+                                        <div style={{gridTemplate: "1fr 1fr / 55px 1fr", display: "grid", columnGap: "10px"}}>
+                                            <img src={currentUser.userInfo.profile_pic_url} style={{gridRow: "1 / 3", width: "50px", height: "50px", borderRadius: "25px"}}></img>
+                                            <div>{currentUser.userInfo.name}</div>
+                                            <div>{currentUser.userInfo.handle}</div>
                                         </div>
                                         <div style={{borderTop: ".3em solid", borderRight: ".3em solid transparent", borderBottom: 0, borderLeft: ".3em solid transparent", display: "inline", height: "1px"}}></div>
                                     </div>
                                 }
                             >
-                                <Link to={`/${currentUser.handle.slice(1)}`} replace><NavDropdown.ItemText className='link'>View Profile</NavDropdown.ItemText></Link>
+                                <Link to={`/${currentUser.userInfo.handle.slice(1)}`} replace><NavDropdown.ItemText className='link'>View Profile</NavDropdown.ItemText></Link>
                                 <Link to="/settings/profile" replace><NavDropdown.ItemText className='link'>Edit Profile</NavDropdown.ItemText></Link>
                                 
                                 <Form 

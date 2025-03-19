@@ -128,9 +128,15 @@ const Signup = () => {
                         onChange={(event) => handleInputChange(event, setFormData)}
                     />
                         <Form.Text>
-                            Password must be at least 8 characters long, have at least 1 lowercase letter,
-                            have at least 1 uppercase letter, have at least 1 number, and have at least 1
-                            special character
+                            Password must meet the following requirements:
+                            <ul>
+                                <li>Be at least 8 characters long</li>   
+                                <li>Have at least 1 lowercase letter</li>
+                                <li>Have at least 1 uppercase letter</li>
+                                <li>Have at least 1 number</li>
+                                <li>Have at least 1 special character</li>
+                            </ul>  
+                            
                         </Form.Text>
                     {
                         validationError?.password ?

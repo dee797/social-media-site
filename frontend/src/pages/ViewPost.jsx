@@ -16,7 +16,7 @@ const ViewPost = () => {
     const params = useParams();
     const postId = parseInt(params.id);
 
-    let currentUserID = currentUser?.user_id;
+    let currentUserID = currentUser?.userInfo.user_id;
     const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserID}/posts/${postId}` 
     useFetchData(token, currentUser, setCurrentUser, setPostData, setError, setLoading, setNavigateTo, url)
 

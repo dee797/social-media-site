@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useOutletContext, Navigate, useParams } from 'react-router';
 import { useFetchData } from '../helpers';
 import Loader from '../components/Loader';
@@ -17,13 +17,19 @@ const Profile = () => {
     const params = useParams();
     const userHandle = params.handle;
 
-    const url = `${import.meta.env.VITE_BACKEND_URL}/users/${userHandle}/profile`;
-    useFetchData(token, currentUser, setCurrentUser, setProfileData, setError, setLoading, setNavigateTo, url);
+    if (params.handle === currentUser?.userInfo.user_id) {
+        useEffect(() => {
+            setProfileData(currentUser);
+        });
+    } else {
+        const url = `${import.meta.env.VITE_BACKEND_URL}/users/${userHandle}/profile`;
+        useFetchData(token, currentUser, setCurrentUser, setProfileData, setError, setLoading, setNavigateTo, url);
+    }
 
 
     if (loading) return (<Loader />);
 
-    if (error && error.message === "404") {
+    if (error?.message === "404") {
         return (<ErrorPage />);
     } else if (error) {
         return (<ServerErrorPage />);

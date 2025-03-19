@@ -9,7 +9,7 @@ import './App.css'
 
 const App = () => {
   const token = localStorage.getItem('token');
-  const currentUserID = localStorage.getItem('current_user_id');
+  const currentUserHandle = localStorage.getItem('currentUserHandle');
 
   const [currentUser, setCurrentUser] = useState(null);
   const [error, setError] = useState(null);
@@ -18,8 +18,9 @@ const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserID}`;
-  useFetchData(token, currentUserID, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, null, location);
+  const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserHandle.slice(1)}/profile`;
+  const expectedKey = 'profile';
+  useFetchData(token, currentUserHandle, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, expectedKey, location);
 
 
   if (loading) return (<Loader />);
@@ -28,7 +29,7 @@ const App = () => {
 
   if (token && currentUser) return (
     <>
-      <Navigation currentUser={currentUser} setCurrentUser={setCurrentUser} token={token} setError={setError}/>
+      <Navigation currentUser={currentUser} setCurrentUser={setCurrentUser} token={token} setError={setError} setLoading={setLoading}/>
       <Outlet context={[currentUser, setCurrentUser, token]}/>
     </>
   );

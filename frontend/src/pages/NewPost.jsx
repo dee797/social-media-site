@@ -42,7 +42,7 @@ const NewPost = () => {
                     method="post" 
                     onSubmit={(event) => {
                         handleSubmitForm(event, setLoading, () => {
-                            const posturl = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.user_id}/posts`;
+                            const posturl = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.userInfo.user_id}/posts`;
                             const expectedKey = 'createPostSuccess';
                             postData(token, currentUser, setCurrentUser, formData, setPostSuccess, setValidationError, setError, setLoading, setNavigateTo, posturl, expectedKey);
                         });
