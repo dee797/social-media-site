@@ -51,11 +51,11 @@ usersRouter.get("/:handle/profile",
     (req, res) => {
         res.json({
             userInfo: res.locals.userInfo,
-            following: res.locals.followers,
+            followers: res.locals.followers,
             following: res.locals.following,
             likedPosts: res.locals.likedPosts,
-            userPosts: res.locals.userPosts,
-            userReplies: res.locals.userReplies
+            posts: res.locals.userPosts,
+            replies: res.locals.userReplies
         })
     }
 );

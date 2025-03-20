@@ -150,6 +150,7 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
     .expect("Content-Type", /json/)
     .expect({
       "userInfo":{"user_id":1,"name":"Kelly","handle":"@kelly","bio":"","profile_pic_url":"","banner_pic_url":"","date_joined":"2025-01-01T00:00:00.000Z"},
+      "followers": [],
       "following":[{"followed_user":{"user_id":2,"name":"Kevin","handle":"@kevin","bio":"","profile_pic_url":"","banner_pic_url":"","date_joined":"2025-01-01T00:00:00.000Z"}}],
       "likedPosts":[{
         "post":{
@@ -159,7 +160,7 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
           "author":{"user_id":2,"name":"Kevin","handle":"@kevin","profile_pic_url":""},
           "numLikes":1,"numReplies":4,"numReposts":1
         }}],
-      "userPosts":{"name":"Kelly","username":"@kelly","profile_pic_url":"",
+      "posts":{"name":"Kelly","username":"@kelly","profile_pic_url":"",
         "posts":[
           {
           "parent_post":{"post_id":2,"content":"Hello World 2","date_created":"2025-01-01T00:00:00.000Z",
@@ -170,7 +171,7 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
             "post_id":1,"author_id":1,"date_created":"2025-01-01T00:00:00.000Z","content":"Hello World",
             "numLikes":0,"numReposts":1,"numReplies":0
       }]},
-        "userReplies":{"name":"Kelly","username":"@kelly",
+        "replies":{"name":"Kelly","username":"@kelly",
           "replies":[
             {
               "reply_post":{"post_id":3,"author_id":1,"date_created":"2025-01-01T00:00:00.000Z","content":"I like this post"},
@@ -257,7 +258,7 @@ describe('Security/Input validation tests', () => {
   // This test will log an error in the console with the message 'Invalid token'. This is expected behavior
   test("Prevent reuse of token that was issued before @test logged out", done => {
     request.agent(app)
-    .get("/users/1/profile")
+    .get("/users/1")
     .auth(testJWT, {type: 'bearer'})
     .expect("Content-Type", /json/)
     .expect({error: "An error has occurred."})

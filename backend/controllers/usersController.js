@@ -159,8 +159,8 @@ const postNewUser = [
           handle: '@' + req.body.username, 
           password: hashedPassword,
           bio: '',
-          profile_pic_url: '',
-          banner_pic_url: '',
+          profile_pic_url: process.env.DEFAULT_AVATAR_URL,
+          banner_pic_url: process.env.DEFAULT_BANNER_URL,
           date_joined: new Date(),
           token_valid_after: Math.floor(Date.now() / 1000)
       });
@@ -181,17 +181,9 @@ const postLogin = (req, res, next) => {
       req.login(user, {session: false}, (err) => {
           if (err) return next(err);
 
-          const token = jwt.sign({sub: user.user_id}, process.env.SECRET, { expiresIn: '2h'});
+          const token = jwt.sign({sub: user.userInfo.user_id}, process.env.SECRET, { expiresIn: '2h'});
           // On frontend, if loginSuccess === true then redirect to home path ("/")
-          return res.json({user: {
-            user_id: user.user_id,
-            name: user.name,
-            handle: user.handle,
-            bio: user.bio,
-            profile_pic_url: user.profile_pic_url,
-            banner_pic_url: user.banner_pic_url,
-            date_joined: user.date_joined
-          }, 
+          return res.json({user: user, 
           loginSuccess: true, 
           token});
       });
