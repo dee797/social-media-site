@@ -16,11 +16,10 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserHandle?.slice(1)}/profile`;
   const expectedKey = 'profile';
-  useFetchData(token, currentUserHandle, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, expectedKey, location);
+  useFetchData(token, currentUserHandle, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, expectedKey);
 
 
   if (loading) return (<Loader />);

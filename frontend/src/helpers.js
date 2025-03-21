@@ -63,8 +63,8 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
     }
 
     let goTo = "";
-    if (location?.pathname === "/signup" || location?.pathname === "/login") {
-        goTo = location.pathname;
+    if (window.location.pathname === "/signup" || window.location.pathname === "/login") {
+        goTo = window.location.pathname;
     } else {
         goTo = "/signup";
     }
@@ -89,9 +89,10 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
                 })
                 .then(res => {
                     if (res.error || res.authenticated === false) {
+                        setNavigateTo("/login", {replace: true});
                         localStorage.clear();
                         setCurrentUser(null);
-                        return setNavigateTo("/login", {replace: true});
+                        return;
                     }
             
                     if (res[expectedKey]) {
@@ -114,7 +115,7 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
         }
 
         return () => {
-            if (expectedKey !== 'notifications' && expectedKey !=='profile') {
+            if (expectedKey !== 'notifications') {
                 return effectRan.current = true  
             } 
             

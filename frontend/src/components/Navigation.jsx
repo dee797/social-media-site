@@ -29,9 +29,10 @@ const fetchLogout = async (token, currentUser, setCurrentUser, setError, setLoad
                 const resBody = await res.json();
 
                 if (res.status === 401 || resBody.logoutSuccess) {
+                    navigate("/login", {replace: true});
                     localStorage.clear();
                     setCurrentUser(null);
-                    return navigate("/login", {replace: true});
+                    return;
                 }
 
                 if (res.status > 401) {
