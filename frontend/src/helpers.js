@@ -54,13 +54,7 @@ const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoa
 }
 
 
-const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, setNavigateTo, url, expectedKey=null, location=null) => {
-    const effectRan = useRef(false);
-
-    let arr = [];
-    if (location && expectedKey === 'notifications') {
-        arr = [location];
-    }
+const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, setNavigateTo, url, expectedKey=null) => {
 
     let goTo = "";
     if (window.location.pathname === "/signup" || window.location.pathname === "/login") {
@@ -70,7 +64,6 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
     }
 
     useEffect(() => {
-        if (!effectRan.current) {
             if (token && currentUser) {
                 fetch(url, {
                     mode: "cors", 
@@ -112,20 +105,12 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
                 setLoading(false);
                 setNavigateTo(goTo, {replace: true});
             }
-        }
 
-        return () => {
-            if (expectedKey !== 'notifications') {
-                return effectRan.current = true  
-            } 
-            
-            return effectRan.current = false;
-        }
-    }, arr);
+    });
 }
 
 
-const postData = async (token, currentUser, setCurrentUser, formData, setPostSuccess, setValidationError, setError, setLoading, setNavigateTo, url, expectedKey=null) => {
+const postData = async (token, currentUser, setCurrentUser, formData, setPostSuccess, setValidationError, setError, setLoading, setNavigateTo, url, setModalShow) => {
 
     if (token && currentUser) {
         return fetch(url, {
@@ -154,10 +139,12 @@ const postData = async (token, currentUser, setCurrentUser, formData, setPostSuc
                 if (res.status > 401) {
                     throw new Error();
                 }
-    
-                if (resBody[expectedKey]) {
-                    setPostSuccess(resBody[expectedKey]);
+                    
+                if (setModalShow) {
+                    setModalShow();
                 }
+
+                setPostSuccess(resBody);
     
             } catch (err) {
                 throw new Error(err);
@@ -167,7 +154,7 @@ const postData = async (token, currentUser, setCurrentUser, formData, setPostSuc
             setError(err);
         })
         .finally(() => {
-            setLoading(false);
+            !setModalShow ? setLoading(false) : null;
         });
     } else {
         setLoading(false);

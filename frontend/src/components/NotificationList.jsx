@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, Navigate } from 'react-router';
-import { useFetchData, handleSubmitForm, putData } from '../helpers';
+import { handleSubmitForm, putData } from '../helpers';
 
 import { Notification } from './Notification';
 
@@ -20,8 +20,54 @@ const NotificationList = ({token, currentUser, setCurrentUser, setError, setUnre
     const location = useLocation();
 
     const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser?.userInfo.user_id}/notifications`;
-    const expectedKey = 'notifications';
-    useFetchData(token, currentUser, setCurrentUser, setNotifications, setError, setLoading, setNavigateTo, url, expectedKey, location);
+
+    useEffect(() => {
+        let goTo = "";
+        if (window.location.pathname === "/signup" || window.location.pathname === "/login") {
+            goTo = window.location.pathname;
+        } else {
+            goTo = "/signup";
+        }
+
+        if (token && currentUser) {
+            fetch(url, {
+                mode: "cors", 
+                method: "get",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }})
+            .then(res => {
+                if (res.status === 404) {
+                    throw new Error("404");
+                }
+                if (res.status > 401) {
+                    throw new Error("Server error");
+                }
+                return res.json();
+            })
+            .then(res => {
+                if (res.error || res.authenticated === false) {
+                    setNavigateTo("/login");
+                    localStorage.clear();
+                    setCurrentUser(null);
+                    return;
+                }
+        
+                setNotifications(res);
+            })
+            .catch(err => {
+                console.error(err);
+                setError(err);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+        } else {
+            setLoading(false);
+            setNavigateTo(goTo);
+        }
+    }, [location]);
+
 
     if (loading) return (
         <div className="d-sm-flex w-100 align-items-sm-center justify-content-sm-center" style={{height: '100px'}}>
@@ -29,7 +75,7 @@ const NotificationList = ({token, currentUser, setCurrentUser, setError, setUnre
         </div>
     );
 
-    if (navigateTo) return (<Navigate to={navigateTo}/>);
+    if (navigateTo) return (<Navigate to={navigateTo} replace/>);
 
     if (notifications.length > 0) {
         let unReadNotifCount = 0;
