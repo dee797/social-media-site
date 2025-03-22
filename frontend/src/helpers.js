@@ -54,8 +54,13 @@ const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoa
 }
 
 
-const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, setNavigateTo, url, expectedKey=null) => {
+const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, setNavigateTo, url, expectedKey=null, shouldUpdateUser=null) => {
 
+    let arr = []
+    if (shouldUpdateUser) {
+        arr = [shouldUpdateUser]
+    }
+    
     let goTo = "";
     if (window.location.pathname === "/signup" || window.location.pathname === "/login") {
         goTo = window.location.pathname;
@@ -64,53 +69,53 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
     }
 
     useEffect(() => {
-            if (token && currentUser) {
-                fetch(url, {
-                    mode: "cors", 
-                    method: "get",
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }})
-                .then(res => {
-                    if (res.status === 404) {
-                        throw new Error("404");
-                    }
-                    if (res.status > 401) {
-                        throw new Error("Server error");
-                    }
-                    return res.json();
-                })
-                .then(res => {
-                    if (res.error || res.authenticated === false) {
-                        setNavigateTo("/login", {replace: true});
-                        localStorage.clear();
-                        setCurrentUser(null);
-                        return;
-                    }
-            
-                    if (res[expectedKey]) {
-                        setData(res[expectedKey]);
-                    } else {
-                        setData(res);
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    setError(err);
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
-            } else {
+        if (token && currentUser) {
+            fetch(url, {
+                mode: "cors", 
+                method: "get",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }})
+            .then(res => {
+                if (res.status === 404) {
+                    throw new Error("404");
+                }
+                if (res.status > 401) {
+                    throw new Error("Server error");
+                }
+                return res.json();
+            })
+            .then(res => {
+                if (res.error || res.authenticated === false) {
+                    setNavigateTo("/login", {replace: true});
+                    localStorage.clear();
+                    setCurrentUser(null);
+                    return;
+                }
+        
+                if (res[expectedKey]) {
+                    setData(res[expectedKey]);
+                } else {
+                    setData(res);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                setError(err);
+            })
+            .finally(() => {
                 setLoading(false);
-                setNavigateTo(goTo, {replace: true});
-            }
+            });
+        } else {
+            setLoading(false);
+            setNavigateTo(goTo, {replace: true});
+        }
 
-    });
+    }, arr);
 }
 
 
-const postData = async (token, currentUser, setCurrentUser, formData, setPostSuccess, setValidationError, setError, setLoading, setNavigateTo, url, setModalShow) => {
+const postData = async (token, currentUser, setCurrentUser, formData, setShouldUpdateUser, setValidationError, setError, setLoading, setNavigateTo, url, setModalShow=null, setPostSuccess=null) => {
 
     if (token && currentUser) {
         return fetch(url, {
@@ -144,7 +149,11 @@ const postData = async (token, currentUser, setCurrentUser, formData, setPostSuc
                     setModalShow();
                 }
 
-                setPostSuccess(resBody);
+                if (setPostSuccess) {
+                    setPostSuccess(resBody);
+                }
+
+                setShouldUpdateUser(resBody);
     
             } catch (err) {
                 throw new Error(err);

@@ -10,8 +10,8 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 
-const PostForm = ({setPostSuccess, setLoading, url, id, setModalShow=null}) => {
-    const [currentUser, setCurrentUser, token] = useOutletContext();
+const PostForm = ({setLoading, url, id, setModalShow=null, setPostSuccess=null}) => {
+    const [currentUser, setCurrentUser, token, setShouldUpdateUser] = useOutletContext();
 
     const [formData, setFormData] = useState({
         content: "",
@@ -32,7 +32,7 @@ const PostForm = ({setPostSuccess, setLoading, url, id, setModalShow=null}) => {
             method="post" 
             onSubmit={(event) => {
                 handleSubmitForm(event, setLoading, () => {
-                    postData(token, currentUser, setCurrentUser, formData, setPostSuccess, setValidationError, setError, setLoading, setNavigateTo, url, setModalShow);
+                    postData(token, currentUser, setCurrentUser, formData, setShouldUpdateUser, setValidationError, setError, setLoading, setNavigateTo, url, setModalShow, setPostSuccess);
                 });
             }}
             style={{width: "100%", padding: "20px 40px",}}

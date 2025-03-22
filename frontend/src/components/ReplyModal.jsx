@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 
-const ReplyModal = ({currentUserId, authorProfilePic, authorName, authorHandle, authorId, postId, postCreated, postContent, modalShow, setShouldUpdateUser, callback}) => {
+const ReplyModal = ({currentUserId, authorProfilePic, authorName, authorHandle, authorId, postId, postCreated, postContent, modalShow, callback}) => {
     const [loading, setLoading] = useState(false);
     
     const replyurl = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserId}/posts/${postId}/${authorId}/replies`;
@@ -44,7 +44,7 @@ const ReplyModal = ({currentUserId, authorProfilePic, authorName, authorHandle, 
                     </div>
                     <p style={{textAlign: "left", paddingLeft: "46px"}}>{postContent}</p>
 
-                    <PostForm setPostSuccess={setShouldUpdateUser} setLoading={setLoading} url={replyurl} id="reply" setModalShow={callback}/>
+                    <PostForm setLoading={setLoading} url={replyurl} id="reply" setModalShow={callback}/>
                 </Modal.Body>
 
                 <Modal.Footer>

@@ -10,7 +10,7 @@ import Card from 'react-bootstrap/Card';
 
 
 const Home = () => {
-    const [currentUser, setCurrentUser, token] = useOutletContext();
+    const [currentUser, setCurrentUser, token,  ,shouldUpdateUser] = useOutletContext();
 
     const [homeData, setHomeData] = useState(null);
     const [error, setError] = useState(null);
@@ -19,7 +19,7 @@ const Home = () => {
 
 
     const url = `${import.meta.env.VITE_BACKEND_URL}/home`;
-    useFetchData(token, currentUser, setCurrentUser, setHomeData, setError, setLoading, setNavigateTo, url);
+    useFetchData(token, currentUser, setCurrentUser, setHomeData, setError, setLoading, setNavigateTo, url, null, shouldUpdateUser);
 
 
     if (loading) return (<Loader />);
@@ -31,7 +31,7 @@ const Home = () => {
     return (
         <div style={{minHeight: "85vh", display: "flex", columnGap: "20px", padding: "30px", boxSizing: "border-box", alignItems: "stretch"}}>
             <main style={{flex: 1.5}}>
-                <Card style={{height: "100%"}}>
+                <Card style={{height: "fit-content"}}>
                     <Card.Header as="h5">Featured</Card.Header>
                     <Card.Body className='cardBody'>
                         {
@@ -40,7 +40,7 @@ const Home = () => {
                             :
                                 homeData.posts.map(post => {
                                     return (
-                                        <Post postData={post} key={post.post_id}/>
+                                        <Post postData={post} currentUser={currentUser} key={post.post_id}/>
                                     );
                                 })
                         }
@@ -49,7 +49,7 @@ const Home = () => {
             </main>
 
             <aside style={{flex: 1}}>
-                <Card style={{height: "100%"}}>
+                <Card style={{height: "fit-content"}}>
                     <Card.Header as="h5">Who to follow</Card.Header>
                     <Card.Body className='cardBody'>
                         {
