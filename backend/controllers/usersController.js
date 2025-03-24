@@ -236,12 +236,14 @@ const postLike = asyncHandler(async (req, res) => {
     user_id: parseInt(req.params.user_id)
   });
 
-  await notificationDB.createNotification({
-    receiver_id: parseInt(req.params.author_id),
-    sender_id: parseInt(req.params.user_id),
-    source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
-    type_id: 1
-  });
+  if (req.params.author_id !== req.params.user_id) {
+    await notificationDB.createNotification({
+      receiver_id: parseInt(req.params.author_id),
+      sender_id: parseInt(req.params.user_id),
+      source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+      type_id: 1
+    });
+  }
 
   res.json({createLikeSuccess: true});
 });
