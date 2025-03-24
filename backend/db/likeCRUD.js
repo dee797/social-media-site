@@ -38,11 +38,9 @@ const getLikeCountForPost = async (post) => {
 
 // This is the same as unliking a post
 const deleteLike = async (like) => {
-    return await prisma.like.delete({
-        where: { user_id: like.user_id, 
-                 post_id: like.post_id
-        }
-    });
+    return await prisma.$queryRaw`
+        delete from "Like" where user_id = ${like.user_id} and post_id = ${like.post_id}
+    `;
 }
 
 
