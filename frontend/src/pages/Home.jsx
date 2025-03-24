@@ -10,7 +10,7 @@ import Card from 'react-bootstrap/Card';
 
 
 const Home = () => {
-    const [currentUser, setCurrentUser, token,  ,shouldUpdateUser] = useOutletContext();
+    const [currentUser, setCurrentUser, token, setShouldUpdateUser, shouldUpdateUser] = useOutletContext();
 
     const [homeData, setHomeData] = useState(null);
     const [error, setError] = useState(null);
@@ -40,7 +40,7 @@ const Home = () => {
                             :
                                 homeData.posts.map(post => {
                                     return (
-                                        <Post postData={post} currentUser={currentUser} key={post.post_id}/>
+                                        <Post postData={post} currentUser={currentUser} setCurrentUser={setCurrentUser} setShouldUpdateUser={setShouldUpdateUser} token={token} setError={setError} key={post.post_id}/>
                                     );
                                 })
                         }

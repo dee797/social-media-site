@@ -2,9 +2,11 @@ import { Link } from "react-router";
 import { useState } from "react";
 
 import { ReplyModal } from "./ReplyModal";
+import { LikeButton } from "./LikeButton";
 
-const Post = ({currentUser, postData, setShouldUpdateUser}) => {
-    const [modalShow, setModalShow] = useState(false);
+
+const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, postData}) => {
+    const [replyModalShow, setReplyModalShow] = useState(false);
 
     let displayTime;
 
@@ -27,10 +29,10 @@ const Post = ({currentUser, postData, setShouldUpdateUser}) => {
     }
 
     return (
-        <pre>
+        <pre className="postListItem">
             <Link to={`/post/${postData.post_id}`} replace style={{padding: "10px"}}>
                 <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
-                    <img src={postData.author.profile_pic_url} style={{width: "36px", height: "36px", borderRadius: "18px"}}></img>
+                    <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.author.profile_pic_url} style={{width: "36px", height: "36px", borderRadius: "18px"}}></img>
                     <div>{postData.author.name}</div>
                     <div className="lightGray">{postData.author.handle}</div>
                     <div className="lightGray">&#8226;</div>
@@ -58,19 +60,36 @@ const Post = ({currentUser, postData, setShouldUpdateUser}) => {
             }
 
 
-            <div style={{display: "flex", justifyContent: "space-between", padding: "0px 80px"}}>
-                <div className="postIcons" style={{display: "flex", alignItems: "center"}} onClick={() => setModalShow(true)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-chat-right" viewBox="0 0 16 16">
-                    <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
-                    </svg>
+            <div style={{display: "flex", justifyContent: "flex-start", paddingLeft: "56px", columnGap: "60px"}}>
+                <div className="postIcons" style={{display: "flex", alignItems: "center"}}>
+                    <div onClick={() => setReplyModalShow(true)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-chat-right" viewBox="0 0 16 16">
+                        <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
+                        </svg>
+                    </div>
+
                     {
                         postData.numReplies !== 0 ?
                         <div className="countPlaceholder">{postData.numReplies}</div> :
                         <div className="countPlaceholder" style={{paddingLeft: "40px"}}></div>
                     }
                 </div>
+
+
                 <div>{postData.numReposts}</div>
-                <div>{postData.numLikes}</div>
+
+
+                <div className="postIcons" style={{display: "flex", alignItems: "center"}}>
+                    <LikeButton 
+                        currentUser={currentUser} 
+                        setCurrentUser={setCurrentUser} 
+                        setShouldUpdateUser={setShouldUpdateUser} 
+                        token={token} setError={setError} 
+                        currentPostId={postData.post_id}
+                        authorId={postData.author.user_id}
+                        numLikes={postData.numLikes}
+                    />
+                </div>
             </div>
 
             <ReplyModal 
@@ -82,9 +101,8 @@ const Post = ({currentUser, postData, setShouldUpdateUser}) => {
                 postId={postData.post_id}
                 postCreated={displayTime}
                 postContent={postData.content}
-                modalShow={modalShow}
-                setShouldUpdateUser={setShouldUpdateUser}
-                callback={() => setModalShow(false)}
+                modalShow={replyModalShow}
+                callback={() => setReplyModalShow(false)}
             />
         </pre>
     );
