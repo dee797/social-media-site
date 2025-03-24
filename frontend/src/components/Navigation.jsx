@@ -107,7 +107,7 @@ const Navigation = ({ currentUser, setCurrentUser, token, setError, setLoading }
                                 title={
                                     <div style={{display: "flex", alignItems: "center", textAlign: "left", fontSize: "15px", columnGap: "10px"}}>
                                         <div style={{gridTemplate: "1fr 1fr / 55px 1fr", display: "grid", columnGap: "10px"}}>
-                                            <img src={currentUser.userInfo.profile_pic_url} style={{gridRow: "1 / 3", width: "50px", height: "50px", borderRadius: "25px"}}></img>
+                                            <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={currentUser.userInfo.profile_pic_url} style={{gridRow: "1 / 3", width: "50px", height: "50px", borderRadius: "25px"}}></img>
                                             <div>{currentUser.userInfo.name}</div>
                                             <div>{currentUser.userInfo.handle}</div>
                                         </div>
