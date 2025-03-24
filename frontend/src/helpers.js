@@ -136,6 +136,7 @@ const postData = async (token, currentUser, setCurrentUser, formData, setShouldU
                 }
 
                 if (res.status === 401 && (resBody.error || resBody.authenticated === false)) {
+                    setNavigateTo("/login", {replace: true});
                     localStorage.clear();
                     setCurrentUser(null);
                     return;
@@ -192,6 +193,7 @@ const putData = async (token, currentUser, setCurrentUser, setError, setLoading,
                 }
 
                 if (res.status === 401 && (resBody.error || resBody.authenticated === false)) {
+                    setNavigateTo("/login", {replace: true});
                     localStorage.clear();
                     setCurrentUser(null);
                     return;
@@ -222,6 +224,49 @@ const putData = async (token, currentUser, setCurrentUser, setError, setLoading,
 }
 
 
+const deleteData = async (token, currentUser, setCurrentUser, setShouldUpdateUser, setError, setLoading, navigate, url) => {
+    if (token && currentUser) {
+        return fetch(url, {
+            mode: "cors",
+            method: "delete",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            }
+        })
+        .then(async res => {
+            try {
+                const resBody = await res.json();
+
+                if (res.status === 401 && (resBody.error || resBody.authenticated === false)) {
+                    navigate("/login", {replace: true});
+                    localStorage.clear();
+                    setCurrentUser(null);
+                    return;
+                }
+
+                if (res.status > 401) {
+                    throw new Error();
+                }
+
+                setShouldUpdateUser(resBody);
+    
+            } catch (err) {
+                throw new Error(err);
+            }
+        })            
+        .catch(err => {
+            setError(err);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
+    } else {
+        setLoading(false);
+        navigate("/signup", {replace: true});
+    }
+}
+
+
 const handleInputChange = (event, setFormData) => {
     const { name, value } = event.target;
     setFormData(data => ({...data, [name]: value}));
@@ -240,6 +285,7 @@ export {
     useFetchData,
     postData,
     putData,
+    deleteData,
     handleInputChange,
     handleSubmitForm
 }
