@@ -224,7 +224,7 @@ const putData = async (token, currentUser, setCurrentUser, setError, setLoading,
 }
 
 
-const deleteData = async (token, currentUser, setCurrentUser, setShouldUpdateUser, setError, setLoading, navigate, url) => {
+const deleteData = async (token, currentUser, setCurrentUser, setShouldUpdateUser, setExists, setCount=null, setError, setLoading, navigate, url) => {
     if (token && currentUser) {
         return fetch(url, {
             mode: "cors",
@@ -248,6 +248,11 @@ const deleteData = async (token, currentUser, setCurrentUser, setShouldUpdateUse
                     throw new Error();
                 }
 
+                if (setCount) {
+                    setCount((oldCount) => oldCount - 1);
+                }
+
+                setExists(false);
                 setShouldUpdateUser(resBody);
     
             } catch (err) {

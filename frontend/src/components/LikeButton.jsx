@@ -4,7 +4,9 @@ import { useNavigate } from "react-router";
 
 import { deleteData } from "../helpers";
 
-const fetchPostLike = async (token, currentUser, setCurrentUser, setShouldUpdateUser, setError, setLoading, navigate, url) => {
+import Spinner from "react-bootstrap/Spinner";
+
+const fetchPostLike = async (token, currentUser, setCurrentUser, setShouldUpdateUser, setIsLikedPost, setLikeCount, setError, setLoading, navigate, url) => {
     if (token && currentUser) {
         return fetch(url, {
             mode: "cors",
@@ -28,6 +30,8 @@ const fetchPostLike = async (token, currentUser, setCurrentUser, setShouldUpdate
                     throw new Error();
                 }
 
+                setIsLikedPost(resBody["createLikeSuccess"]);
+                setLikeCount((oldLikeCount) => oldLikeCount + 1);
                 setShouldUpdateUser(resBody);
     
             } catch (err) {
@@ -50,20 +54,22 @@ const fetchPostLike = async (token, currentUser, setCurrentUser, setShouldUpdate
 
 const LikeButton = ({currentUser, setCurrentUser, setShouldUpdateUser, token, setError, currentPostId, authorId, numLikes}) => {
     const [loading, setLoading] = useState(false);
+    const [isLikedPost, setIsLikedPost] = useState(currentUser.likedPosts.find(({post}) => post.post_id === currentPostId));
+    const [likeCount, setLikeCount] = useState(numLikes);
     const navigate = useNavigate();
-
-    if (loading) return; 
+    
+    if (loading) return (<Spinner size="sm" />); 
 
     return (
         <>
         {
-            currentUser.likedPosts.find(({post}) => post.post_id === currentPostId) ?
+            isLikedPost?
             <form
                 method="delete"
                 onSubmit={(event) => {
                     handleSubmitForm(event, setLoading, () => {
                         const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.userInfo.user_id}/likes/${currentPostId}`;
-                        deleteData(token, currentUser, setCurrentUser, setShouldUpdateUser, setError, setLoading, navigate, url);
+                        deleteData(token, currentUser, setCurrentUser, setShouldUpdateUser, setIsLikedPost, setLikeCount, setError, setLoading, navigate, url);
                     })
                 }}
             >
@@ -79,7 +85,7 @@ const LikeButton = ({currentUser, setCurrentUser, setShouldUpdateUser, token, se
                 onSubmit={(event) => {
                     handleSubmitForm(event, setLoading, () => {
                         const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.userInfo.user_id}/likes/${currentPostId}/${authorId}`;
-                        fetchPostLike(token, currentUser, setCurrentUser, setShouldUpdateUser, setError, setLoading, navigate, url);
+                        fetchPostLike(token, currentUser, setCurrentUser, setShouldUpdateUser, setIsLikedPost, setLikeCount, setError, setLoading, navigate, url);
                     })
                 }}
             >
@@ -92,8 +98,8 @@ const LikeButton = ({currentUser, setCurrentUser, setShouldUpdateUser, token, se
         }   
 
         {
-            numLikes !== 0 ?
-            <div className="countPlaceholder">{numLikes}</div> :
+            likeCount !== 0 ?
+            <div className="countPlaceholder">{likeCount}</div> :
             <div className="countPlaceholder" style={{paddingLeft: "40px"}}></div>
         }
         </>
