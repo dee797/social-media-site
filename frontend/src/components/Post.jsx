@@ -3,10 +3,14 @@ import { useState } from "react";
 
 import { ReplyModal } from "./ReplyModal";
 import { LikeButton } from "./LikeButton";
+import { RepostButton } from "./RepostButton";
+
 
 
 const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, postData}) => {
     const [replyModalShow, setReplyModalShow] = useState(false);
+    const [showChooseRepostType, setShowChooseRepostType] = useState(false);
+    
 
     let displayTime;
 
@@ -61,8 +65,8 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
 
 
             <div style={{display: "flex", justifyContent: "flex-start", paddingLeft: "56px", columnGap: "60px"}}>
-                <div className="postIcons" style={{display: "flex", alignItems: "center"}}>
-                    <div onClick={() => setReplyModalShow(true)}>
+                <div style={{display: "flex", alignItems: "center"}}>
+                    <div className="postIcons" onClick={() => setReplyModalShow(true)}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-chat-right" viewBox="0 0 16 16">
                         <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/>
                         </svg>
@@ -71,20 +75,34 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
                     {
                         postData.numReplies !== 0 ?
                         <div className="countPlaceholder">{postData.numReplies}</div> :
-                        <div className="countPlaceholder" style={{paddingLeft: "40px"}}></div>
+                        <div className="countPlaceholder" style={{paddingLeft: "30px"}}></div>
                     }
                 </div>
 
 
-                <div>{postData.numReposts}</div>
+                <div style={{display: "flex", alignItems: "center", padding: "0px 15px"}}>
+                   <RepostButton 
+                        currentUser={currentUser}
+                        setCurrentUser={setCurrentUser}
+                        token={token}
+                        setShouldUpdateUser={setShouldUpdateUser}
+                        setError={setError}
+                        currentPostId={postData.post_id}
+                        authorId={postData.author.user_id}
+                        numReposts={postData.numReposts}
+                        showChooseRepostType={showChooseRepostType}
+                        setShowChooseRepostType={setShowChooseRepostType}
+                   />
+                </div>
 
 
-                <div className="postIcons" style={{display: "flex", alignItems: "center"}}>
+                <div style={{display: "flex", alignItems: "center"}}>
                     <LikeButton 
                         currentUser={currentUser} 
                         setCurrentUser={setCurrentUser} 
                         setShouldUpdateUser={setShouldUpdateUser} 
-                        token={token} setError={setError} 
+                        token={token} 
+                        setError={setError}
                         currentPostId={postData.post_id}
                         authorId={postData.author.user_id}
                         numLikes={postData.numLikes}
