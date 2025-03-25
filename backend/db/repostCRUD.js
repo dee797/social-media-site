@@ -46,11 +46,9 @@ const getRepostCountForPost = async (post) => {
 
 // This is the same as removing your repost from someone else's post
 const deleteRepost = async (repost) => {
-    return await prisma.repost.delete({
-        where: { user_id: repost.user_id, 
-                 parent_post_id: repost.parent_post_id
-        }
-    });
+    return await prisma.$queryRaw`
+        delete from "Repost" where parent_post_id = ${repost.parent_post_id} and user_id = ${repost.user_id};
+    `;
 }
 
 
