@@ -13,7 +13,6 @@ const ReplyModal = ({currentUserId, authorProfilePic, authorName, authorHandle, 
     const replyurl = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserId}/posts/${postId}/${authorId}/replies`;
 
 
-
     return (
         <Modal
             show={modalShow}
@@ -24,7 +23,7 @@ const ReplyModal = ({currentUserId, authorProfilePic, authorName, authorHandle, 
             centered
         >
             {
-                loading ? 
+                loading || !modalShow ? 
                 <div style={{height: "200px", display: "flex"}}>
                     <Loader /> 
                 </div>
@@ -36,7 +35,7 @@ const ReplyModal = ({currentUserId, authorProfilePic, authorName, authorHandle, 
 
                 <Modal.Body>
                     <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
-                        <img src={authorProfilePic} style={{width: "36px", height: "36px", borderRadius: "18px"}}></img>
+                        <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={authorProfilePic} style={{width: "36px", height: "36px", borderRadius: "18px"}}></img>
                         <div>{authorName}</div>
                         <div className="lightGray">{authorHandle}</div>
                         <div className="lightGray">&#8226;</div>
