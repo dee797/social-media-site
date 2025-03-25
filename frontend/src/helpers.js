@@ -164,7 +164,7 @@ const postData = async (token, currentUser, setCurrentUser, formData, setShouldU
             setError(err);
         })
         .finally(() => {
-            !setModalShow ? setLoading(false) : null;
+            setLoading(false);
         });
     } else {
         setLoading(false);
@@ -224,7 +224,7 @@ const putData = async (token, currentUser, setCurrentUser, setError, setLoading,
 }
 
 
-const deleteData = async (token, currentUser, setCurrentUser, setShouldUpdateUser, setExists, setCount=null, setError, setLoading, navigate, url) => {
+const deleteData = async (token, currentUser, setCurrentUser, setShouldUpdateUser, setExists, setCount=null, setError, setLoading, navigate, url, setModalShow=null) => {
     if (token && currentUser) {
         return fetch(url, {
             mode: "cors",
@@ -246,6 +246,10 @@ const deleteData = async (token, currentUser, setCurrentUser, setShouldUpdateUse
 
                 if (res.status > 401) {
                     throw new Error();
+                }
+
+                if (setModalShow) {
+                    setModalShow(false);
                 }
 
                 if (setCount) {
