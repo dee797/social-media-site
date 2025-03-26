@@ -2,20 +2,16 @@ import { Link } from "react-router";
 import { useState } from "react";
 
 import { ReplyModal } from "./ReplyModal";
+import { QuoteRepostModal } from "./QuoteRepostModal";
 import { LikeButton } from "./LikeButton";
 import { RepostButton } from "./RepostButton";
 
 
-
-const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, postData}) => {
-    const [replyModalShow, setReplyModalShow] = useState(false);
-    const [showChooseRepostType, setShowChooseRepostType] = useState(false);
-    
-
+const findDisplayTime = (dateString) => {
     let displayTime;
 
     const now = new Date().getTime() / 1000;
-    const timePostCreated = (new Date(postData.date_created)).getTime() / 1000;
+    const timePostCreated = (new Date(dateString)).getTime() / 1000;
     const timeSincePostCreated = now - timePostCreated;
     const minutes = timeSincePostCreated / 60;
 
@@ -29,8 +25,27 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
     } else if (minutes < 10080) {   //10080 = number of minutes in a week
         displayTime = Math.floor(minutes / 60 / 24) + 'd';
     } else {
-        displayTime = (new Date(postData.date_created)).toLocaleDateString();
+        displayTime = (new Date(dateString)).toLocaleDateString();
     }
+
+    return displayTime;
+}
+
+
+
+const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, postData}) => {
+    const [replyModalShow, setReplyModalShow] = useState(false);
+    const [showChooseRepostType, setShowChooseRepostType] = useState(false);
+    const [showQuoteRepost, setShowQuoteRepost] = useState(false);
+
+    let displayTimeQuote;
+    const displayTime = findDisplayTime(postData.date_created);    
+
+
+    if (postData.quote_parent?.length !== 0) {
+        displayTimeQuote = findDisplayTime(postData.quote_parent[0].parent_post.date_created);
+    }
+
 
     return (
         <pre className="postListItem">
@@ -42,25 +57,30 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
                     <div className="lightGray">&#8226;</div>
                     <div className="lightGray">{displayTime}</div>
                 </div>
-                <p style={{textAlign: "left", paddingLeft: "46px"}}>{postData.content}</p>
+                <p style={{textAlign: "left", paddingLeft: "46px", marginBottom: "0px"}}>{postData.content}</p>
             </Link>
-            {
-                
-                postData.quote_parent?.length !== 0 ? 
-                    <div>
-                        <p>{postData.quote_parent[0].parent_post.author.profile_pic_url}</p>
-                        <p>{postData.quote_parent[0].parent_post.author.name}</p>
-                        <p>{postData.quote_parent[0].parent_post.author.handle}</p>
-                        <p>{postData.quote_parent[0].parent_post.date_created}</p>
-                        <p>{postData.quote_parent[0].parent_post.content}</p>
-                    </div>
-                :
-                    null
-            }
 
 
             {
                 postData.userReplies?.length !== 0
+            }
+            
+            {
+                postData.quote_parent?.length !== 0 ? 
+                    <Link to={`post/${postData.quote_parent[0].parent_post.post_id}`}>
+                        <div style={{padding: "15px", border: "1px solid rgb(220, 220, 220)", borderRadius: "5px", marginLeft: "56px", marginBottom: "10px", fontSize: "0.95rem"}}>
+                            <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
+                                <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.quote_parent[0].parent_post.author.profile_pic_url} style={{width: "30px", height: "30px", borderRadius: "15px"}}/>
+                                <div>{postData.quote_parent[0].parent_post.author.name}</div>
+                                <div className="lightGray">{postData.quote_parent[0].parent_post.author.handle}</div>
+                                <div className="lightGray">&#8226;</div>
+                                <div className="lightGray">{displayTimeQuote}</div>
+                            </div>
+                            <p style={{textAlign: "left", paddingLeft: "40px", marginBottom: "0px"}}>{postData.quote_parent[0].parent_post.content}</p>
+                        </div>
+                    </Link>
+                :
+                    null
             }
 
 
@@ -92,6 +112,8 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
                         numReposts={postData.numReposts}
                         showChooseRepostType={showChooseRepostType}
                         setShowChooseRepostType={setShowChooseRepostType}
+                        showQuoteRepost={showQuoteRepost}
+                        setShowQuoteRepost={setShowQuoteRepost}
                    />
                 </div>
 
@@ -121,6 +143,19 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
                 postContent={postData.content}
                 modalShow={replyModalShow}
                 callback={() => setReplyModalShow(false)}
+            />
+
+            <QuoteRepostModal 
+                currentUserId={currentUser.userInfo.user_id}
+                authorProfilePic={postData.author.profile_pic_url}
+                authorName={postData.author.name}
+                authorHandle={postData.author.handle}
+                authorId={postData.author.user_id}
+                postId={postData.post_id}
+                postCreated={displayTime}
+                postContent={postData.content}
+                modalShow={showQuoteRepost}
+                callback={() => setShowQuoteRepost(false)}
             />
         </pre>
     );
