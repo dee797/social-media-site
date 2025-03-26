@@ -55,7 +55,7 @@ const fetchRepost = async (token, currentUser, setCurrentUser, setShouldUpdateUs
 }
 
 
-const ChooseRepostType = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, isReposted, setIsReposted, setRepostCount, show, setModalShow, authorId, currentPostId}) => {
+const ChooseRepostType = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, isReposted, setIsReposted, setRepostCount, show, setModalShow, authorId, currentPostId, setShowQuoteRepost}) => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -107,7 +107,16 @@ const ChooseRepostType = ({currentUser, setCurrentUser, token, setShouldUpdateUs
                         </Form>
                     }
 
-                    <Button style={{width: "100%"}} type="button">Quote Repost</Button>
+                    <Button 
+                        style={{width: "100%"}} 
+                        type="button"
+                        onClick={() => {
+                            setModalShow(false);
+                            setShowQuoteRepost(true);
+                        }}
+                    >
+                        Quote Repost
+                    </Button>
                
                 </Modal.Body>
                 <Modal.Footer >
