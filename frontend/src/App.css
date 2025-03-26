@@ -25,6 +25,9 @@ body {
   min-height: 100vh;
 }
 
+
+
+/* link/anchor styles */
 a {
   color: var(--bs-body-color);
   text-decoration: inherit;
@@ -38,6 +41,8 @@ a:hover {
 }
 
 
+
+/* heading styles */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -48,6 +53,8 @@ h2 {
 }
 
 
+
+/* searchButton styles */
 .searchButton {
   border-radius: 0px 20px 20px 0px;
   border: 1px solid transparent;
@@ -68,6 +75,8 @@ h2 {
 }
 
 
+
+/* styles for elements in navigation bar*/
 #notificationDropdown::after, #userDropdown::after {
   display: none;
 }
@@ -85,6 +94,9 @@ h2 {
   color: royalblue;
 }
 
+
+
+/* form-related styles */
 .formDiv {
   padding: 20px;
   width: 100%; 
@@ -105,7 +117,7 @@ h2 {
   margin-bottom: 20px;
 }
 
-.logoutButton {
+.logoutButton, .likeButton, .repostButton {
   background-color: transparent;
   outline: none;
   border: none;
@@ -114,6 +126,9 @@ h2 {
   text-align: left;
 }
 
+
+
+/* other styles */
 .cardBody {
   display: flex;
   flex-direction: column;
@@ -124,8 +139,36 @@ pre {
   font-family: inherit;
   color: inherit;
   font-size: inherit;
+  display: flex;
+  flex-direction: column;
 }
 
 .lightGray {
   color: var(--bs-secondary-color);
+}
+
+.countPlaceholder {
+  min-height: 1px;
+  width: 40px;
+}
+
+.togglePasswordIcon {
+  position: absolute;
+  top: 6px; 
+  right: 10px;
+}
+
+.togglePasswordIcon:hover, .postIcons:hover {
+  cursor: pointer;
+}
+
+.postListItem:not(.postListItem:last-of-type), .userListItem:not(.userListItem:last-of-type) {
+  border-bottom: 1px solid lightgray;
+  padding-bottom: 1.5rem;
+}
+
+.userListItem {
+  padding: 20px 0px;
+  box-sizing: border-box;
+  display: block;
 }
