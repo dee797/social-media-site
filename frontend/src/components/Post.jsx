@@ -67,7 +67,7 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
             
             {
                 postData.quote_parent?.length !== 0 ? 
-                    <Link to={`post/${postData.quote_parent[0].parent_post.post_id}`}>
+                    <Link to={`post/${postData.quote_parent[0].parent_post.post_id}`} replace>
                         <div style={{padding: "15px", border: "1px solid rgb(220, 220, 220)", borderRadius: "5px", marginLeft: "56px", marginBottom: "10px", fontSize: "0.95rem"}}>
                             <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
                                 <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.quote_parent[0].parent_post.author.profile_pic_url} style={{width: "30px", height: "30px", borderRadius: "15px"}}/>
