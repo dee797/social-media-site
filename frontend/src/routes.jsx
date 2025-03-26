@@ -22,7 +22,7 @@ const routes = [
             { path: "/post", element: <NewPost />},
             { path: "/post/:id", element: <ViewPost /> },
             { path: "/search", element: <Search /> },
-            { path: "/:handle", element: <Profile /> }
+            { path: "/user/:handle", element: <Profile /> }
         ]
     }   
 ];
