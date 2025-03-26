@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Navigate, useOutletContext, useSearchParams } from 'react-router';
 import { useFetchData } from '../helpers';
+import { FollowUserSnippet } from '../components/FollowUserSnippet';
+
 import Loader from '../components/Loader';
 import ServerErrorPage from './ServerErrorPage';
 
@@ -14,7 +16,7 @@ const Search = () => {
     const [navigateTo, setNavigateTo] = useState(null);
 
     const url = `${import.meta.env.VITE_BACKEND_URL}/search?handle=${encodeURIComponent(query.get("handle"))}`;
-    useFetchData(token, currentUser, setCurrentUser, setSearchData, setError, setLoading, setNavigateTo, url);
+    useFetchData(token, currentUser, setCurrentUser, setSearchData, setError, setLoading, setNavigateTo, url, null, query);
 
     if (loading) return (<Loader />);
 
@@ -24,13 +26,24 @@ const Search = () => {
 
     if (query.size === 0 || query.get("handle") === "") {
         return (
-            <p>Try searching for a user</p>
+            <h2 style={{padding: "40px 40px 0px"}}>Try searching for a user</h2>
         );
     }
 
     return (
         <>
-            <p>Search placeholder</p>
+            <h2 style={{padding: "40px 40px 0px"}}>Search Results</h2>
+            {
+                searchData.length === 0 ? 
+                <p>Couldn't find any users with a handle containing '{query.get("handle")}'</p> :
+                <div style={{padding: "10px 100px"}}>
+                    {
+                        searchData.map(user => {
+                            return <FollowUserSnippet user={user} key={user.user_id}/>
+                        })
+                    }
+                </div>
+            }
         </>
     );
 }
