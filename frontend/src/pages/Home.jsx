@@ -3,6 +3,7 @@ import { useOutletContext, Navigate } from 'react-router';
 import { useFetchData } from '../helpers';
 
 import { Post } from '../components/Post';
+import { FollowUserSnippet } from '../components/FollowUserSnippet';
 import Loader from '../components/Loader';
 import ServerErrorPage from './ServerErrorPage';
 
@@ -57,7 +58,11 @@ const Home = () => {
                                 <p>There are currently no users to follow</p>
                             :
                                 homeData.users.map(user => {
-                                    return
+                                    if (user.user_id !== currentUser?.userInfo.user_id) {
+                                        return (
+                                            <FollowUserSnippet user={user} key={user.user_id}/>
+                                        );
+                                    }
                                 })
                         }
                     </Card.Body>
