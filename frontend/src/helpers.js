@@ -54,11 +54,11 @@ const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoa
 }
 
 
-const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, setNavigateTo, url, expectedKey=null, shouldUpdateUser=null) => {
+const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, setNavigateTo, url, expectedKey=null, dependency=null) => {
 
     let arr = []
-    if (shouldUpdateUser) {
-        arr = [shouldUpdateUser]
+    if (dependency) {
+        arr = [dependency]
     }
     
     let goTo = "";
