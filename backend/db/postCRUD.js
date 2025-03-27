@@ -71,6 +71,7 @@ const getUserPosts = async (user) => {
 
 const getUserPostData = async (user) => {
     const posts = await getUserPosts({user_id: user.user_id});
+    const userInfo = await getUserByID({user_id: user.user_id});
 
     for (const post of posts) {
         let post_id_value;
@@ -87,18 +88,16 @@ const getUserPostData = async (user) => {
        post.numLikes = numLikes;
        post.numReposts = numReposts;
        post.numReplies = numReplies;
+
+       post.author = {};
+
+       post.author.name = userInfo.name;
+       post.author.handle = userInfo.handle;
+       post.author.profile_pic_url = userInfo.profile_pic_url;
+       post.author.user_id = userInfo.user_id;
     }
 
-    const userInfo = await getUserByID({user_id: user.user_id});
-
-    const postData = { 
-        name: userInfo.name, 
-        username: userInfo.handle,
-        profile_pic_url: userInfo.profile_pic_url,
-        posts: posts
-    }
-
-    return postData;
+    return posts;
 }
 
 const getPostData = async (post) => {
