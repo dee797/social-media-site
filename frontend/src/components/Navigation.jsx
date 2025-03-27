@@ -115,7 +115,7 @@ const Navigation = ({ currentUser, setCurrentUser, token, setError, setLoading }
                                     </div>
                                 }
                             >
-                                <Link to={`/${currentUser.userInfo.handle.slice(1)}`} replace><NavDropdown.ItemText className='link'>View Profile</NavDropdown.ItemText></Link>
+                                <Link to={`/user/${currentUser.userInfo.handle.slice(1)}`} replace><NavDropdown.ItemText className='link'>View Profile</NavDropdown.ItemText></Link>
                                 <Link to="/settings/profile" replace><NavDropdown.ItemText className='link'>Edit Profile</NavDropdown.ItemText></Link>
                                 
                                 <Form 
