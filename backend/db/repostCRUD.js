@@ -24,11 +24,31 @@ const getReposts = async (user) => {
                 handle: true,
                 profile_pic_url: true
                 }
+            },
+            quote_parent: {
+                select: {
+                    parent_post: {
+                        select: {
+                            post_id: true,
+                            content: true, 
+                            date_created: true,
+                            author: {
+                                select: {
+                                    user_id: true,
+                                    handle: true,
+                                    name: true,
+                                    profile_pic_url: true
+                                }
+                            }
+
+                        }
+                    }
+                }
             }
-        }},
-            
-         }
+        }}}
     });
+
+
     return reposts;
 }
 
