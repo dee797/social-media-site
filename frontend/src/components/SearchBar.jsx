@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, createSearchParams } from "react-router";
+import { useEffect, useState } from "react";
+import { useNavigate, createSearchParams, useLocation } from "react-router";
 import { handleInputChange } from '../helpers';
 
 import Form from "react-bootstrap/Form";
@@ -7,10 +7,15 @@ import Form from "react-bootstrap/Form";
 
 const SearchBar = () => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [formData, setFormData] = useState({
             handle: "",
         });
+
+    useEffect(() => {
+        setFormData({ handle: "" })
+    }, [location])
 
     return (
         <>
@@ -38,6 +43,7 @@ const SearchBar = () => {
                     (event) => {
                         handleInputChange(event, setFormData);
                     }}
+                    value={formData.handle}
                     style={{borderRadius: "20px 0px 0px 20px", paddingLeft: "20px"}}
                 />
                 <button className="searchButton">
