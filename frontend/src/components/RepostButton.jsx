@@ -3,7 +3,7 @@ import { ChooseRepostType } from "./ChooseRepostType";
 
 
 const RepostButton = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, currentPostId, authorId, numReposts, showChooseRepostType, setShowChooseRepostType, setShowQuoteRepost}) => {
-    const [isReposted, setIsReposted] = useState(currentUser.posts.posts.find((post) => post.parent_post?.post_id === currentPostId && !post.quote_post));
+    const [isReposted, setIsReposted] = useState(currentUser.posts.find((post) => post.parent_post?.post_id === currentPostId && !post.quote_post));
     const [repostCount, setRepostCount] = useState(numReposts);
 
     return (
