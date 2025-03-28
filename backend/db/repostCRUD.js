@@ -44,6 +44,22 @@ const getReposts = async (user) => {
                         }
                     }
                 }
+            },
+            reply_parent: {
+                select: {
+                    parent_post: {
+                        select: {
+                            post_id: true,
+                            author: {
+                                select: {
+                                    user_id: true,
+                                    handle: true,
+                                    name: true
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }}}
     });
