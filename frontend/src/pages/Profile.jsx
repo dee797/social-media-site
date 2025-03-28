@@ -16,7 +16,7 @@ const Profile = () => {
     const [currentUser, setCurrentUser, token, setShouldUpdateUser, shouldUpdateUser] = useOutletContext();
 
     const [profileData, setProfileData] = useState(null);
-    const [isCurrentUserProfile, setIsCurrentUserProfile ]= useState(false);
+    const [isCurrentUserProfile, setIsCurrentUserProfile]= useState(false);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [navigateTo, setNavigateTo] = useState(null);
@@ -60,7 +60,7 @@ const Profile = () => {
                             profileData.posts.length === 0 ?
                             <p>This user currently doesn't have any posts</p>
                             :
-                            profileData.posts.map(post => {
+                            profileData.posts.map((post, index) => {
                                 let reformattedPostData;
                                 let isRepost = false;
 
@@ -102,10 +102,10 @@ const Profile = () => {
                                 reformattedPostData.numLikes = post.numLikes
 
                                 return (
-                                    <div key={`${reformattedPostData.post_id}${isRepost ? "r" : ""}`} className='postListItem' style={{margin: "0px 17px"}}>
+                                    <div key={`${reformattedPostData.post_id}-${index}`} className='postListItem' style={{marginTop: "10px"}}>
                                         { 
                                             isRepost ?
-                                            <div style={{color: "gray", textAlign: "left"}}>
+                                            <div style={{color: "gray", textAlign: "left", display: "flex", alignItems: "center", columnGap: "5px"}}>
                                                 <svg fill="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="20" height="24">
                                                 <path stroke="white" strokeWidth="1.2" d="M19 7a1 1 0 0 0-1-1h-8v2h7v5h-3l3.969 5L22 13h-3V7zM5 17a1 1 0 0 0 1 1h8v-2H7v-5h3L6 6l-4 5h3v6z"></path>
                                                 </svg>
@@ -124,7 +124,7 @@ const Profile = () => {
                                             setShouldUpdateUser={setShouldUpdateUser} 
                                             setError={setError} 
                                             postData={reformattedPostData} 
-                                            key={crypto.randomUUID()}
+                                            key={`${reformattedPostData.post_id}-${index}`}
                                         />
 
                                     </div>
@@ -163,10 +163,40 @@ const Profile = () => {
                     <Tab eventKey="replies" title={
                         <>
                             <div>Replies</div>
-                            <div>{profileData.replies.replies.length}</div>
+                            <div>{profileData.replies.length}</div>
                         </>
                     }>
-                        test
+                        {
+                            profileData.replies.length === 0 ?
+                            <p>This user currently doesn't have any replies</p>
+                            :
+                            profileData.replies.map(reply => {
+                                const reformattedPostData = { ...reply.reply_post };
+                                reformattedPostData.reply_parent = [{parent_post: reply.parent_post}];
+
+                                reformattedPostData.author = reply.author;
+                                
+                                reformattedPostData.numReplies = reply.numReplies;
+                                reformattedPostData.numReposts = reply.numReposts,
+                                reformattedPostData.numLikes = reply.numLikes;
+
+                                return (
+                                    <div key={reformattedPostData.post_id} className='postListItem' style={{margin: "0px 17px"}}>
+                                    
+                                        <Post 
+                                            currentUser={profileData} 
+                                            setCurrentUser={setCurrentUser} 
+                                            token={token} 
+                                            setShouldUpdateUser={setShouldUpdateUser} 
+                                            setError={setError} 
+                                            postData={reformattedPostData} 
+                                            key={reformattedPostData.post_id}
+                                        />
+
+                                    </div>
+                                );
+                            })
+                        }
                     </Tab>
 
                 </Tabs>
