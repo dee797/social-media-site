@@ -83,6 +83,15 @@ const getUserReplies = async (user) => {
 
 const getUserReplyData = async (user) => {
     const replies = await getUserReplies({user_id: user.user_id});
+    const userInfo = await prisma.user.findUnique({
+        where: { user_id : user.user_id },
+        select: { 
+            name: true,
+            handle: true,
+            user_id: true,
+            profile_pic_url: true
+        }
+    });
 
     for (const reply of replies) {
         const numLikes = await getLikeCountForPost({post_id: reply.reply_post.post_id});
@@ -92,23 +101,26 @@ const getUserReplyData = async (user) => {
         reply.numLikes = numLikes;
         reply.numReposts = numReposts;
         reply.numReplies = numReplies;
+
+        reply.author = {};
+
+        reply.author.name = userInfo.name;
+        reply.author.handle = userInfo.handle;
+        reply.author.user_id = userInfo.user_id;
+        reply.author.profile_pic_url = userInfo.profile_pic_url;
     }
 
-    const userInfo = await prisma.user.findUnique({
-        where: { user_id : user.user_id },
-        select: { 
-            name: true,
-            handle: true
-        }
+    const arr = replies;
+
+    // sort records in arr by most recent date
+    arr.sort((a,b) => {
+        let aDate = a.reply_post.date_created;
+        let bDate = b.reply_post.date_created;
+
+        return new Date(bDate) - new Date(aDate);
     });
 
-    const replyData = {
-        name: userInfo.name,
-        username: userInfo.handle,
-        replies: replies
-    }
-
-    return replyData;
+    return replies;
 }
 
 
