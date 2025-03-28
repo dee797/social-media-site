@@ -37,6 +37,7 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
     const [replyModalShow, setReplyModalShow] = useState(false);
     const [showChooseRepostType, setShowChooseRepostType] = useState(false);
     const [showQuoteRepost, setShowQuoteRepost] = useState(false);
+    
 
     let displayTimeQuote;
     const displayTime = findDisplayTime(postData.date_created);    
@@ -49,7 +50,7 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
 
     return (
         <pre className="postListItem">
-            <Link to={`/post/${postData.post_id}`} replace style={{padding: "10px"}}>
+            <Link to={`/post/${postData.post_id}`} replace style={{padding: "10px 10px 0px"}}>
                 <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
                     <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.author.profile_pic_url} style={{width: "36px", height: "36px", borderRadius: "18px"}}></img>
                     <div>{postData.author.name}</div>
@@ -57,17 +58,25 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
                     <div className="lightGray">&#8226;</div>
                     <div className="lightGray">{displayTime}</div>
                 </div>
+            </Link>
+
+                {
+                    postData.reply_parent?.length ? 
+                    <div style={{textAlign: "left", padding: "10px 0px 10px 56px"}}>
+                        Replying to <Link to={`/post/${postData.reply_parent[0].parent_post.post_id}`} replace style={{color: "royalblue"}}>{postData.reply_parent[0].parent_post.author.handle}</Link>
+                    </div>
+                    :
+                    null
+                }
+            <Link to={`/post/${postData.post_id}`} replace style={{padding: "0px 10px 10px"}}>
                 <p style={{textAlign: "left", paddingLeft: "46px", marginBottom: "0px"}}>{postData.content}</p>
             </Link>
 
-
-            {
-                postData.userReplies?.length !== 0
-            }
+            
             
             {
                 postData.quote_parent?.length ? 
-                    <Link to={`post/${postData.quote_parent[0].parent_post.post_id}`} replace>
+                    <Link to={`/post/${postData.quote_parent[0].parent_post.post_id}`} replace>
                         <div style={{padding: "15px", border: "1px solid rgb(220, 220, 220)", borderRadius: "5px", marginLeft: "56px", marginBottom: "10px", fontSize: "0.95rem"}}>
                             <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
                                 <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.quote_parent[0].parent_post.author.profile_pic_url} style={{width: "30px", height: "30px", borderRadius: "15px"}}/>
