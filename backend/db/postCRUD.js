@@ -63,7 +63,7 @@ const getUserPosts = async (user) => {
             bDate = b.date_created;
         }
 
-        return new Date(aDate) - new Date(bDate);
+        return new Date(bDate) - new Date(aDate);
     });
 
     return arr;
