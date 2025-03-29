@@ -29,6 +29,18 @@ const getNotification = async (notification) => {
     return findNotification;
 }
 
+const getNotificationByFields = async (data) => {
+    const findNotification = await prisma.$queryRaw`
+        select * from "Notification" 
+        where receiver_id = ${data.receiver_id}
+        and sender_id = ${data.sender_id}
+        and source_url = ${data.source_url}
+        and type_id = ${data.type_id};
+    `;
+    
+    return findNotification.length ? findNotification : null;
+}
+
 
 const updateNotification = async (notification) => {
     return await prisma.notification.update({
@@ -50,6 +62,7 @@ module.exports = {
     createNotification,
     getNotifications,
     getNotification,
+    getNotificationByFields,
     updateNotification,
     updateAllNotifications
 }

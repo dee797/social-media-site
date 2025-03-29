@@ -101,7 +101,14 @@ const postNewReply = [
             parent_post_id: parseInt(req.params.post_id)
         });
 
-        if (req.params.user_id !== req.params.author_id) {
+        const foundNotification = await notificationDB.getNotificationByFields({
+            receiver_id: parseInt(req.params.author_id),
+            sender_id: parseInt(req.params.user_id),
+            source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+            type_id: 4
+        });
+
+        if (req.params.user_id !== req.params.author_id && !foundNotification) {
             await notificationDB.createNotification({
                 receiver_id: parseInt(req.params.author_id),
                 sender_id: parseInt(req.params.user_id),
@@ -122,7 +129,14 @@ const postNewRepost = asyncHandler(async (req, res) => {
         user_id: parseInt(req.params.user_id)
     });
 
-    if (req.params.user_id !== req.params.author_id) {
+    const foundNotification = await notificationDB.getNotificationByFields({
+        receiver_id: parseInt(req.params.author_id),
+        sender_id: parseInt(req.params.user_id),
+        source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+        type_id: 3
+    });
+
+    if (req.params.user_id !== req.params.author_id && !foundNotification) {
         await notificationDB.createNotification({
             receiver_id: parseInt(req.params.author_id),
             sender_id: parseInt(req.params.user_id),
@@ -159,7 +173,14 @@ const postNewQuoteRepost = [
             parent_post_id: parseInt(req.params.post_id)
         });
 
-        if (req.params.user_id !== req.params.author_id) {
+        const foundNotification = notificationDB.getNotificationByFields({
+            receiver_id: parseInt(req.params.author_id),
+            sender_id: parseInt(req.params.user_id),
+            source_url: `/users/${req.params.user_id}/posts/${req.params.post_id}`,
+            type_id: 3
+        })
+
+        if (req.params.user_id !== req.params.author_id && !foundNotification) {
             await notificationDB.createNotification({
                 receiver_id: parseInt(req.params.author_id),
                 sender_id: parseInt(req.params.user_id),

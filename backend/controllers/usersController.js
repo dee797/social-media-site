@@ -236,7 +236,14 @@ const postLike = asyncHandler(async (req, res) => {
     user_id: parseInt(req.params.user_id)
   });
 
-  if (req.params.author_id !== req.params.user_id) {
+  const foundNotification  = await notificationDB.getNotificationByFields({
+    receiver_id: parseInt(req.params.author_id),
+    sender_id: parseInt(req.params.user_id),
+    source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+    type_id: 1
+  });
+
+  if (req.params.author_id !== req.params.user_id && !foundNotification) {
     await notificationDB.createNotification({
       receiver_id: parseInt(req.params.author_id),
       sender_id: parseInt(req.params.user_id),
@@ -256,12 +263,21 @@ const postFollow = asyncHandler(async (req, res) => {
     follower_id: parseInt(req.params.user_id)
   });
 
-  await notificationDB.createNotification({
+  const foundNotification = await notificationDB.getNotificationByFields({
     receiver_id: parseInt(req.params.followed_user_id),
     sender_id: parseInt(req.params.user_id),
     source_url: `/users/${req.params.user_id}/profile`,
     type_id: 2
-  });
+  })
+
+  if (!foundNotification) {
+    await notificationDB.createNotification({
+      receiver_id: parseInt(req.params.followed_user_id),
+      sender_id: parseInt(req.params.user_id),
+      source_url: `/users/${req.params.user_id}/profile`,
+      type_id: 2
+    });
+  }
 
   res.json({createFollowSuccess: true})
 });
