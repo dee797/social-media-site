@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Navigation } from './components/Navigation';
-import { Outlet, useNavigate } from 'react-router';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 import Loader from './components/Loader';
 import ServerErrorPage from './pages/ServerErrorPage';
 import './App.css'
@@ -15,6 +15,7 @@ const App = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const location = useLocation();
   const navigate = useNavigate();
 
   const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserHandle?.slice(1)}/profile`;
@@ -75,7 +76,7 @@ const App = () => {
   if (token && currentUser) return (
     <>
       <Navigation currentUser={currentUser} setCurrentUser={setCurrentUser} token={token} setError={setError} setLoading={setLoading}/>
-      <Outlet context={[currentUser, setCurrentUser, token, setShouldUpdateUser, shouldUpdateUser]}/>
+      <Outlet context={[currentUser, setCurrentUser, token, setShouldUpdateUser, shouldUpdateUser]} key={location.pathname}/>
     </>
   );
 
