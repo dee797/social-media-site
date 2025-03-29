@@ -50,11 +50,9 @@ const getFollowing = async (user) => {
 
 // This is the same as unfollowing someone
 const deleteFollow = async (follow) => {
-    return await prisma.follow.delete({
-        where: { follower_id: follow.follower_id, 
-                 followed_user_id: follow.followed_user_id
-        }
-    });
+    return await prisma.$queryRaw`
+        delete from "Follow" where follower_id = ${follow.follower_id} and followed_user_id = ${follow.followed_user_id};
+    `;
 }
 
 
