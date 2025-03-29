@@ -166,10 +166,12 @@ ALTER TABLE "Quote_Repost" ADD CONSTRAINT "Quote_Repost_quote_post_id_fkey" FORE
 -- Start autoincrement values at 100 for all sequence tables
 ALTER SEQUENCE "Follow_follow_id_seq" RESTART WITH 100;
 ALTER SEQUENCE "Like_like_id_seq" RESTART WITH 100;
-ALTER SEQUENCE "Notification_Type_notification_type_id_seq" RESTART WITH 100;
 ALTER SEQUENCE "Notification_notification_id_seq" RESTART WITH 100;
 ALTER SEQUENCE "Post_post_id_seq" RESTART WITH 100;
 ALTER SEQUENCE "Quote_Repost_quote_id_seq" RESTART WITH 100;
 ALTER SEQUENCE "Reply_reply_id_seq" RESTART WITH 100;
 ALTER SEQUENCE "Repost_repost_id_seq" RESTART WITH 100;
 ALTER SEQUENCE "User_user_id_seq" RESTART WITH 100;
+
+INSERT INTO "Notification_Type" ("type") 
+VALUES ('like'), ('follow'), ('repost'), ('reply');
