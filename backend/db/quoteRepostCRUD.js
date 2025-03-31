@@ -39,7 +39,23 @@ const getQuoteReposts = async (user) => {
                     name: true,
                     handle: true,
                     profile_pic_url: true
-                }}
+                }},
+                reply_parent: {
+                    select: {
+                        parent_post: {
+                            select: {
+                                post_id: true,
+                                author: {
+                                    select: {
+                                        user_id: true,
+                                        name: true,
+                                        handle: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }},
             quote_post: { select: {
                 post_id: true,
