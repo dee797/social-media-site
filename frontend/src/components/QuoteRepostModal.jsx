@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 
-const QuoteRepostModal = ({currentUserId, authorProfilePic, authorName, authorHandle, authorId, postId, postCreated, postContent, modalShow, callback}) => {
+const QuoteRepostModal = ({currentUserId, authorProfilePic, authorName, authorHandle, authorId, postId, postCreated, postContent, replyParentHandle, modalShow, callback}) => {
     const [loading, setLoading] = useState(false);
     
     const quoteRepostUrl = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserId}/posts/${postId}/${authorId}/quote_repost`;
@@ -44,6 +44,14 @@ const QuoteRepostModal = ({currentUserId, authorProfilePic, authorName, authorHa
                             <div className="lightGray">&#8226;</div>
                             <div className="lightGray">{postCreated}</div>
                         </div>
+                        {
+                            replyParentHandle ? 
+                            <div style={{textAlign: "left", padding: "10px 0px 10px 56px"}}>
+                                Replying to {postId}
+                            </div>
+                            :
+                            null
+                        }
                         <p style={{textAlign: "left", paddingLeft: "46px"}}>{postContent}</p>
                     </div>
 

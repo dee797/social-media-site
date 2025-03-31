@@ -90,15 +90,19 @@ const Profile = () => {
                                                         name: post.parent_post.author.name,
                                                         profile_pic_url: post.parent_post.author.profile_pic_url
                                                 },
-                                                reply_parent : [{
-                                                    parent_post: {
-                                                        post_id: post.parent_post.reply_parent[0].parent_post.post_id,
-                                                        author: {
-                                                            user_id: post.parent_post.reply_parent[0].parent_post.author.user_id,
-                                                            handle: post.parent_post.reply_parent[0].parent_post.author.handle
+                                                reply_parent: 
+                                                    post.parent_post.reply_parent?.length ?
+                                                    [{
+                                                        parent_post: {
+                                                            post_id: post.parent_post.reply_parent[0].parent_post.post_id,
+                                                            author: {
+                                                                user_id: post.parent_post.reply_parent[0].parent_post.author.user_id,
+                                                                handle: post.parent_post.reply_parent[0].parent_post.author.handle
+                                                            }
                                                         }
-                                                    }
-                                                }]
+                                                    }]
+                                                    :
+                                                    []
                                             }
                                         }],
                                         content: post.quote_post.content,
