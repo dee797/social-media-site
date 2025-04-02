@@ -17,6 +17,28 @@ const getNotifications = async (user) => {
     const notifications = await prisma.notification.findMany({
         where: {
             receiver_id: user.user_id
+        }, 
+        select: {
+            notification_id: true,
+            receiver_id: true, 
+            sender_id: true,
+            source_url: true,
+            type_id: true,
+            read_status: true,
+            type: {
+                select: {
+                    type: true
+                }
+            },
+            sender: {
+                select: {
+                    name: true,
+                    handle: true
+                }
+            }
+        },
+        orderBy: {
+            notification_id: "desc"
         }
     });
     return notifications;
