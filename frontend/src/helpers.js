@@ -1,55 +1,51 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
-const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoading, setNavigateTo, location) => {
-    const effectRan = useRef(false);
+const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoading, setNavigateTo) => {
 
     let goTo;
-    if (location?.pathname !== "/signup" && location?.pathname !== "/login") {
+    if (window.location.pathname !== "/signup" && window.location.pathname !== "/login") {
         goTo = "/signup";
     }
 
     useEffect(() => {
-        if (!effectRan.current) {
-            if (token && currentUser) {
-                fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
-                    method: "get",
-                    mode: "cors",
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                })
-                .then(res => {
-                    if (res.status > 401) {
-                        throw new Error();
-                    }
-                    return res.json();
-                })
-                .then(res => {
-                    if (res.error || res.authenticated === false) {
-                        localStorage.clear();
-                        setCurrentUser(null);
-                        if (location.pathname === "/signup" || location.pathname === "/login") return;
+        if (token && currentUser) {
+            fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
+                method: "get",
+                mode: "cors",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then(res => {
+                if (res.status > 401) {
+                    throw new Error();
+                }
+                return res.json();
+            })
+            .then(res => {
+                if (res.error || res.authenticated === false) {
+                    localStorage.clear();
+                    setCurrentUser(null);
+                    if (location.pathname === "/signup" || location.pathname === "/login") return;
 
-                        return setNavigateTo("/signup");
-                    }
-            
-                    if (res.authenticated && (location.pathname === "/signup" || location.pathname === "/login")) {
-                        setNavigateTo("/");
-                    }
-                })
-                .catch(err => {
-                    setServerError(err);
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
-            } else {
+                    return setNavigateTo("/signup");
+                }
+        
+                if (res.authenticated && (location.pathname === "/signup" || location.pathname === "/login")) {
+                    setNavigateTo("/");
+                }
+            })
+            .catch(err => {
+                setServerError(err);
+            })
+            .finally(() => {
                 setLoading(false);
-                goTo ? setNavigateTo(goTo) : null;
-            }
+            });
+        } else {
+            setLoading(false);
+            goTo ? setNavigateTo(goTo) : null;
         }
 
-        return () => effectRan.current = true;
     }, []);
 }
 
@@ -57,7 +53,9 @@ const useCheckUser = (token, currentUser, setCurrentUser, setServerError, setLoa
 const useFetchData = (token, currentUser, setCurrentUser, setData, setError, setLoading, setNavigateTo, url, expectedKey=null, dependency=null) => {
 
     let arr = []
-    if (dependency) {
+    if (dependency?.length) {
+        arr = [...dependency]
+    } else if (dependency) {
         arr = [dependency]
     }
     
@@ -168,7 +166,7 @@ const postData = async (token, currentUser, setCurrentUser, formData, setShouldU
         });
     } else {
         setLoading(false);
-        setNavigateTo("/signup");
+        setNavigateTo("/signup", {replace: true});
     }
 }
 
@@ -205,6 +203,8 @@ const putData = async (token, currentUser, setCurrentUser, setError, setLoading,
     
                 if (resBody[expectedKey] && setPutSuccess) {
                     setPutSuccess(resBody[expectedKey]);
+                } else if (setPutSuccess) {
+                    setPutSuccess(resBody);
                 }
     
             } catch (err) {
@@ -219,7 +219,7 @@ const putData = async (token, currentUser, setCurrentUser, setError, setLoading,
         })
     } else {
         setLoading(false);
-        setNavigateTo("/signup");
+        setNavigateTo("/signup", {replace: true});
     }
 }
 
