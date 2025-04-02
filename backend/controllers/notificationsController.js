@@ -9,7 +9,17 @@ const getUserNotifications = asyncHandler(async (req, res) => {
         user_id: parseInt(req.params.user_id)
     });
 
-    res.json(notifications);
+    let unreadNotifCount = 0;
+
+    if (notifications.length > 0) {
+        notifications.forEach(notification => {
+            if (!notification.read_status) {
+                unreadNotifCount += 1;
+            }
+        });                               
+    }
+
+    res.json({notificationList: notifications, unreadNotifCount});
 });
 
 
