@@ -52,7 +52,7 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
         <pre className="postListItem">
             <div style={{padding: "10px 10px 0px"}}>
                 <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
-                    <Link to={`/user/${postData.author.handle.slice(1)}`} replace >
+                    <Link to={`/user/${postData.author.handle.slice(1)}`} >
                         <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
                         <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.author.profile_pic_url} style={{width: "36px", height: "36px", borderRadius: "18px"}}></img>
                         <div>{postData.author.name}</div>
@@ -65,13 +65,13 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
             </div>
                 {
                     postData.reply_parent?.length ? 
-                    <div style={{textAlign: "left", padding: "10px 0px 10px 56px"}}>
-                        Replying to <Link to={`/post/${postData.reply_parent[0].parent_post.post_id}`} replace style={{color: "royalblue"}}>{postData.reply_parent[0].parent_post.author.handle}</Link>
+                    <div style={{textAlign: "left", padding: "5px 0px 5px 56px"}}>
+                        Replying to <Link to={`/post/${postData.reply_parent[0].parent_post.post_id}`} style={{color: "royalblue"}}>{postData.reply_parent[0].parent_post.author.handle}</Link>
                     </div>
                     :
                     null
                 }
-            <Link to={`/post/${postData.post_id}`} replace style={{padding: "0px 10px 10px"}}>
+            <Link to={`/post/${postData.post_id}`} style={{padding: "0px 10px 10px"}}>
                 <p style={{textAlign: "left", paddingLeft: "46px", marginBottom: "0px"}}>{postData.content}</p>
             </Link>
 
@@ -80,7 +80,7 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
                 postData.quote_parent?.length ? 
                     <div style={{padding: "15px", border: "1px solid rgb(220, 220, 220)", borderRadius: "5px", marginLeft: "56px", marginBottom: "10px", fontSize: "0.95rem"}}>
                         <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
-                            <Link to={`/user/${postData.quote_parent[0].parent_post.author.handle.slice(1)}`} replace>
+                            <Link to={`/user/${postData.quote_parent[0].parent_post.author.handle.slice(1)}`}>
                                 <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
                                 <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.quote_parent[0].parent_post.author.profile_pic_url} style={{width: "30px", height: "30px", borderRadius: "15px"}}/>
                                 <div>{postData.quote_parent[0].parent_post.author.name}</div>
@@ -92,13 +92,13 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
                         </div>
                         {
                             postData.quote_parent[0].parent_post.reply_parent?.length ? 
-                            <div style={{textAlign: "left", padding: "10px 0px 0px 40px"}}>
-                                Replying to <Link to={`/post/${postData.quote_parent[0].parent_post.reply_parent[0].parent_post.post_id}`} replace style={{color: "royalblue"}}>{postData.quote_parent[0].parent_post.reply_parent[0].parent_post.author.handle}</Link>
+                            <div style={{textAlign: "left", padding: "5px 0px 0px 40px"}}>
+                                Replying to <Link to={`/post/${postData.quote_parent[0].parent_post.reply_parent[0].parent_post.post_id}`} style={{color: "royalblue"}}>{postData.quote_parent[0].parent_post.reply_parent[0].parent_post.author.handle}</Link>
                             </div>
                             :
                             null
                         }
-                        <Link to={`/post/${postData.quote_parent[0].parent_post.post_id}`} replace>
+                        <Link to={`/post/${postData.quote_parent[0].parent_post.post_id}`}>
                             <p style={{textAlign: "left", paddingLeft: "40px", marginBottom: "0px"}}>{postData.quote_parent[0].parent_post.content}</p>
                         </Link>
                     </div>

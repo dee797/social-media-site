@@ -262,7 +262,7 @@ const Profile = () => {
                     <p>Joined {(new Date(profileData.userInfo.date_joined)).toLocaleDateString()}</p>
                     {
                         userHandle === currentUser?.userInfo.handle.slice(1) ?
-                        <Link to="/settings/profile" replace>
+                        <Link to="/settings/profile">
                             <Button variant='primary'>Edit Profile</Button> 
                         </Link>
                         :

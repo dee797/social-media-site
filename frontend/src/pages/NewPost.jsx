@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navigate, useLocation, useOutletContext, Link } from 'react-router';
+import { Navigate, useOutletContext, Link } from 'react-router';
 import { useCheckUser, postData, handleSubmitForm, handleInputChange } from '../helpers';
 
 import Loader from '../components/Loader';
@@ -76,10 +76,9 @@ const NewPost = () => {
     const [loading, setLoading] = useState(true);
     const [navigateTo, setNavigateTo] = useState(null);
 
-    const location = useLocation();
     const posturl = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser?.userInfo.user_id}/posts`;
 
-    useCheckUser(token, currentUser, setCurrentUser, setError, setLoading, setNavigateTo, location);
+    useCheckUser(token, currentUser, setCurrentUser, setError, setLoading, setNavigateTo);
 
     if (loading) return (<Loader />);
 
@@ -99,7 +98,7 @@ const NewPost = () => {
         return (
             <>
                 <h2 style={{paddingTop: "30px"}}>Successfully created post</h2>
-                <Link to="/" replace>
+                <Link to="/">
                     <Button style={{marginTop: "30px", marginRight: "30px"}} variant='dark' type='button'>Home</Button>
                 </Link>
                 <Button style={{marginTop: "30px"}} variant='dark' type='button' onClick={() => setPostSuccess(false)}>Create another post</Button>
