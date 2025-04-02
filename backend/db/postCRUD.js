@@ -184,6 +184,9 @@ const get10Posts = async () => {
             },
             content: true,
             date_created: true,
+        },
+        orderBy: {
+            date_created: "desc"
         }
     })
 
