@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, Navigate, useLocation } from 'react-router';
 import { useState } from 'react';
 
 import Container from 'react-bootstrap/Container';
@@ -10,7 +10,7 @@ import Form from 'react-bootstrap/Form'
 
 import { SearchBar } from './SearchBar';
 import { NotificationList } from './NotificationList';
-import { handleSubmitForm } from '../helpers';
+import { handleSubmitForm, useFetchData } from '../helpers';
 
 
 
@@ -57,8 +57,20 @@ const fetchLogout = async (token, currentUser, setCurrentUser, setError, setLoad
 
 
 const Navigation = ({ currentUser, setCurrentUser, token, setError, setLoading }) => {
-    const [unreadNotifCount, setUnreadNotifCount] = useState(0);
+    const [notifications, setNotifications] = useState({});
+    const [notifLoading, setNotifLoading] = useState(true);
+
+    const [shouldUpdate, setShouldUpdate] = useState({});
+    const [navigateTo, setNavigateTo] = useState(null);
+
+    const location = useLocation();
     const navigate = useNavigate();
+
+    const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser?.userInfo.user_id}/notifications`;
+    useFetchData(token, currentUser, setCurrentUser, setNotifications, setError, setNotifLoading, setNavigateTo, url, null, [location, shouldUpdate]);
+
+
+    if (navigateTo) return (<Navigate to={navigateTo} replace/>);
 
     return (
         <>
@@ -85,15 +97,25 @@ const Navigation = ({ currentUser, setCurrentUser, token, setError, setLoading }
                                         <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
                                         </svg>
                                         {
-                                            unreadNotifCount > 0 ?
-                                            <Badge bg="light" style={{width: "30px", color: "var(--bs-secondary-color)", marginLeft: "10px"}}>{unreadNotifCount}</Badge> 
+                                            notifications.unreadNotifCount > 0 ?
+                                            <Badge bg="light" style={{width: "30px", color: "var(--bs-secondary-color)", marginLeft: "10px"}}>{notifications.unreadNotifCount}</Badge> 
                                             :
                                             <div id="badgePlaceholder" style={{paddingLeft: "40px", display: "inline"}}></div>
                                         }
                                     </>
                                 )
                         }>
-                            <NotificationList token={token} currentUser={currentUser} setCurrentUser={setCurrentUser} setError={setError} setUnreadNotifCount={setUnreadNotifCount}/>
+                            <NotificationList 
+                                token={token} 
+                                currentUser={currentUser} 
+                                setCurrentUser={setCurrentUser} 
+                                setError={setError} 
+                                setNavigateTo={setNavigateTo}
+                                setLoading={setNotifLoading}
+                                notifLoading={notifLoading}
+                                notifications={notifications.notificationList}
+                                setShouldUpdate={setShouldUpdate}
+                            />
                         </NavDropdown>
                     </Navbar>
 
