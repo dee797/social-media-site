@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useOutletContext, Navigate, useParams, useLocation, Link, useNavigate } from 'react-router';
+import { useOutletContext, Navigate, useParams, Link } from 'react-router';
 import { useFetchData } from '../helpers';
 
 import { Post } from '../components/Post';
@@ -120,7 +120,7 @@ const Profile = () => {
                                 reformattedPostData.numLikes = post.numLikes
 
                                 return (
-                                    <div key={`${reformattedPostData.post_id}-${index}`} className='postListItem' style={{marginTop: "10px", paddingBottom: "0px"}}>
+                                    <div key={`${reformattedPostData.post_id}-${isRepost ? "r" : ""}`} className='postListItem' style={{marginTop: "10px", paddingBottom: "0px"}}>
                                         { 
                                             isRepost ?
                                             <div style={{color: "gray", textAlign: "left", display: "flex", alignItems: "center", columnGap: "5px"}}>
@@ -142,7 +142,7 @@ const Profile = () => {
                                             setShouldUpdateUser={setShouldUpdateUser} 
                                             setError={setError} 
                                             postData={reformattedPostData} 
-                                            key={`${reformattedPostData.post_id}-${index}`}
+                                            key={`${reformattedPostData.post_id}-${index}-${reformattedPostData.numLikes}`}
                                         />
 
                                     </div>

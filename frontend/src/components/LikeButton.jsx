@@ -52,10 +52,8 @@ const fetchPostLike = async (token, currentUser, setCurrentUser, setShouldUpdate
 
 
 
-const LikeButton = ({currentUser, setCurrentUser, setShouldUpdateUser, token, setError, currentPostId, authorId, numLikes}) => {
+const LikeButton = ({currentUser, setCurrentUser, setShouldUpdateUser, token, setError, currentPostId, authorId, isLikedPost, setIsLikedPost, likeCount, setLikeCount}) => {
     const [loading, setLoading] = useState(false);
-    const [isLikedPost, setIsLikedPost] = useState(currentUser.likedPosts.find(({post}) => post.post_id === currentPostId));
-    const [likeCount, setLikeCount] = useState(numLikes);
     const navigate = useNavigate();
     
     if (loading) return (<Spinner size="sm" />); 

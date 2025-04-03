@@ -37,7 +37,9 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
     const [replyModalShow, setReplyModalShow] = useState(false);
     const [showChooseRepostType, setShowChooseRepostType] = useState(false);
     const [showQuoteRepost, setShowQuoteRepost] = useState(false);
-    
+    const [isLikedPost, setIsLikedPost] = useState(currentUser.likedPosts.find(({post}) => post.post_id === postData.post_id));
+    const [likeCount, setLikeCount] = useState(postData.numLikes);
+
 
     let displayTimeQuote;
     const displayTime = findDisplayTime(postData.date_created);    
@@ -150,7 +152,10 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
                         setError={setError}
                         currentPostId={postData.post_id}
                         authorId={postData.author.user_id}
-                        numLikes={postData.numLikes}
+                        isLikedPost={isLikedPost}
+                        setIsLikedPost={setIsLikedPost}
+                        likeCount={likeCount}
+                        setLikeCount={setLikeCount}
                     />
                 </div>
             </div>
