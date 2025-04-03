@@ -112,7 +112,7 @@ const postNewReply = [
             await notificationDB.createNotification({
                 receiver_id: parseInt(req.params.author_id),
                 sender_id: parseInt(req.params.user_id),
-                source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+                source_url: `/post/${req.params.post_id}`,
                 type_id: 4
             });
         }
@@ -132,7 +132,7 @@ const postNewRepost = asyncHandler(async (req, res) => {
     const foundNotification = await notificationDB.getNotificationByFields({
         receiver_id: parseInt(req.params.author_id),
         sender_id: parseInt(req.params.user_id),
-        source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+        source_url: `/post/${req.params.post_id}`,
         type_id: 3
     });
 
@@ -140,7 +140,7 @@ const postNewRepost = asyncHandler(async (req, res) => {
         await notificationDB.createNotification({
             receiver_id: parseInt(req.params.author_id),
             sender_id: parseInt(req.params.user_id),
-            source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+            source_url: `/post/${req.params.post_id}`,
             type_id: 3
         });
     }
@@ -176,7 +176,7 @@ const postNewQuoteRepost = [
         const foundNotification = notificationDB.getNotificationByFields({
             receiver_id: parseInt(req.params.author_id),
             sender_id: parseInt(req.params.user_id),
-            source_url: `/users/${req.params.user_id}/posts/${req.params.post_id}`,
+            source_url: `/post/${req.params.post_id}`,
             type_id: 3
         })
 
@@ -184,7 +184,7 @@ const postNewQuoteRepost = [
             await notificationDB.createNotification({
                 receiver_id: parseInt(req.params.author_id),
                 sender_id: parseInt(req.params.user_id),
-                source_url: `/users/${req.params.user_id}/posts/${req.params.post_id}`,
+                source_url: `/post/${req.params.post_id}`,
                 type_id: 3
             });
         }

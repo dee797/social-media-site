@@ -150,8 +150,10 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
     .expect("Content-Type", /json/)
     .expect({
       "userInfo":{"user_id":1,"name":"Kelly","handle":"@kelly","bio":"","profile_pic_url":"","banner_pic_url":"","date_joined":"2025-01-01T00:00:00.000Z"},
-      "followers": [],
-      "following":[{"followed_user":{"user_id":2,"name":"Kevin","handle":"@kevin","bio":"","profile_pic_url":"","banner_pic_url":"","date_joined":"2025-01-01T00:00:00.000Z"}}],
+      "followers":[],
+      "following":[{
+        "followed_user":{"user_id":2,"name":"Kevin","handle":"@kevin","bio":"","profile_pic_url":"","banner_pic_url":"","date_joined":"2025-01-01T00:00:00.000Z"}
+      }],
       "likedPosts":[{
         "post":{
           "post_id":2,
@@ -159,36 +161,69 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
           "date_created":"2025-01-01T00:00:00.000Z",
           "author":{"user_id":2,"name":"Kevin","handle":"@kevin","profile_pic_url":""},
           "numLikes":1,"numReplies":4,"numReposts":1
-        }}],
-      "posts":{"name":"Kelly","username":"@kelly","profile_pic_url":"",
-        "posts":[
-          {
-          "parent_post":{"post_id":2,"content":"Hello World 2","date_created":"2025-01-01T00:00:00.000Z",
-            "author":{"user_id":2,"name":"Kevin","handle":"@kevin","profile_pic_url":""}},
-          "numLikes":1,"numReposts":1,"numReplies":4
-          },
-          {
-            "post_id":1,"author_id":1,"date_created":"2025-01-01T00:00:00.000Z","content":"Hello World",
-            "numLikes":0,"numReposts":1,"numReplies":0
-      }]},
-        "replies":{"name":"Kelly","username":"@kelly",
-          "replies":[
-            {
-              "reply_post":{"post_id":3,"author_id":1,"date_created":"2025-01-01T00:00:00.000Z","content":"I like this post"},
-              "parent_post":{"post_id":2,"author":{"name":"Kevin","handle":"@kevin","user_id":2}},
-              "numLikes":0,"numReposts":0,"numReplies":2
-            },
-            {
-              "reply_post":{"post_id":4,"author_id":1,"date_created":"2025-01-01T00:00:00.000Z","content":"I forgot to mention, this post rocks"},
-              "parent_post":{"post_id":2,"author":{"name":"Kevin","handle":"@kevin","user_id":2}},"numLikes":0,"numReposts":0,"numReplies":0
-            },
-            {
-              "reply_post":{"post_id":6,"author_id":1,"date_created":"2025-01-01T00:00:00.000Z","content":"No problem"},
-              "parent_post":{"post_id":5,"author":{"name":"Kevin","handle":"@kevin","user_id":2}},"numLikes":0,"numReposts":0,"numReplies":0
-            }
-          ]
         }
-      }
+       }],
+      "posts":[{
+        "parent_post":{
+          "post_id":2,
+          "content":"Hello World 2",
+          "date_created":"2025-01-01T00:00:00.000Z",
+          "author":{"user_id":2,"name":"Kevin","handle":"@kevin","profile_pic_url":""},
+          "quote_parent":[],
+          "reply_parent":[]
+        },
+        "numLikes":1,"numReposts":1,"numReplies":4,
+        "author":{"name":"Kelly","handle":"@kelly","profile_pic_url":"","user_id":1}
+      },
+      {
+        "post_id":1,
+        "author_id":1,
+        "date_created":"2025-01-01T00:00:00.000Z",
+        "content":"Hello World",
+        "numLikes":0,"numReposts":1,"numReplies":0,
+        "author":{"name":"Kelly","handle":"@kelly","profile_pic_url":"","user_id":1}
+      }],
+      "replies":[{
+        "reply_post":{
+          "post_id":3,
+          "author_id":1,
+          "date_created":"2025-01-01T00:00:00.000Z",
+          "content":"I like this post"
+        },
+        "parent_post":{
+          "post_id":2,
+          "author":{"name":"Kevin","handle":"@kevin","user_id":2}},
+          "numLikes":0,"numReposts":0,"numReplies":2,
+          "author":{"name":"Kelly","handle":"@kelly","user_id":1,"profile_pic_url":""}
+      },
+      {
+        "reply_post":{
+          "post_id":4,
+          "author_id":1,
+          "date_created":"2025-01-01T00:00:00.000Z",
+          "content":"I forgot to mention, this post rocks"
+        },
+        "parent_post":{
+          "post_id":2,
+          "author":{"name":"Kevin","handle":"@kevin","user_id":2}
+        },
+        "numLikes":0,"numReposts":0,"numReplies":0,
+        "author":{"name":"Kelly","handle":"@kelly","user_id":1,"profile_pic_url":""}
+      },
+      {
+        "reply_post":{
+          "post_id":6,
+          "author_id":1,
+          "date_created":"2025-01-01T00:00:00.000Z",
+          "content":"No problem"
+        },
+        "parent_post":{
+          "post_id":5,
+          "author":{"name":"Kevin","handle":"@kevin","user_id":2}
+        },
+        "numLikes":0,"numReposts":0,"numReplies":0,
+        "author":{"name":"Kelly","handle":"@kelly","user_id":1,"profile_pic_url":""}
+      }]}
     )
     .expect(200, done);
   });
@@ -197,30 +232,21 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
 
 
 describe('GET tests for /users/:user_id/posts path (protected routes as well)', () => {
-  test("posts prop should be empty array for @test, since they haven't created any posts", done => {
+  test("should expect empty array for fetching posts, since @test hasn't created any posts", done => {
       request.agent(app)
       .get(`/users/${testUserID}/posts`)
       .auth(testJWT, {type: 'bearer'})
       .expect("Content-Type", /json/)
-      .expect({
-        name: "123test",
-        username: "@test",
-        profile_pic_url: "abc",
-        posts: []
-      })
+      .expect([])
       .expect(200, done);
   });
 
-  test("replies prop should be empty array for @test, since they haven't created any replies", done => {
+  test("should expect empty array for fetching replies, since @test hasn't created any replies", done => {
       request.agent(app)
       .get(`/users/${testUserID}/posts/replies`)
       .auth(testJWT, {type: 'bearer'})
       .expect("Content-Type", /json/)
-      .expect({
-        name: "123test",
-        username: "@test",
-        replies: []
-      })
+      .expect([])
       .expect(200, done);
     });
 });

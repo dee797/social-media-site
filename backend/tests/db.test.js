@@ -239,44 +239,53 @@ describe('Reply tests (involves both Reply table and Post table)', () => {
     });
 
     test('get all the replies a user has created, plus like count, repost count, reply count', async () => {
-        await expect(replyCRUD.getUserReplyData({user_id: 1})).resolves.toEqual(
-            {
-                "name": "Kelly", 
-                "replies": [
-                    {
-                        "numLikes": 0, 
-                        "numReplies": 2, 
-                        "numReposts": 0, 
-                        "parent_post": {
-                            "author": { "handle": "@kevin", "name": "Kevin", "user_id": 2 }, 
-                            "post_id": 2
-                        }, 
-                        "reply_post": { "author_id": 1, "content": "I like this post", "date_created": new Date('2025-01-01'), "post_id": 3 }
-                    }, 
-                    {
-                        "numLikes": 0, 
-                        "numReplies": 0, 
-                        "numReposts": 0, 
-                        "parent_post": {
-                            "author": { "handle": "@kevin", "name": "Kevin", "user_id": 2 }, 
-                            "post_id": 2
-                        }, 
-                        "reply_post": { "author_id": 1, "content": "I forgot to mention, this post rocks", "date_created": new Date('2025-01-01'), "post_id": 4}
-                    }, 
-                        
-                    {
-                        "numLikes": 0, 
-                        "numReplies": 0, 
-                        "numReposts": 0, 
-                        "parent_post": {
-                            "author": { "handle": "@kevin", "name": "Kevin", "user_id": 2 }, 
-                            "post_id": 5
-                        }, 
-                        "reply_post": { "author_id": 1, "content": "No problem", "date_created": new Date('2025-01-01'), "post_id": 6 }
-                    }
-                ], 
-                "username": "@kelly"
+        await expect(replyCRUD.getUserReplyData({user_id: 1})).resolves.toEqual([{
+            "author": {"handle": "@kelly", "name": "Kelly", "profile_pic_url": "", "user_id": 1}, 
+            "numLikes": 0, 
+            "numReplies": 2, 
+            "numReposts": 0, 
+            "parent_post": {
+                "author": {"handle": "@kevin", "name": "Kevin", "user_id": 2}, 
+                "post_id": 2
+            }, 
+            "reply_post": {
+                "author_id": 1, 
+                "content": "I like this post", 
+                "date_created": new Date('2025-01-01'), 
+                "post_id": 3
             }
+        }, 
+        {
+            "author": {"handle": "@kelly", "name": "Kelly", "profile_pic_url": "", "user_id": 1}, 
+            "numLikes": 0, 
+            "numReplies": 0, 
+            "numReposts": 0, 
+            "parent_post": {
+                "author": {"handle": "@kevin", "name": "Kevin", "user_id": 2}, 
+                "post_id": 2
+            }, 
+            "reply_post": {
+                "author_id": 1, 
+                "content": "I forgot to mention, this post rocks", 
+                "date_created": new Date('2025-01-01'), 
+                "post_id": 4
+            }
+        }, 
+        {
+            "author": {"handle": "@kelly", "name": "Kelly", "profile_pic_url": "", "user_id": 1}, 
+            "numLikes": 0, 
+            "numReplies": 0, 
+            "numReposts": 0, 
+            "parent_post": {
+                "author": {"handle": "@kevin", "name": "Kevin", "user_id": 2}, 
+                "post_id": 5
+            }, 
+            "reply_post": {
+                "author_id": 1, 
+                "content": "No problem", 
+                "date_created": new Date('2025-01-01'), 
+                "post_id": 6
+            }}]
         );
     })
 });
@@ -286,7 +295,7 @@ describe('Post tests', () => {
         await expect(postCRUD.getUserPosts({user_id: 2})).resolves.toEqual([
             {
                 "parent_post": { 
-                    "author": {"handle": "@kelly", "name": "Kelly", "profile_pic_url": "", "user_id": 1}, "content": "Hello World", "date_created": new Date('2025-01-01'), "post_id": 1}, 
+                    "author": {"handle": "@kelly", "name": "Kelly", "profile_pic_url": "", "user_id": 1}, "content": "Hello World", "date_created": new Date('2025-01-01'), "post_id": 1, "reply_parent": []}, 
                 "quote_post": {
                     "author": {"handle": "@kevin", "name": "Kevin", "profile_pic_url": "", "user_id": 2}, "content": "This is a cool post", "date_created": new Date('2025-01-01'), "post_id": 7}
             }, 
@@ -298,29 +307,37 @@ describe('Post tests', () => {
     });
 
     test("get list of user's posts like above, but this time include counts for the number of likes, reposts, and replies", async () => {
-        await expect(postCRUD.getUserPostData({user_id: 2})).resolves.toEqual({
-            "name": "Kevin",
-            "username": "@kevin",
-            "profile_pic_url": "",
-            "posts": [
-                {
-                    "numLikes": 0, 
-                    "numReplies": 0, 
-                    "numReposts": 0, 
-                    "parent_post": {"author": {"handle": "@kelly", "name": "Kelly", "profile_pic_url": "", "user_id": 1}, "content": "Hello World", "date_created": new Date('2025-01-01'), "post_id": 1}, 
-                    "quote_post": {"author": {"handle": "@kevin", "name": "Kevin", "profile_pic_url": "", "user_id": 2}, "content": "This is a cool post", "date_created": new Date('2025-01-01'), "post_id": 7}
+        await expect(postCRUD.getUserPostData({user_id: 2})).resolves.toEqual([{
+            "author": {"handle": "@kevin", "name": "Kevin", "profile_pic_url": "", "user_id": 2}, 
+            "numLikes": 0, 
+            "numReplies": 0, 
+            "numReposts": 0, 
+            "parent_post": {
+                "author": {"handle": "@kelly", "name": "Kelly", "profile_pic_url": "", "user_id": 1}, 
+                "content": "Hello World", 
+                "date_created": new Date('2025-01-01'), 
+                "post_id": 1, 
+                "reply_parent": []
+            }, 
+            "quote_post": {
+                "author": {
+                    "handle": "@kevin", "name": "Kevin", "profile_pic_url": "", "user_id": 2
                 }, 
-                {
-                    "author_id": 2, 
-                    "content": "Hello World 2", 
-                    "date_created": new Date('2025-01-01'), 
-                    "numLikes": 1, 
-                    "numReplies": 4, 
-                    "numReposts": 1, 
-                    "post_id": 2
-                }
-            ]
-        });
+                "content": "This is a cool post", 
+                "date_created": new Date('2025-01-01'), 
+                "post_id": 7
+            }}, 
+            
+            {
+            "author": {"handle": "@kevin", "name": "Kevin", "profile_pic_url": "", "user_id": 2}, 
+            "author_id": 2, 
+            "content": "Hello World 2", 
+            "date_created": new Date('2025-01-01'), 
+            "numLikes": 1, 
+            "numReplies": 4, 
+            "numReposts": 1, 
+            "post_id": 2
+        }]);
     });
 
     test('get post data for a single post', async () => {
@@ -371,7 +388,7 @@ describe('Post tests', () => {
                 "numReplies": 0, 
                 "numReposts": 1, 
                 "post_id": 1, 
-                "quote_parent": [] 
+                "quote_parent": [],
             }, 
             {
                 "author": {"handle": "@kevin", "name": "Kevin", "profile_pic_url": "", "user_id": 2}, 
@@ -389,7 +406,7 @@ describe('Post tests', () => {
                 "author_id": 2, 
                 "content": "This is a cool post", 
                 "date_created": new Date('2025-01-01'), "numLikes": 0, "numReplies": 0, "numReposts": 0, "post_id": 7, 
-                "quote_parent": [{"parent_post": {"author": {"handle": "@kelly", "name": "Kelly", "profile_pic_url": "", "user_id": 1}, "content": "Hello World", "date_created": new Date('2025-01-01'), "post_id": 1}}]
+                "quote_parent": [{"parent_post": {"author": {"handle": "@kelly", "name": "Kelly", "profile_pic_url": "", "user_id": 1}, "content": "Hello World", "date_created": new Date('2025-01-01'), "post_id": 1, "reply_parent": []}}]
             }
         ]);
     });

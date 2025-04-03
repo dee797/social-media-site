@@ -236,10 +236,10 @@ const postLike = asyncHandler(async (req, res) => {
     user_id: parseInt(req.params.user_id)
   });
 
-  const foundNotification  = await notificationDB.getNotificationByFields({
+  const foundNotification = await notificationDB.getNotificationByFields({
     receiver_id: parseInt(req.params.author_id),
     sender_id: parseInt(req.params.user_id),
-    source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+    source_url: `/post/${req.params.post_id}`,
     type_id: 1
   });
 
@@ -247,7 +247,7 @@ const postLike = asyncHandler(async (req, res) => {
     await notificationDB.createNotification({
       receiver_id: parseInt(req.params.author_id),
       sender_id: parseInt(req.params.user_id),
-      source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+      source_url: `/post/${req.params.post_id}`,
       type_id: 1
     });
   }
@@ -263,10 +263,12 @@ const postFollow = asyncHandler(async (req, res) => {
     follower_id: parseInt(req.params.user_id)
   });
 
+  const user = await userDB.getUserByID({user_id: parseInt(req.params.user_id)})
+
   const foundNotification = await notificationDB.getNotificationByFields({
     receiver_id: parseInt(req.params.followed_user_id),
     sender_id: parseInt(req.params.user_id),
-    source_url: `/users/${req.params.user_id}/profile`,
+    source_url: `/user/${user.handle.slice(1)}`,
     type_id: 2
   })
 
@@ -274,7 +276,7 @@ const postFollow = asyncHandler(async (req, res) => {
     await notificationDB.createNotification({
       receiver_id: parseInt(req.params.followed_user_id),
       sender_id: parseInt(req.params.user_id),
-      source_url: `/users/${req.params.user_id}/profile`,
+      source_url: `/user/${user.handle.slice(1)}`,
       type_id: 2
     });
   }
