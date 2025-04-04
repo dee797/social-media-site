@@ -65,7 +65,7 @@ const Profile = () => {
                             profileData.posts.length === 0 ?
                             <p style={{marginTop: "20px"}}>This user currently doesn't have any posts</p>
                             :
-                            profileData.posts.map((post, index) => {
+                            profileData.posts.map((post) => {
                                 let reformattedPostData;
                                 let isRepost = false;
 
