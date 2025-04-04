@@ -173,7 +173,7 @@ const postNewQuoteRepost = [
             parent_post_id: parseInt(req.params.post_id)
         });
 
-        const foundNotification = notificationDB.getNotificationByFields({
+        const foundNotification = await notificationDB.getNotificationByFields({
             receiver_id: parseInt(req.params.author_id),
             sender_id: parseInt(req.params.user_id),
             source_url: `/post/${req.params.post_id}`,
