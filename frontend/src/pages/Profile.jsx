@@ -28,7 +28,7 @@ const Profile = () => {
 
 
     const url = `${import.meta.env.VITE_BACKEND_URL}/users/${userHandle}/profile`;
-    useFetchData(token, currentUser, setCurrentUser, setProfileData, setError, setLoading, setNavigateTo, url, null, shouldUpdateUser);
+    useFetchData(token, currentUser, setCurrentUser, setProfileData, setError, setLoading, setNavigateTo, url, null, [shouldUpdateUser]);
 
 
     if (loading) return (<Loader />);
@@ -111,6 +111,7 @@ const Profile = () => {
                                 } else if ("parent_post" in post) {
                                     isRepost = true;
                                     reformattedPostData = post.parent_post;
+                                    reformattedPostData.isRepost = isRepost
                                 } else {
                                     reformattedPostData = post;
                                 }
@@ -120,32 +121,17 @@ const Profile = () => {
                                 reformattedPostData.numLikes = post.numLikes
 
                                 return (
-                                    <div key={`${reformattedPostData.post_id}-${isRepost ? "r" : ""}`} className='postListItem' style={{marginTop: "10px", paddingBottom: "0px"}}>
-                                        { 
-                                            isRepost ?
-                                            <div style={{color: "gray", textAlign: "left", display: "flex", alignItems: "center", columnGap: "5px"}}>
-                                                <svg fill="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="20" height="24">
-                                                <path stroke="white" strokeWidth="1.2" d="M19 7a1 1 0 0 0-1-1h-8v2h7v5h-3l3.969 5L22 13h-3V7zM5 17a1 1 0 0 0 1 1h8v-2H7v-5h3L6 6l-4 5h3v6z"></path>
-                                                </svg>
-                                                {
-                                                    userHandle === currentUser?.userInfo.handle.slice(1) ? 
-                                                    <>You reposted</> :
-                                                    <>{profileData.userInfo.name} reposted</>
-                                                }
-                                            </div> :
-                                            null
-                                        }
-                                        <Post 
-                                            currentUser={profileData} 
-                                            setCurrentUser={setCurrentUser} 
-                                            token={token} 
-                                            setShouldUpdateUser={setShouldUpdateUser} 
-                                            setError={setError} 
-                                            postData={reformattedPostData} 
-                                            key={`${reformattedPostData.post_id}-${index}-${reformattedPostData.numLikes}`}
-                                        />
-
-                                    </div>
+                                    <Post 
+                                        currentUser={profileData} 
+                                        setCurrentUser={setCurrentUser} 
+                                        token={token} 
+                                        setShouldUpdateUser={setShouldUpdateUser} 
+                                        setError={setError} 
+                                        postData={reformattedPostData} 
+                                        isRepost={isRepost}
+                                        userHandle={userHandle}
+                                        key={`${JSON.stringify(reformattedPostData)}`}
+                                    />
                                 );
                             })
                         }
