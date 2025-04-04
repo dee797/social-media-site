@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 import { ReplyModal } from "./ReplyModal";
 import { QuoteRepostModal } from "./QuoteRepostModal";
@@ -33,11 +33,16 @@ const findDisplayTime = (dateString) => {
 
 
 
-const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, postData}) => {
+const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, postData, isRepost, userHandle=null}) => {
+    
     const [replyModalShow, setReplyModalShow] = useState(false);
     const [showChooseRepostType, setShowChooseRepostType] = useState(false);
     const [showQuoteRepost, setShowQuoteRepost] = useState(false);
-    const [isLikedPost, setIsLikedPost] = useState(currentUser.likedPosts.find(({post}) => post.post_id === postData.post_id));
+    
+    let found = false;
+    if (currentUser.likedPosts.find(({post}) => post.post_id === postData.post_id)) found = true;
+
+    const [isLikedPost, setIsLikedPost] = useState(found);
     const [likeCount, setLikeCount] = useState(postData.numLikes);
 
 
@@ -49,14 +54,39 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
         displayTimeQuote = findDisplayTime(postData.quote_parent[0].parent_post.date_created);
     }
 
+    const currentUserProfilePic = useMemo(() => {
+        return (<img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.author.profile_pic_url} style={{width: "36px", height: "36px", borderRadius: "18px"}}></img>
+        );
+    }, [postData.author.profile_pic_url]);
+
+    const quoteProfilePic = useMemo(() => {
+        if (postData.quote_parent?.length) return (<img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.quote_parent[0].parent_post.author.profile_pic_url} style={{width: "30px", height: "30px", borderRadius: "15px"}}/>
+        );
+    }, postData.quote_parent?.length ? [postData.quote_parent[0].parent_post.author.profile_pic_url] : []);
+
 
     return (
         <pre className="postListItem">
+            { 
+                isRepost ?
+                <div style={{color: "gray", textAlign: "left", display: "flex", alignItems: "center", columnGap: "5px"}}>
+                    <svg fill="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="20" height="24">
+                    <path stroke="white" strokeWidth="1.2" d="M19 7a1 1 0 0 0-1-1h-8v2h7v5h-3l3.969 5L22 13h-3V7zM5 17a1 1 0 0 0 1 1h8v-2H7v-5h3L6 6l-4 5h3v6z"></path>
+                    </svg>
+                    {
+                        userHandle === currentUser?.userInfo.handle.slice(1) ? 
+                        <>You reposted</> :
+                        <>{currentUser.userInfo.name} reposted</>
+                    }
+                </div> :
+                null
+            }
+
             <div style={{padding: "10px 10px 0px"}}>
                 <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
                     <Link to={`/user/${postData.author.handle.slice(1)}`} >
                         <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
-                        <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.author.profile_pic_url} style={{width: "36px", height: "36px", borderRadius: "18px"}}></img>
+                        {currentUserProfilePic}
                         <div>{postData.author.name}</div>
                         <div className="lightGray">{postData.author.handle}</div>
                         </div>
@@ -84,7 +114,7 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
                         <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
                             <Link to={`/user/${postData.quote_parent[0].parent_post.author.handle.slice(1)}`}>
                                 <div style={{display: "flex", columnGap: "10px", alignItems: "center"}}>
-                                <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.quote_parent[0].parent_post.author.profile_pic_url} style={{width: "30px", height: "30px", borderRadius: "15px"}}/>
+                                {quoteProfilePic}
                                 <div>{postData.quote_parent[0].parent_post.author.name}</div>
                                 <div className="lightGray">{postData.quote_parent[0].parent_post.author.handle}</div>
                                 </div>
