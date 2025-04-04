@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Navigation } from './components/Navigation';
 import { Outlet, useLocation, useNavigate } from 'react-router';
+import { useFetchData } from './helpers';
 import Loader from './components/Loader';
 import ServerErrorPage from './pages/ServerErrorPage';
 import './App.css'
@@ -20,53 +21,7 @@ const App = () => {
 
   const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUserHandle?.slice(1)}/profile`;
 
-  useEffect(() => {
-    let goTo = "";
-    if (window.location.pathname === "/signup" || window.location.pathname === "/login") {
-        goTo = window.location.pathname;
-    } else {
-        goTo = "/signup";
-    }
-
-    if (token && currentUserHandle) {
-        fetch(url, {
-            mode: "cors", 
-            method: "get",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }})
-        .then(res => {
-            if (res.status === 404) {
-                throw new Error("404");
-            }
-            if (res.status > 401) {
-                throw new Error("Server error");
-            }
-            return res.json();
-        })
-        .then(res => {
-            if (res.error || res.authenticated === false) {
-                navigate("/login", {replace: true});
-                localStorage.clear();
-                setCurrentUser(null);
-                return;
-            }
-
-            setCurrentUser(res);
-        })
-        .catch(err => {
-            console.error(err);
-            setError(err);
-        })
-        .finally(() => {
-            setLoading(false);
-        });
-    } else {
-        setLoading(false);
-        navigate(goTo, {replace: true});
-    }
-  }, [shouldUpdateUser]);
-
+  useFetchData(token, currentUserHandle, setCurrentUser, setCurrentUser, setError, setLoading, navigate, url, null, [shouldUpdateUser, token]);
 
 
   if (loading) return (<Loader />);
@@ -81,7 +36,7 @@ const App = () => {
   );
 
   return (
-    <Outlet context={[currentUser, setCurrentUser, token]}/>
+    <Outlet context={[currentUser, setCurrentUser, token]} key={location}/>
   );
 }
 
