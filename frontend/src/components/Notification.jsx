@@ -1,29 +1,28 @@
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import { handleSubmitForm, putData } from "../helpers";
 
 const Notification = ({token, currentUser, setCurrentUser, notification, setError, setNavigateTo, setLoading, setShouldUpdate}) => {
+    const navigate = useNavigate();
+
     return (
-        <Link 
-            to={notification.source_url}  
-            onClick={(event => {
-                if (!notification.read_status) {
-                    document.getElementById(`${notification.notification_id}`).submit();
-                }
-            })}
-            className="notifListItem"
-            style={{display: "block"}}
-        >
-            
-            <form
-                method="put"
-                id={`${notification.notification_id}`}
-                onSubmit={event => {
+        <form
+            method="put"
+            id={`${notification.notification_id}`}
+            onSubmit={event => {
+                if (notification.read_status) {
+                    event.preventDefault();
+                } else {
                     handleSubmitForm(event, setLoading, () => {
                         const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.userInfo.user_id}/notifications/${notification.notification_id}`;
                         putData(token, currentUser, setCurrentUser, setError, setLoading, setNavigateTo, url, null, setShouldUpdate)
                     });
-                }}
-            >
+                }
+
+                navigate(notification.source_url);
+            }}
+        >
+            <button type="submit" className="notifLink notifListItem" form={`${notification.notification_id}`} style={{display: "block"}}>
+            
                 <div style={{display: "flex", padding: "10px"}}> 
                     {
                         !notification.read_status ?
@@ -47,9 +46,9 @@ const Notification = ({token, currentUser, setCurrentUser, notification, setErro
                         }
                     </div>
                 </div>
-            </form>
-        </Link>
-    )
+            </button>
+        </form>
+    );
 }
 
 export {
