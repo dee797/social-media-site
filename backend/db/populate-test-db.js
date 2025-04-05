@@ -167,17 +167,6 @@ async function main() {
             user_id: 2
         }
     });
-
-
-    // create notification types
-    await prisma.notification_Type.createMany({
-        data: [
-            { notification_type_id: 1, type: 'like' },
-            { notification_type_id: 2, type: 'follow' },
-            { notification_type_id: 3, type: 'repost'},
-            { notification_type_id: 4, type: 'reply' }
-        ]
-    });
     
 
     await prisma.notification.createMany({
