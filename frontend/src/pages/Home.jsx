@@ -11,7 +11,7 @@ import Card from 'react-bootstrap/Card';
 
 
 const Home = () => {
-    const [currentUser, setCurrentUser, token, setShouldUpdateUser, shouldUpdateUser] = useOutletContext();
+    const [currentUser, setCurrentUser, token, setShouldUpdateUser] = useOutletContext();
 
     const [homeData, setHomeData] = useState(null);
     const [error, setError] = useState(null);
@@ -20,7 +20,7 @@ const Home = () => {
 
 
     const url = `${import.meta.env.VITE_BACKEND_URL}/home`;
-    useFetchData(token, currentUser, setCurrentUser, setHomeData, setError, setLoading, setNavigateTo, url, null, shouldUpdateUser);
+    useFetchData(token, currentUser, setCurrentUser, setHomeData, setError, setLoading, setNavigateTo, url, null, currentUser);
 
 
     if (loading) return (<Loader />);

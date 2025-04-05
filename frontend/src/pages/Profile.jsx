@@ -16,7 +16,7 @@ import Button from 'react-bootstrap/Button';
 
 
 const Profile = () => {
-    const [currentUser, setCurrentUser, token, setShouldUpdateUser, shouldUpdateUser] = useOutletContext();
+    const [currentUser, setCurrentUser, token, setShouldUpdateUser] = useOutletContext();
 
     const [profileData, setProfileData] = useState(null);
     const [error, setError] = useState(null);
@@ -28,7 +28,7 @@ const Profile = () => {
 
 
     const url = `${import.meta.env.VITE_BACKEND_URL}/users/${userHandle}/profile`;
-    useFetchData(token, currentUser, setCurrentUser, setProfileData, setError, setLoading, setNavigateTo, url, null, [shouldUpdateUser]);
+    useFetchData(token, currentUser, setCurrentUser, setProfileData, setError, setLoading, setNavigateTo, url, null, currentUser);
 
 
     if (loading) return (<Loader />);
@@ -122,7 +122,7 @@ const Profile = () => {
 
                                 return (
                                     <Post 
-                                        currentUser={profileData} 
+                                        currentUser={currentUser} 
                                         setCurrentUser={setCurrentUser} 
                                         token={token} 
                                         setShouldUpdateUser={setShouldUpdateUser} 
@@ -188,6 +188,7 @@ const Profile = () => {
                                         setShouldUpdateUser={setShouldUpdateUser}
                                         setError={setError}
                                         postData={likedPost.post}
+                                        isRepost={false}
                                         key={likedPost.post.post_id}
                                     />
                                 );
@@ -219,12 +220,13 @@ const Profile = () => {
                                     <div key={reformattedPostData.post_id} className='postListItem' style={{margin: "0px 17px", paddingBottom: "0px"}}>
                                     
                                         <Post 
-                                            currentUser={profileData} 
+                                            currentUser={currentUser} 
                                             setCurrentUser={setCurrentUser} 
                                             token={token} 
                                             setShouldUpdateUser={setShouldUpdateUser} 
                                             setError={setError} 
-                                            postData={reformattedPostData} 
+                                            postData={reformattedPostData}
+                                            isRepost={false} 
                                             key={reformattedPostData.post_id}
                                         />
 
