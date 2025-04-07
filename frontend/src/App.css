@@ -117,7 +117,7 @@ h2 {
   margin-bottom: 20px;
 }
 
-.logoutButton, .likeButton, .repostButton {
+.logoutButton, .likeButton, .repostButton, .notifLink {
   background-color: transparent;
   outline: none;
   border: none;
@@ -162,7 +162,8 @@ pre {
   cursor: pointer;
 }
 
-.postListItem:not(.postListItem:last-of-type), .userListItem:not(.userListItem:last-of-type) {
+.postListItem:not(.postListItem:last-of-type), 
+.userListItem:not(.userListItem:last-of-type) {
   border-bottom: 1px solid lightgray;
   padding-bottom: 1.5rem;
 }
@@ -171,4 +172,28 @@ pre {
   padding: 20px 0px;
   box-sizing: border-box;
   display: block;
+}
+
+button.nav-link {
+  color: royalblue;
+}
+
+img {
+  transition: all 2s;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid rgb(190, 190, 190);
+  overflow: visible;
+  opacity: 0.70;
+  margin-bottom: 0px;
+}
+
+hr::after {
+  content: "Replies";
+  background-color: white;
+  position: relative;
+  top: -13px;
+  padding: 0px 5px;
 }
