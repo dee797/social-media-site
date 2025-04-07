@@ -341,74 +341,173 @@ describe('Post tests', () => {
     });
 
     test('get post data for a single post', async () => {
+
         await expect(postCRUD.getPostData({post_id: 2})).resolves.toEqual(
             {
-                "quoteParent": null,
-                "replyParent": null,
-                "thread": [
-                    {"author_id": 2, "content": "Hello World 2", "date_created": new Date('2025-01-01'), "name": "Kevin", "numLikes": 1, "numReplies": 4, "numReposts": 1, "post_id": 2, "username": "@kevin", "profile_pic_url": ""}, 
-                    {"author_id": 1, "content": "I like this post", "date_created": new Date('2025-01-01'), "name": "Kelly", "numLikes": 0, "numReplies": 2, "numReposts": 0, "post_id": 3, "username": "@kelly", "profile_pic_url": ""}, 
-                    {"author_id": 1, "content": "I forgot to mention, this post rocks", "date_created": new Date('2025-01-01'), "name": "Kelly", "numLikes": 0, "numReplies": 0, "numReposts": 0, "post_id": 4, "username": "@kelly", "profile_pic_url": ""}, 
-                    {"author_id": 2, "content": "Thanks for the like", "date_created": new Date('2025-01-01'), "name": "Kevin", "numLikes": 0, "numReplies": 1, "numReposts": 0, "post_id": 5, "username": "@kevin", "profile_pic_url": ""}, 
-                    {"author_id": 1, "content": "No problem", "date_created": new Date('2025-01-01'), "name": "Kelly", "numLikes": 0, "numReplies": 0, "numReposts": 0, "post_id": 6, "username": "@kelly", "profile_pic_url": ""}
+                "thread":[
+                    {
+                        "post_id":2,
+                        "author_id":2,
+                        "date_created": new Date('2025-01-01'),
+                        "content":"Hello World 2",
+                        "numLikes":1,"numReposts":1,"numReplies":4,
+                        "author":{"name":"Kevin","handle":"@kevin","profile_pic_url":"","user_id":2},
+                        "replyParent":null,
+                        "quoteParent":null
+                    },
+                    {
+                        "post_id":3,
+                        "author_id":1,
+                        "date_created": new Date('2025-01-01'),
+                        "content":"I like this post",
+                        "numLikes":0,"numReposts":0,"numReplies":2,
+                        "author":{"name":"Kelly","handle":"@kelly","profile_pic_url":"","user_id":1},
+                        "replyParent":{
+                            "parent_post":{
+                                "post_id":2,
+                                "author":{"name":"Kevin","handle":"@kevin","user_id":2}
+                            }
+                        },
+                        "quoteParent":null
+                    },
+                    {
+                        "post_id":4,
+                        "author_id":1,
+                        "date_created": new Date('2025-01-01'),
+                        "content":"I forgot to mention, this post rocks",
+                        "numLikes":0,"numReposts":0,"numReplies":0,
+                        "author":{"name":"Kelly","handle":"@kelly","profile_pic_url":"","user_id":1},
+                        "replyParent":{
+                            "parent_post":{
+                                "post_id":2,
+                                "author":{"name":"Kevin","handle":"@kevin","user_id":2}
+                            }
+                        },
+                        "quoteParent":null
+                    },
+                    {
+                        "post_id":5,
+                        "author_id":2,
+                        "date_created": new Date('2025-01-01'),
+                        "content":"Thanks for the like",
+                        "numLikes":0,"numReposts":0,"numReplies":1,
+                        "author":{"name":"Kevin","handle":"@kevin","profile_pic_url":"","user_id":2},
+                        "replyParent":{
+                            "parent_post":{
+                                "post_id":3,
+                                "author":{"name":"Kelly","handle":"@kelly","user_id":1}
+                            }
+                        },
+                        "quoteParent":null
+                    },
+                    {
+                        "post_id":6,
+                        "author_id":1,
+                        "date_created": new Date('2025-01-01'),
+                        "content":"No problem",
+                        "numLikes":0,"numReposts":0,"numReplies":0,
+                        "author":{"name":"Kelly","handle":"@kelly","profile_pic_url":"","user_id":1},
+                        "replyParent":{
+                            "parent_post":{
+                                "post_id":5,
+                                "author":{"name":"Kevin","handle":"@kevin","user_id":2}
+                            }
+                        },
+                        "quoteParent":null
+                    }
                 ]
             }
         );
     });
 
     test('get post data for a reply post (only a part of a thread)', async () => {
-        await expect(postCRUD.getPostData({post_id: 3})).resolves.toEqual(
-            {
-                "replyParent": {
-                    "parent_post": {
-                        "author": {
-                            "handle": "@kevin", "name": "Kevin", "user_id": 2
-                        }, 
-                        "post_id": 2
+        await expect(postCRUD.getPostData({post_id: 3})).resolves.toEqual({
+            "thread":[{
+                "post_id":3,
+                "author_id":1,
+                "date_created": new Date('2025-01-01'),
+                "content":"I like this post",
+                "numLikes":0,"numReposts":0,"numReplies":2,
+                "author":{"name":"Kelly","handle":"@kelly","profile_pic_url":"","user_id":1},
+                "replyParent":{
+                    "parent_post":{
+                        "post_id":2,
+                        "author":{"name":"Kevin","handle":"@kevin","user_id":2}
                     }
-                }, 
-                "quoteParent": null,
-                "thread": [
-                    { "author_id": 1, "content": "I like this post", "date_created": new Date('2025-01-01'), "name": "Kelly", "numLikes": 0, "numReplies": 2, "numReposts": 0, "post_id": 3, "username": "@kelly", "profile_pic_url": "" }, 
-                    { "author_id": 2, "content": "Thanks for the like", "date_created": new Date('2025-01-01'), "name": "Kevin", "numLikes": 0, "numReplies": 1, "numReposts": 0, "post_id": 5, "username": "@kevin", "profile_pic_url": "" }, 
-                    { "author_id": 1, "content": "No problem", "date_created": new Date('2025-01-01'), "name": "Kelly", "numLikes": 0, "numReplies": 0, "numReposts": 0, "post_id": 6, "username": "@kelly", "profile_pic_url": "" }
-                ]
-            }
+                },
+                "quoteParent":null
+            },
+            {
+                "post_id":5,
+                "author_id":2,
+                "date_created": new Date('2025-01-01'),
+                "content":"Thanks for the like",
+                "numLikes":0,"numReposts":0,"numReplies":1,
+                "author":{"name":"Kevin","handle":"@kevin","profile_pic_url":"","user_id":2},
+                "replyParent":{
+                    "parent_post":{
+                        "post_id":3,
+                        "author":{"name":"Kelly","handle":"@kelly","user_id":1}
+                    }
+                },
+                "quoteParent":null
+            },
+            {
+                "post_id":6,
+                "author_id":1,
+                "date_created": new Date('2025-01-01'),
+                "content":"No problem",
+                "numLikes":0,"numReposts":0,"numReplies":0,
+                "author":{"name":"Kelly","handle":"@kelly","profile_pic_url":"","user_id":1},
+                "replyParent":{
+                    "parent_post":{
+                        "post_id":5,
+                        "author":{"name":"Kevin","handle":"@kevin","user_id":2}
+                    }
+                },
+                "quoteParent":null}
+            ]}
         );
     });
     
     test('get first 10 posts from Post table', async () => {
-        await expect(postCRUD.get10Posts()).resolves.toEqual([
+        await expect(postCRUD.get10Posts()).resolves.toEqual(
+            [{
+                "post_id":1,
+                "author_id":1,
+                "author":{"user_id":1,"handle":"@kelly","name":"Kelly","profile_pic_url":""},
+                "quote_parent":[],
+                "content":"Hello World",
+                "date_created": new Date('2025-01-01'),
+                "numLikes":0,"numReposts":1,"numReplies":0
+            },
             {
-                "author": {"handle": "@kelly", "name": "Kelly", "profile_pic_url": "", "user_id": 1}, 
-                "author_id": 1, 
-                "content": "Hello World", 
-                "date_created": new Date('2025-01-01'), 
-                "numLikes": 0, 
-                "numReplies": 0, 
-                "numReposts": 1, 
-                "post_id": 1, 
-                "quote_parent": [],
-            }, 
+                "post_id":2,
+                "author_id":2,
+                "author":{"user_id":2,"handle":"@kevin","name":"Kevin","profile_pic_url":""},
+                "quote_parent":[],
+                "content":"Hello World 2",
+                "date_created": new Date('2025-01-01'),
+                "numLikes":1,"numReposts":1,"numReplies":4
+            },
             {
-                "author": {"handle": "@kevin", "name": "Kevin", "profile_pic_url": "", "user_id": 2}, 
-                "author_id": 2, 
-                "content": "Hello World 2", 
-                "date_created": new Date('2025-01-01'), 
-                "numLikes": 1, 
-                "numReplies": 4, 
-                "numReposts": 1, 
-                "post_id": 2, 
-                "quote_parent": []
-            }, 
-            {
-                "author": {"handle": "@kevin", "name": "Kevin", "profile_pic_url": "", "user_id": 2}, 
-                "author_id": 2, 
-                "content": "This is a cool post", 
-                "date_created": new Date('2025-01-01'), "numLikes": 0, "numReplies": 0, "numReposts": 0, "post_id": 7, 
-                "quote_parent": [{"parent_post": {"author": {"handle": "@kelly", "name": "Kelly", "profile_pic_url": "", "user_id": 1}, "content": "Hello World", "date_created": new Date('2025-01-01'), "post_id": 1, "reply_parent": []}}]
-            }
-        ]);
+                "post_id":7,
+                "author_id":2,
+                "author":{"user_id":2,"handle":"@kevin","name":"Kevin","profile_pic_url":""},
+                "quote_parent":[{
+                    "parent_post":{
+                        "post_id":1,
+                        "content":"Hello World",
+                        "date_created": new Date('2025-01-01'),
+                        "author":{"user_id":1,"handle":"@kelly","name":"Kelly","profile_pic_url":""},
+                        "reply_parent":[]
+                    }
+                }],
+                "content":"This is a cool post",
+                "date_created": new Date('2025-01-01'),
+                "numLikes":0,"numReposts":0,"numReplies":0
+            }]
+        );
     });
 
 

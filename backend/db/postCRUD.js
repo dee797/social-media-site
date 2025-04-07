@@ -116,17 +116,22 @@ const getPostData = async (post) => {
         part.numReplies = numReplies;
 
         const userInfo = await getUserByID({user_id: part.author_id});
-        part.name = userInfo.name;
-        part.username = userInfo.handle;
-        part.profile_pic_url = userInfo.profile_pic_url;
+        part.author ={
+            name: userInfo.name,
+            handle: userInfo.handle,
+            profile_pic_url: userInfo.profile_pic_url,
+            user_id: userInfo.user_id
+        }
+
+        const replyParent = await getParentOfReply({post_id: part.post_id});
+        part.replyParent = replyParent;
+
+        const quoteParent = await getParentOfQuote({post_id: part.post_id})
+        part.quoteParent = quoteParent;
     }
     
-    const replyParent = await getParentOfReply({post_id: post.post_id});
-    const quoteParent = await getParentOfQuote({post_id: post.post_id})
     const postData = {
         thread: thread,
-        replyParent,
-        quoteParent
     }
 
     return postData;
