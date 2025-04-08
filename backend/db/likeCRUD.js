@@ -23,8 +23,64 @@ const getLikedPosts = async (user) => {
                 name: true,
                 handle: true,
                 profile_pic_url: true
-            }}
-        }} }
+            }},
+            quote_parent: {
+                select: {
+                    parent_post: {
+                        select: {
+                            post_id: true,
+                            content: true, 
+                            date_created: true,
+                            author: {
+                                select: {
+                                    user_id: true,
+                                    handle: true,
+                                    name: true,
+                                    profile_pic_url: true
+                                }
+                            },
+                            reply_parent: {
+                                select: {
+                                    parent_post: {
+                                        select: {
+                                            post_id: true,
+                                            author: {
+                                                select: {
+                                                    user_id: true,
+                                                    handle: true,
+                                                    name: true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            reply_parent: {
+                select: {
+                    parent_post: {
+                        select: {
+                            post_id: true,
+                            author: {
+                                select: {
+                                    user_id: true,
+                                    handle: true,
+                                    name: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }}},
+        orderBy: {
+            post: {
+                date_created: "desc"
+            }
+        }
     });
     return likes;
 }

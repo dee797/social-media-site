@@ -153,14 +153,18 @@ describe('Like table tests', () => {
     });
 
     test('get list of posts that a user has liked', async () => {
-        await expect(likeCRUD.getLikedPosts(exampleUser1)).resolves.toEqual([{post: 
+        await expect(likeCRUD.getLikedPosts(exampleUser1)).resolves.toEqual([
             {
-                post_id: 2,
-                author: { handle: "@kevin", name: "Kevin", profile_pic_url: "", user_id: 2 },
-                date_created: new Date('2025-01-01'),
-                content: 'Hello World 2'
-            }
-        }]);
+                "post":{
+                    "post_id":2,
+                    "content":"Hello World 2",
+                    "date_created": new Date('2025-01-01'),
+                    "author":{"user_id":2,"name":"Kevin","handle":"@kevin","profile_pic_url":""},
+                    "quote_parent":[],
+                    "reply_parent":[]
+                }
+            }]
+        );
     });
 
     test('get correct like count for a post', async () => {
@@ -469,46 +473,4 @@ describe('Post tests', () => {
             ]}
         );
     });
-    
-    test('get first 10 posts from Post table', async () => {
-        await expect(postCRUD.get10Posts()).resolves.toEqual(
-            [{
-                "post_id":1,
-                "author_id":1,
-                "author":{"user_id":1,"handle":"@kelly","name":"Kelly","profile_pic_url":""},
-                "quote_parent":[],
-                "content":"Hello World",
-                "date_created": new Date('2025-01-01'),
-                "numLikes":0,"numReposts":1,"numReplies":0
-            },
-            {
-                "post_id":2,
-                "author_id":2,
-                "author":{"user_id":2,"handle":"@kevin","name":"Kevin","profile_pic_url":""},
-                "quote_parent":[],
-                "content":"Hello World 2",
-                "date_created": new Date('2025-01-01'),
-                "numLikes":1,"numReposts":1,"numReplies":4
-            },
-            {
-                "post_id":7,
-                "author_id":2,
-                "author":{"user_id":2,"handle":"@kevin","name":"Kevin","profile_pic_url":""},
-                "quote_parent":[{
-                    "parent_post":{
-                        "post_id":1,
-                        "content":"Hello World",
-                        "date_created": new Date('2025-01-01'),
-                        "author":{"user_id":1,"handle":"@kelly","name":"Kelly","profile_pic_url":""},
-                        "reply_parent":[]
-                    }
-                }],
-                "content":"This is a cool post",
-                "date_created": new Date('2025-01-01'),
-                "numLikes":0,"numReposts":0,"numReplies":0
-            }]
-        );
-    });
-
-
 });

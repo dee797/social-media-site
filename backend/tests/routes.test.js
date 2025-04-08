@@ -149,81 +149,21 @@ describe('GET tests for /users/:user_id path (these are all protected routes)', 
     .auth(testJWT, {type: 'bearer'})
     .expect("Content-Type", /json/)
     .expect({
-      "userInfo":{"user_id":1,"name":"Kelly","handle":"@kelly","bio":"","profile_pic_url":"","banner_pic_url":"","date_joined":"2025-01-01T00:00:00.000Z"},
+      "userInfo":{"user_id":1,"name":"Kelly","handle":"@kelly","bio":"","profile_pic_url":"","banner_pic_url":"","date_joined": '2025-01-01T00:00:00.000Z'},
       "followers":[],
-      "following":[{
-        "followed_user":{"user_id":2,"name":"Kevin","handle":"@kevin","bio":"","profile_pic_url":"","banner_pic_url":"","date_joined":"2025-01-01T00:00:00.000Z"}
+      "following":[{"followed_user":{"user_id":2,"name":"Kevin","handle":"@kevin","bio":"","profile_pic_url":"","banner_pic_url":"","date_joined": '2025-01-01T00:00:00.000Z'}
       }],
-      "likedPosts":[{
-        "post":{
-          "post_id":2,
-          "content":"Hello World 2",
-          "date_created":"2025-01-01T00:00:00.000Z",
-          "author":{"user_id":2,"name":"Kevin","handle":"@kevin","profile_pic_url":""},
-          "numLikes":1,"numReplies":4,"numReposts":1
-        }
-       }],
-      "posts":[{
-        "parent_post":{
-          "post_id":2,
-          "content":"Hello World 2",
-          "date_created":"2025-01-01T00:00:00.000Z",
-          "author":{"user_id":2,"name":"Kevin","handle":"@kevin","profile_pic_url":""},
-          "quote_parent":[],
-          "reply_parent":[]
-        },
-        "numLikes":1,"numReposts":1,"numReplies":4,
-        "author":{"name":"Kelly","handle":"@kelly","profile_pic_url":"","user_id":1}
-      },
-      {
-        "post_id":1,
-        "author_id":1,
-        "date_created":"2025-01-01T00:00:00.000Z",
-        "content":"Hello World",
-        "numLikes":0,"numReposts":1,"numReplies":0,
-        "author":{"name":"Kelly","handle":"@kelly","profile_pic_url":"","user_id":1}
+      "likedPosts":[{"post":{"post_id":2,"content":"Hello World 2","date_created": '2025-01-01T00:00:00.000Z',"author":{"user_id":2,"name":"Kevin","handle":"@kevin","profile_pic_url":""},"quote_parent":[],"reply_parent":[],"numLikes":1,"numReplies":4,"numReposts":1}
       }],
-      "replies":[{
-        "reply_post":{
-          "post_id":3,
-          "author_id":1,
-          "date_created":"2025-01-01T00:00:00.000Z",
-          "content":"I like this post"
-        },
-        "parent_post":{
-          "post_id":2,
-          "author":{"name":"Kevin","handle":"@kevin","user_id":2}},
-          "numLikes":0,"numReposts":0,"numReplies":2,
-          "author":{"name":"Kelly","handle":"@kelly","user_id":1,"profile_pic_url":""}
-      },
-      {
-        "reply_post":{
-          "post_id":4,
-          "author_id":1,
-          "date_created":"2025-01-01T00:00:00.000Z",
-          "content":"I forgot to mention, this post rocks"
-        },
-        "parent_post":{
-          "post_id":2,
-          "author":{"name":"Kevin","handle":"@kevin","user_id":2}
-        },
-        "numLikes":0,"numReposts":0,"numReplies":0,
-        "author":{"name":"Kelly","handle":"@kelly","user_id":1,"profile_pic_url":""}
-      },
-      {
-        "reply_post":{
-          "post_id":6,
-          "author_id":1,
-          "date_created":"2025-01-01T00:00:00.000Z",
-          "content":"No problem"
-        },
-        "parent_post":{
-          "post_id":5,
-          "author":{"name":"Kevin","handle":"@kevin","user_id":2}
-        },
-        "numLikes":0,"numReposts":0,"numReplies":0,
-        "author":{"name":"Kelly","handle":"@kelly","user_id":1,"profile_pic_url":""}
-      }]}
+      "posts":[
+        {"parent_post":{"post_id":2,"content":"Hello World 2","date_created": '2025-01-01T00:00:00.000Z',"author":{"user_id":2,"name":"Kevin","handle":"@kevin","profile_pic_url":""},"quote_parent":[],"reply_parent":[]},"numLikes":1,"numReposts":1,"numReplies":4,"author":{"name":"Kelly","handle":"@kelly","profile_pic_url":"","user_id":1}},
+        {"post_id":1,"author_id":1,"date_created": '2025-01-01T00:00:00.000Z',"content":"Hello World","numLikes":0,"numReposts":1,"numReplies":0,"author":{"name":"Kelly","handle":"@kelly","profile_pic_url":"","user_id":1}
+      }],
+      "replies":[
+        {"reply_post":{"post_id":3,"author_id":1,"date_created": '2025-01-01T00:00:00.000Z',"content":"I like this post"},"parent_post":{"post_id":2,"author":{"name":"Kevin","handle":"@kevin","user_id":2}},"numLikes":0,"numReposts":0,"numReplies":2,"author":{"name":"Kelly","handle":"@kelly","user_id":1,"profile_pic_url":""}},
+        {"reply_post":{"post_id":4,"author_id":1,"date_created": '2025-01-01T00:00:00.000Z',"content":"I forgot to mention, this post rocks"},"parent_post":{"post_id":2,"author":{"name":"Kevin","handle":"@kevin","user_id":2}},"numLikes":0,"numReposts":0,"numReplies":0,"author":{"name":"Kelly","handle":"@kelly","user_id":1,"profile_pic_url":""}},
+        {"reply_post":{"post_id":6,"author_id":1,"date_created": '2025-01-01T00:00:00.000Z',"content":"No problem"},"parent_post":{"post_id":5,"author":{"name":"Kevin","handle":"@kevin","user_id":2}},"numLikes":0,"numReposts":0,"numReplies":0,"author":{"name":"Kelly","handle":"@kelly","user_id":1,"profile_pic_url":""}}
+      ]}
     )
     .expect(200, done);
   });
