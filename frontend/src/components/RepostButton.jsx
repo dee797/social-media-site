@@ -4,7 +4,6 @@ import { ChooseRepostType } from "./ChooseRepostType";
 
 const RepostButton = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, currentPostId, authorId, numReposts, showChooseRepostType, setShowChooseRepostType, setShowQuoteRepost}) => {
     const [isReposted, setIsReposted] = useState(currentUser.posts.find((post) => post.parent_post?.post_id === currentPostId && !post.quote_post));
-    const [repostCount, setRepostCount] = useState(numReposts);
 
     return (
         <>
@@ -24,8 +23,8 @@ const RepostButton = ({currentUser, setCurrentUser, token, setShouldUpdateUser, 
             }
 
             {       
-                repostCount !== 0 ?
-                <div className="countPlaceholder" style={{textAlign: "left", position: "relative", left: "-5px"}}>{repostCount}</div> :
+                numReposts !== 0 ?
+                <div className="countPlaceholder" style={{textAlign: "left", position: "relative", left: "-5px"}}>{numReposts}</div> :
                 <div className="countPlaceholder" style={{paddingLeft: "40px"}}></div>
             }
 
@@ -38,7 +37,6 @@ const RepostButton = ({currentUser, setCurrentUser, token, setShouldUpdateUser, 
                 setError={setError}
                 isReposted={isReposted}
                 setIsReposted={setIsReposted}
-                setRepostCount={setRepostCount}
                 show={showChooseRepostType}
                 setModalShow={setShowChooseRepostType}
                 authorId={authorId}

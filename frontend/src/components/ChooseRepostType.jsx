@@ -9,7 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
 
-const fetchRepost = async (token, currentUser, setCurrentUser, setShouldUpdateUser, setIsReposted, setRepostCount, setError, setLoading, navigate, url, setModalShow) => {
+const fetchRepost = async (token, currentUser, setCurrentUser, setShouldUpdateUser, setIsReposted, setError, setLoading, navigate, url, setModalShow) => {
     if (token && currentUser) {
         return fetch(url, {
             mode: "cors",
@@ -35,7 +35,6 @@ const fetchRepost = async (token, currentUser, setCurrentUser, setShouldUpdateUs
 
                 setModalShow(false);
                 setIsReposted(resBody["createRepostSuccess"]);
-                setRepostCount((oldLikeCount) => oldLikeCount + 1);
                 setShouldUpdateUser(resBody);
     
             } catch (err) {
@@ -55,7 +54,7 @@ const fetchRepost = async (token, currentUser, setCurrentUser, setShouldUpdateUs
 }
 
 
-const ChooseRepostType = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, isReposted, setIsReposted, setRepostCount, show, setModalShow, authorId, currentPostId, setShowQuoteRepost}) => {
+const ChooseRepostType = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError, isReposted, setIsReposted, show, setModalShow, authorId, currentPostId, setShowQuoteRepost}) => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -85,7 +84,7 @@ const ChooseRepostType = ({currentUser, setCurrentUser, token, setShouldUpdateUs
                             onSubmit={(event) => {
                                 handleSubmitForm(event, setLoading, () => {
                                     const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.userInfo.user_id}/posts/${currentPostId}/repost`;
-                                    deleteData(token, currentUser, setCurrentUser, setShouldUpdateUser, setIsReposted, setRepostCount, setError, setLoading, navigate, url, setModalShow);
+                                    deleteData(token, currentUser, setCurrentUser, setShouldUpdateUser, setIsReposted, null, setError, setLoading, navigate, url, setModalShow);
                                 })
                             }}
                             style={{marginBottom: "10px", width: "100%", display: "flex"}}
@@ -98,7 +97,7 @@ const ChooseRepostType = ({currentUser, setCurrentUser, token, setShouldUpdateUs
                             onSubmit={(event) => {
                                 handleSubmitForm(event, setLoading, () => {
                                     const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser.userInfo.user_id}/posts/${currentPostId}/${authorId}/repost`;
-                                    fetchRepost(token, currentUser, setCurrentUser, setShouldUpdateUser, setIsReposted, setRepostCount, setError, setLoading, navigate, url, setModalShow);
+                                    fetchRepost(token, currentUser, setCurrentUser, setShouldUpdateUser, setIsReposted, setError, setLoading, navigate, url, setModalShow);
                                 })
                             }}
                             style={{marginBottom: "10px", width: "100%", display: "flex"}}
