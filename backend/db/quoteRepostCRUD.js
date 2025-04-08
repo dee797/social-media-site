@@ -21,7 +21,37 @@ const createQuoteRepost = async (post) => {
 const getParentOfQuote = async (post) => {
     const parent = await prisma.quote_Repost.findFirst({
         where: { quote_post_id: post.post_id },
-        select: { parent_post: true }
+        select: { parent_post: {
+            select: {
+                post_id: true,
+                content: true, 
+                date_created: true,
+                author: {
+                    select: {
+                        user_id: true,
+                        handle: true,
+                        name: true,
+                        profile_pic_url: true
+                    }
+                },
+                reply_parent: {
+                    select: {
+                        parent_post: {
+                            select: {
+                                post_id: true,
+                                author: {
+                                    select: {
+                                        user_id: true,
+                                        handle: true,
+                                        name: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }}
     });
     return parent;
 }
