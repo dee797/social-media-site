@@ -171,22 +171,36 @@ const postData = async (token, currentUser, setCurrentUser, formData, setShouldU
 }
 
 
-const putData = async (token, currentUser, setCurrentUser, setError, setLoading, setNavigateTo, url, formData=null, setPutSuccess=null, setValidationError=null, expectedKey=null) => {
+const putData = async (token, currentUser, setCurrentUser, setError, setLoading, setNavigateTo, url, formData=null, setPutSuccess=null, setValidationError=null, expectedKey=null, setFormData=null, setShouldUpdateUser=null) => {
+    let form;
+    if (formData) {
+        form = new FormData();
+        form.append("bio", formData.bio);
+        form.append("name", formData.name);
+        form.append("profile_pic", formData.profile_pic);
+        form.append("banner_pic", formData.banner_pic);
+    }
 
+    
     if (token && currentUser) {
         return fetch(url, {
             mode: "cors",
             method: "put",
-            body: formData ?? '',
+            body: form,
             headers: {
                 "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
             }
         }).then(async res => {
             try {
                 const resBody = await res.json();
     
                 if (res.status === 400 && resBody.validationErrors) {
+                    setFormData ? setFormData({
+                        name: currentUser?.userInfo.name,
+                        bio: currentUser?.userInfo.bio,
+                        profile_pic: null,
+                        banner_pic: null
+                    }) : null;
                     return setValidationError(resBody.validationErrors);
                 }
 
@@ -205,6 +219,10 @@ const putData = async (token, currentUser, setCurrentUser, setError, setLoading,
                     setPutSuccess(resBody[expectedKey]);
                 } else if (setPutSuccess) {
                     setPutSuccess(resBody);
+                }
+
+                if (setShouldUpdateUser) {
+                    setShouldUpdateUser(resBody);
                 }
     
             } catch (err) {
@@ -278,6 +296,12 @@ const deleteData = async (token, currentUser, setCurrentUser, setShouldUpdateUse
 
 const handleInputChange = (event, setFormData) => {
     const { name, value } = event.target;
+
+    if (event.target.type === 'file') {
+        const file = event.target.files[0];
+        return setFormData(data => ({...data, [name]: file}));
+    }
+
     setFormData(data => ({...data, [name]: value}));
 }
 
