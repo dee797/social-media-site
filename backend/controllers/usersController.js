@@ -2,16 +2,26 @@ require("dotenv").config();
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { body } = require("express-validator");
 const asyncHandler = require("express-async-handler");
 
+// imports for validation
+const validationController = require("../controllers/validationController");
+const { body, check } = require("express-validator");
+
+// imports for working with tables in database
 const userDB = require("../db/userCRUD");
 const followDB = require("../db/followCRUD");
 const likeDB = require("../db/likeCRUD");
 const postDB = require("../db/postCRUD");
 const notificationDB = require("../db/notificationCRUD");
 
-const validationController = require("../controllers/validationController");
+// multer setup
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage
+});
+const uploadHandler = require('../config/cloudinaryHelper');
 
 
 
@@ -143,6 +153,19 @@ const validationChain = [
     .withMessage(`Passwords do not match.`)
 ];
 
+const validateFile = (file) => {
+  const allowedTypes = ['image/jpeg', 'image/png'];
+  if (!allowedTypes.includes(file.mimetype)) {
+    throw new Error('Only PNGs and JPEGs are allowed');
+  }
+
+  if (file.size > 2 * 1024 * 1024) {
+    throw new Error('File size cannot be more than 2MB');
+  }
+
+  return true;
+}
+
 
 
 // POST / other requests
@@ -182,10 +205,12 @@ const postLogin = (req, res, next) => {
           if (err) return next(err);
 
           const token = jwt.sign({sub: user.userInfo.user_id}, process.env.SECRET, { expiresIn: '2h'});
-          // On frontend, if loginSuccess === true then redirect to home path ("/")
-          return res.json({user: user, 
-          loginSuccess: true, 
-          token});
+
+          return res.json({
+            user: user, 
+            loginSuccess: true, 
+            token
+        });
       });
   })(req, res, next);
 };
@@ -198,13 +223,17 @@ const postLogout = asyncHandler(async (req, res, next) => {
     token_valid_after: Math.floor(Date.now()/ 1000)
   })
   
-  // if logout success, delete jwt from localstorage on client side
   res.json({logoutSuccess: true});
 });
   
 
 
 const putEditedUserInfo = [
+  upload.fields([
+    { name: 'profile_pic', maxCount: 1 }, 
+    { name: 'banner_pic', maxCount: 1 }
+  ]),
+  
   validationChain[0],
 
   body("bio")
@@ -213,16 +242,39 @@ const putEditedUserInfo = [
   .isLength({max:500})
   .withMessage("Bio cannot be more than 500 characters."),
 
+  check('profile_pic')
+  .custom((value, {req}) => {
+    if (value === "null") return true;
+    return validateFile(req.files.profile_pic[0]);
+  }),
+
+  check('banner_pic')
+  .custom((value, {req}) => {
+    if (value === "null") return true;
+    return validateFile(req.files.banner_pic[0]);
+  }),
+
   validationController,
 
   asyncHandler(async (req, res) => {
-    const {name, profile_pic_url, banner_pic_url, bio} = req.body;
+    let profile_pic_url;
+    let banner_pic_url;
+
+    if (req.files.profile_pic?.length) {
+      profile_pic_url = await uploadHandler(req.files.profile_pic[0]);
+    }
+
+    if (req.files.banner_pic?.length) {
+      banner_pic_url = await uploadHandler(req.files.banner_pic[0]);
+    }
+
+    const {name, bio} = req.body;
     await userDB.updateUser({
       user_id: parseInt(req.params.user_id),
       name,
-      profile_pic_url,
-      banner_pic_url,
-      bio
+      bio,
+      profile_pic_url: profile_pic_url ?? undefined,
+      banner_pic_url: banner_pic_url ?? undefined
     });
     res.json({updateSuccess: true});
   })
