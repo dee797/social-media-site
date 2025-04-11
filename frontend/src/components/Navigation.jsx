@@ -1,5 +1,5 @@
 import { Link, useNavigate, Navigate, useLocation } from 'react-router';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -69,6 +69,10 @@ const Navigation = ({ currentUser, setCurrentUser, token, setError, setLoading }
     const url = `${import.meta.env.VITE_BACKEND_URL}/users/${currentUser?.userInfo.user_id}/notifications`;
     useFetchData(token, currentUser, setCurrentUser, setNotifications, setError, setNotifLoading, setNavigateTo, url, null, [location, shouldUpdate]);
 
+    const currentUserProfilePic = useMemo(() => {
+        return (<img crossOrigin="anonymous" referrerPolicy="no-referrer" src={currentUser.userInfo.profile_pic_url} style={{gridRow: "1 / 3", width: "50px", height: "50px", borderRadius: "25px"}}></img>
+        );
+    }, [currentUser?.userInfo.profile_pic_url]);
 
     if (navigateTo) return (<Navigate to={navigateTo} replace/>);
 
@@ -129,7 +133,7 @@ const Navigation = ({ currentUser, setCurrentUser, token, setError, setLoading }
                                 title={
                                     <div style={{display: "flex", alignItems: "center", textAlign: "left", fontSize: "15px", columnGap: "10px"}}>
                                         <div style={{gridTemplate: "1fr 1fr / 55px 1fr", display: "grid", columnGap: "10px"}}>
-                                            <img crossOrigin="anonymous" referrerPolicy="no-referrer" src={currentUser.userInfo.profile_pic_url} style={{gridRow: "1 / 3", width: "50px", height: "50px", borderRadius: "25px"}}></img>
+                                            {currentUserProfilePic}
                                             <div>{currentUser.userInfo.name}</div>
                                             <div>{currentUser.userInfo.handle}</div>
                                         </div>
