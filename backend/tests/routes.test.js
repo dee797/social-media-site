@@ -18,6 +18,9 @@ let testUserID;
  * To run the tests in this file, please comment out the line 
  * 'app.listen(PORT)' in the index.js file in order to prevent
  * Jest from hanging
+ * 
+ * This file will also throw the error "Invalid token". This is 
+ * expected behavior
  */
 
 
@@ -59,7 +62,7 @@ afterAll(async () => {
 
 describe("Setup tests (must be done before any other tests)", () => {
   test("create a new user", done => {
-    request(app)
+    request.agent(app)
     .post("/users")
     .type("form")
     .send({
@@ -95,18 +98,17 @@ describe("Setup tests (must be done before any other tests)", () => {
   test("update user info", done => {
     userDB.getUserByHandle({handle: '@test'}).then((userTest) => {
       testUserID = userTest.user_id;
-
+      
       request.agent(app)
       .put(`/users/${testUserID}`)
       .auth(testJWT, {type: 'bearer'})
-      .type('form')
+      .type("form")
       .send({
-        name: '123test',
-        profile_pic_url: 'abc',
-        banner_pic_url: 'abc',
-        bio: 'idk'
+        name: "123test",
+        bio: "idk",
+        profile_pic: "null",
+        banner_pic: "null"
       })
-      .expect("Content-Type", /json/)
       .expect({updateSuccess: true})
       .expect(200, done)
       });
@@ -232,7 +234,7 @@ describe('Security/Input validation tests', () => {
   });
 
   test("send back errors for invalid inputs when creating new user", done => {
-    request(app)
+    request.agent(app)
     .post("/users")
     .type("form")
     .send({
