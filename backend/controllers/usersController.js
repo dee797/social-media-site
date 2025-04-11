@@ -260,11 +260,11 @@ const putEditedUserInfo = [
     let profile_pic_url;
     let banner_pic_url;
 
-    if (req.files.profile_pic?.length) {
+    if (req.files?.profile_pic?.length) {
       profile_pic_url = await uploadHandler(req.files.profile_pic[0]);
     }
 
-    if (req.files.banner_pic?.length) {
+    if (req.files?.banner_pic?.length) {
       banner_pic_url = await uploadHandler(req.files.banner_pic[0]);
     }
 
