@@ -242,10 +242,8 @@ const Profile = () => {
                     <h3>{profileData.userInfo.name}</h3>
                     <p>{profileData.userInfo.handle}</p>
                     {
-                        profileData.userInfo.bio ?
-                        <p style={{padding: "20px 0px", marginBottom: "0px"}}>{profileData.userInfo.bio}</p>
-                        :
-                        null
+                        profileData.userInfo.bio &&
+                        <p style={{paddingBottom: "16px", marginBottom: "0px"}}>{profileData.userInfo.bio}</p>
                     }
                     <p>Joined {(new Date(profileData.userInfo.date_joined)).toLocaleDateString()}</p>
                     {
