@@ -104,7 +104,7 @@ const postNewReply = [
         const foundNotification = await notificationDB.getNotificationByFields({
             receiver_id: parseInt(req.params.author_id),
             sender_id: parseInt(req.params.user_id),
-            source_url: `/users/${req.params.author_id}/posts/${req.params.post_id}`,
+            source_url: `/post/${req.params.post_id}`,
             type_id: 4
         });
 
