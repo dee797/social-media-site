@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { href, Link } from "react-router";
 import { useState, useMemo } from "react";
 
 import { ReplyModal } from "./ReplyModal";
@@ -55,12 +55,34 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
     }
 
     const currentUserProfilePic = useMemo(() => {
-        return (<img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.author.profile_pic_url} style={{width: "36px", height: "36px", borderRadius: "18px"}}></img>
+        return (
+            <img 
+                src={postData.author.profile_pic_url} 
+                crossOrigin="anonymous" 
+                referrerPolicy="no-referrer" 
+                style={{
+                    width: "36px", 
+                    height: "36px", 
+                    backgroundImage: `url(${postData.author.profile_pic_url})`, 
+                    borderRadius: "18px", 
+                    backgroundSize: "36px 36px"}}
+            />
         );
     }, [postData.author.profile_pic_url]);
 
     const quoteProfilePic = useMemo(() => {
-        if (postData.quote_parent?.length) return (<img crossOrigin="anonymous" referrerPolicy="no-referrer" src={postData.quote_parent[0].parent_post.author.profile_pic_url} style={{width: "30px", height: "30px", borderRadius: "15px"}}/>
+        if (postData.quote_parent?.length) return (
+            <img 
+                crossOrigin="anonymous" 
+                referrerPolicy="no-referrer" 
+                src={postData.quote_parent[0].parent_post.author.profile_pic_url} 
+                style={{
+                    width: "30px", 
+                    height: "30px",
+                    backgroundImage: `url(${postData.quote_parent[0].parent_post.author.profile_pic_url})`, 
+                    borderRadius: "15px",
+                    backgroundSize: "30px 30px"    
+                }}/>
         );
     }, postData.quote_parent?.length ? [postData.quote_parent[0].parent_post.author.profile_pic_url] : []);
 
