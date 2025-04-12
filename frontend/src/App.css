@@ -178,10 +178,6 @@ button.nav-link {
   color: royalblue;
 }
 
-img {
-  transition: all 2s;
-}
-
 hr {
   border: none;
   border-top: 1px solid rgb(190, 190, 190);
