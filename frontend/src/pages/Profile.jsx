@@ -44,8 +44,10 @@ const Profile = () => {
         <>
             {
                 userHandle !== currentUser?.userInfo.handle.slice(1) ?
-                <div style={{position: "absolute", right: "30px", padding: "20px"}}>
-                    <FollowButton currentUser={currentUser} setCurrentUser={setCurrentUser} setShouldUpdateUser={setShouldUpdateUser} token={token} setError={setError} followedUserId={profileData.userInfo.user_id} key={profileData.userInfo.user_id}/>
+                <div style={{position: "absolute", maxWidth: "1280px", display: "flex", width: "100%", justifyContent: "flex-end"}}>
+                    <div style={{ padding: "30px 40px"}}>
+                        <FollowButton currentUser={currentUser} setCurrentUser={setCurrentUser} setShouldUpdateUser={setShouldUpdateUser} token={token} setError={setError} followedUserId={profileData.userInfo.user_id} key={profileData.userInfo.user_id}/>
+                    </div>
                 </div>
                 : 
                 null
