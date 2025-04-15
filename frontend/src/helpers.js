@@ -113,6 +113,42 @@ const useFetchData = (token, currentUser, setCurrentUser, setData, setError, set
 }
 
 
+
+const getNewGuest = async (setCurrentUser, setServerError, setLoading, navigate) => {
+
+    return fetch(`${import.meta.env.VITE_BACKEND_URL}/users/guest`, {
+        method: 'get',
+        mode: "cors"
+    })
+    .then(async res => {
+        try {
+            const resBody = await res.json();
+
+            if (res.status >= 400) {
+                throw new Error();
+            }
+
+            if (resBody.guest) {
+                localStorage.setItem('token', resBody.token);
+                localStorage.setItem('currentUserHandle', resBody.guest.userInfo.handle);
+                setCurrentUser(resBody.guest);
+                navigate("/", {replace: true});
+            }
+
+        } catch (err) {
+            throw new Error(err);
+        }
+    })
+    .catch(err => {
+        setServerError(err);
+    })
+    .finally(() => {
+        setLoading(false);
+    });
+}
+
+
+
 const postData = async (token, currentUser, setCurrentUser, formData, setShouldUpdateUser, setValidationError, setError, setLoading, setNavigateTo, url, setModalShow=null, setPostSuccess=null) => {
 
     if (token && currentUser) {
@@ -316,6 +352,7 @@ const handleSubmitForm = (event, setLoading, callback) => {
 export {
     useCheckUser,
     useFetchData,
+    getNewGuest,
     postData,
     putData,
     deleteData,
