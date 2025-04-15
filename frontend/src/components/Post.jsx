@@ -98,7 +98,7 @@ const Post = ({currentUser, setCurrentUser, token, setShouldUpdateUser, setError
                     {
                         userHandle === currentUser?.userInfo.handle.slice(1) ? 
                         <>You reposted</> :
-                        <>{currentUser.userInfo.name} reposted</>
+                        <>{postData.author.name} reposted</>
                     }
                 </div> :
                 null
