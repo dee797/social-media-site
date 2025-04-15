@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useOutletContext, Navigate, useNavigate, Link } from "react-router";
-import { useCheckUser, handleInputChange, handleSubmitForm } from '../helpers';
+import { useCheckUser, handleInputChange, handleSubmitForm, getNewGuest } from '../helpers';
 
 import Form from "react-bootstrap/Form";
 import Button from 'react-bootstrap/Button';
@@ -168,7 +168,16 @@ const Login = () => {
                 <Button style={{marginTop: "30px"}} variant='primary' type='submit'>Submit</Button>                
             </Form>
 
-            <p>Don't have an account? Create one <Link className="navigate" to="/signup">here</Link></p>
+            <div style={{display: "flex", flexDirection: "column"}}>
+                <p>Don't have an account? Create one <Link className="navigate" to="/signup">here</Link></p>
+                <Link className='navigate' style={{textAlign: "center"}} onClick={
+                    (event) => {
+                        getNewGuest(setCurrentUser, setServerError, setLoading, navigate);
+                    }
+                }>
+                    Continue as guest
+                </Link>
+            </div>
         </div>
     )
 }
