@@ -116,6 +116,59 @@ const getUserLikedPosts = asyncHandler(async (req, res, next) => {
 
 
 
+const getNewGuest = asyncHandler(async (req, res) => {
+  const guestUsers = await userDB.getMatchingUsers("guest");
+  const randomString = crypto.randomUUID();
+  const hashedPassword = await bcrypt.hash(randomString, 10);
+
+  let name;
+  let handle;
+  
+  if (guestUsers.length === 0) {
+    name =  "Guest 1";
+    handle ='@guest1';
+  } else {
+    name = `Guest ${guestUsers.length + 1}`;
+    handle = `@guest${guestUsers.length + 1}`;
+  }
+
+  const newGuest = await userDB.createUser({
+    name,
+    handle,
+    password: hashedPassword,
+    bio: '',
+    profile_pic_url: process.env.DEFAULT_AVATAR_URL,
+    banner_pic_url: process.env.DEFAULT_BANNER_URL,
+    date_joined: new Date(),
+    token_valid_after: Math.floor(Date.now() / 1000)
+  });
+
+  const guestProfile = {
+    userInfo: {
+      user_id: newGuest.user_id,
+      name: newGuest.name,
+      handle: newGuest.handle,
+      bio: newGuest.bio,
+      profile_pic_url: newGuest.profile_pic_url,
+      banner_pic_url: newGuest.banner_pic_url,
+      date_joined: newGuest.date_joined
+    },
+    following: [],
+    followers: [],
+    likedPosts: [],
+    posts: [],
+    replies: []
+  }
+
+  const token = jwt.sign({sub: newGuest.user_id}, process.env.SECRET, { expiresIn: '2h'});
+  res.json({
+    guest: guestProfile,
+    token
+  });
+});
+
+
+
 // Sanitization / Validation
 
 const validationChain = [
@@ -132,6 +185,9 @@ const validationChain = [
       const user = await userDB.getUserByHandle({handle: '@' + username});
       if (user) { 
         throw new Error("Username already in use.");
+      }
+      if (username.toLowerCase().includes("guest")) {
+        throw new Error("Username cannot contain the word 'guest'")
       }
     }),
 
@@ -365,6 +421,7 @@ module.exports = {
   getUserFollowing,
   getUserFollowers,
   getUserLikedPosts,
+  getNewGuest,
   postNewUser,
   postLogin,
   postLogout,

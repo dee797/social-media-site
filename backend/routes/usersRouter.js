@@ -11,7 +11,16 @@ const usersRouter = Router();
 
 usersRouter.post("/", usersController.postNewUser);
 
-usersRouter.post("/login", usersController.postLogin);
+usersRouter.post("/login", 
+    (req, res, next) => {
+        if (req.body.username.toLowerCase().includes("guest")) {
+            return res.status(401).json({message: "Incorrect username or password"});
+        }
+        next();
+    },
+    usersController.postLogin);
+
+usersRouter.get("/guest", usersController.getNewGuest);
 
 
 // Check if user is already authenticated if they try to access /login route (which is unnecessary)
@@ -80,7 +89,7 @@ usersRouter.delete("/:user_id/likes/:post_id", usersController.deleteLike);
 
 
 
-// use postsRouter for posts-related paths
+// use postsRouter for post-related paths
 
 usersRouter.use("/:user_id/posts", postsRouter);
 
