@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useOutletContext, Navigate, Link } from "react-router";
 import { useCheckUser, handleInputChange, handleSubmitForm, getNewGuest } from '../helpers';
+import PasswordChecklist from "react-password-checklist";
 
 import Form from "react-bootstrap/Form";
 import Button from 'react-bootstrap/Button';
@@ -190,13 +191,22 @@ const Signup = () => {
                         }
                         <Form.Text>
                             Password must meet the following requirements:
-                            <ul>
-                                <li>Be at least 8 characters long</li>   
-                                <li>Have at least 1 lowercase letter</li>
-                                <li>Have at least 1 uppercase letter</li>
-                                <li>Have at least 1 number</li>
-                                <li>Have at least 1 special character</li>
-                            </ul>  
+
+                            <PasswordChecklist 
+                                rules={["minLength", "lowercase", "capital", "number", "specialChar", "match"]}
+                                minLength={8}
+                                value={formData.password}
+                                valueAgain={formData.confirmPassword}
+                                messages={{
+                                    minLength: "Be at least 8 characters long",
+                                    lowercase: "Have at least 1 lowercase letter",
+                                    capital: "Have at least 1 uppercase letter",
+                                    number: "Have at least 1 number",
+                                    specialChar: "Have at least 1 special character",
+                                    match: "Match the Confirm Password field"
+                                }}
+                                iconSize={12}
+                            />                        
                             
                         </Form.Text>
                     
