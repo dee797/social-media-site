@@ -172,6 +172,8 @@ const Login = () => {
                 <p>Don't have an account? Create one <Link className="navigate" to="/signup">here</Link></p>
                 <Link className='navigate' style={{textAlign: "center"}} onClick={
                     (event) => {
+                        event.preventDefault();
+                        setLoading(true);
                         getNewGuest(setCurrentUser, setServerError, setLoading, navigate);
                     }
                 }>

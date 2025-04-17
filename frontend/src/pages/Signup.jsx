@@ -284,6 +284,8 @@ const Signup = () => {
                 <p>Already have an account? Sign in <Link to="/login" className='navigate'>here</Link></p>
                 <Link className='navigate' style={{textAlign: "center"}} onClick={
                     (event) => {
+                        event.preventDefault();
+                        setLoading(true);
                         getNewGuest(setCurrentUser, setServerError, setLoading, navigate);
                     }
                 }>
