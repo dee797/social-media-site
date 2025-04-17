@@ -38,6 +38,8 @@ const updateUserNotification = asyncHandler(async (req, res) => {
     await notificationsDB.updateNotification({
         notification_id: parseInt(req.params.notification_id)
     });
+
+    res.json({updatedNotif: true});
 });
 
 
