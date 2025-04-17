@@ -334,7 +334,7 @@ const handleInputChange = (event, setFormData) => {
     const { name, value } = event.target;
 
     if (event.target.type === 'file') {
-        const file = event.target.files[0];
+        const file = event.target.files.length ? event.target.files[0] : null;
         return setFormData(data => ({...data, [name]: file}));
     }
 
