@@ -1,10 +1,8 @@
 <h1 align="center">Flitter, a parody social media app</h1>
-<br/>
 
 <p>
     This repository holds the source code for Flitter, a parody of a certain social media site that used to feature a blue bird, but has now been rebranded as the 24th letter of the alphabet. Flitter is a full stack web app with a separated frontend and backend; it offers client-side rendering and routing, and fetches data from the backend when needed.
 </p>
-<br/>
 
 <h2 align="center">
     Frontend technologies used:
@@ -12,10 +10,10 @@
 
 <div align="center">
 
-    [![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?logo=bootstrap&logoColor=fff)](#) [![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB)](#) [![React Router](https://img.shields.io/badge/React_Router-CA4245?logo=react-router&logoColor=white)](#) [![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=fff)](#) [![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=fff)](#)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?logo=bootstrap&logoColor=fff) ![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB) ![React Router](https://img.shields.io/badge/React_Router-CA4245?logo=react-router&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=fff) ![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=fff)
 
 </div>
-<br/>
+
 
 <h2 align="center">
     Backend technologies used:
@@ -23,10 +21,9 @@
 
 <div align="center">
 
-    [![Express.js](https://img.shields.io/badge/Express.js-%23404d59.svg?logo=express&logoColor=%2361DAFB)](#) [![Jest](https://img.shields.io/badge/Jest-C21325?logo=jest&logoColor=fff)](#) [![NodeJS](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white)](#) [![Postgres](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white)](#) [![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)](#)
+![Express.js](https://img.shields.io/badge/Express.js-%23404d59.svg?logo=express&logoColor=%2361DAFB) ![Jest](https://img.shields.io/badge/Jest-C21325?logo=jest&logoColor=fff) ![NodeJS](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white) ![Postgres](https://img.shields.io/badge/Postgres-%23316192.svg?logo=postgresql&logoColor=white) ![Prisma](https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=white)
 
 </div>
-<br/>
 
 <h2 align="center">Flitter's Features</h2>
 
@@ -51,3 +48,5 @@ It is not necessary to create an account in order to use Flitter. You may use Fl
 If you do decide to create a Flitter account, please note that passwords are salted and hashed for your security. However, please still exercise best password practices, and choose a complex password that you do not use on other sites. Thank you.
 
 Visit Flitter at https://social-media-site-one.vercel.app/
+
+** The app's backend goes to sleep after a certain period of inactivity, so it may take a few seconds for it to wake up again when you visit the site.
